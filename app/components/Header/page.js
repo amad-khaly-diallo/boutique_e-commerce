@@ -4,7 +4,7 @@ import { ShoppingCart, User, Search, Menu, Heart, X } from 'lucide-react';
 import { useState } from 'react';
 import styles from './header.module.css';
 
-export function Header() {
+export default function Header() {
     const [cartCount, setCartCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
