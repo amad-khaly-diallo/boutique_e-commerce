@@ -1,0 +1,211 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.actionIcons {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.actionButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.actionButton:hover {
+  background: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.actionButton.favoriteActive {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+.actionIcon {
+  stroke-width: 2;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 12px;
+  flex: 1;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  line-height: 1.4;
+  min-height: 3em;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.currentPrice {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.originalPrice {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.ratingContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.starFull,
+.starHalf {
+  color: #fbbf24;
+  fill: currentColor;
+}
+
+.starEmpty {
+  color: #d1d5db;
+  fill: none;
+}
+
+.reviewsCount {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.addButton {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: auto;
+}
+
+.addButton:hover:not(:disabled) {
+  background: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
+}
+
+.addButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.addButton.adding {
+  background: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 1rem;
+    min-height: 2.5em;
+  }
+
+  .currentPrice {
+    font-size: 1.25rem;
+  }
+
+  .addButton {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .actionButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .actionIcon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
