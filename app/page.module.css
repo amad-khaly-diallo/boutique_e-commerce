@@ -1,339 +1,186 @@
 .page {
-
   font-family: var(--font-geist-sans);
-  background: var(--bg);
   color: var(--text-primary);
-  padding: 40px 64px 96px;
+  padding: 40px 0;
   display: flex;
   flex-direction: column;
   gap: 56px;
 }
 
-.section {
+.main {
   width: 100%;
-  background: var(--card);
-  border-radius: 28px;
-  padding: 48px;
-  box-shadow: var(--shadow);
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  align-items: center;
-  gap: 48px;
-}
-
-.heroIntro h1 {
-  font-size: clamp(2.8rem, 4vw, 4rem);
-  line-height: 1.1;
-  margin: 12px 0 20px;
-}
-
-.heroIntro p {
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  max-width: 540px;
-}
-
-.heroLabel {
-  font-size: 0.95rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.heroActions {
   display: flex;
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.heroActions button {
-  border-radius: 999px;
-  border: none;
-  padding: 14px 26px;
-  font-weight: 600;
-  background: var(--text-primary);
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.heroActions button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
-}
-
-.secondary {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-}
-
-.heroMedia {
+  justify-content: space-between;
   width: 100%;
-  border-radius: 32px;
-  overflow: hidden;
-  aspect-ratio: 4 / 5;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.heroMedia :global(img) {
+.heroPretitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  background-color: var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 50vh;
+}
+
+.heroImage {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 380px;
+  height: 400px;
+}
+
+.heroImage img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
-.heroHighlights {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
+.heroContent {
+  height: 100%;
 }
 
-.heroHighlights article {
-  background: var(--card);
-  padding: 28px;
-  border-radius: 24px;
-  box-shadow: var(--shadow);
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin: 16px 0;
 }
 
-.heroHighlights h3 {
-  margin-bottom: 6px;
+.heroSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+.heroButton {
+  background-color: var(--foreground);
+  color: #fff;
+  border: none;
+  padding: 8px 24px;
   font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.heroHighlights p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.heroButton1 {
+  background-color: var(--background);
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 8px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.categoriesSection header p,
-.productsSection header p,
-.newArrival header p {
-  font-size: 0.95rem;
-  color: var(--accent);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+.banner {
+  width: 100%;
+  height: 200px;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
 }
 
-.categoriesSection header h2,
-.productsSection header h2,
-.newArrival header h2 {
-  margin-top: 10px;
-  font-size: 2.2rem;
-}
-
-.categoriesGrid {
-  margin-top: 32px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
-}
-
-.categoryCard {
-  border: 1px solid var(--border);
-  padding: 24px;
-  border-radius: 24px;
-  background: linear-gradient(145deg, #fefefe, #f1ede8);
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.categoryCard span {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.productsSection header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-  gap: 20px;
-}
-
-.productsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-}
-
-.productCard {
-  border: 1px solid var(--border);
-  border-radius: 26px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  min-height: 420px;
-}
-
-.productMedia {
-  background: #f7f6f5;
+.bannerContent {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  height: 100%;
+  gap: 16px;
 }
 
-.productMedia :global(img) {
-  object-fit: cover;
-  border-radius: 16px;
-}
-
-.productContent {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.productCategory {
-  color: var(--text-muted);
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
-}
-
-.productPrice {
-  font-weight: 700;
-}
-
-.cardActions {
-  margin-top: 14px;
+.feature {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
 }
 
-.cardActions button {
-  flex: 1;
-  border-radius: 999px;
-  padding: 12px 0;
-  border: none;
-  background: var(--text-primary);
-  color: white;
+.bannerDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.bannerTitle {
+  display: flex;
+  font-size: 1.2rem;
   font-weight: 600;
-  cursor: pointer;
 }
 
-.iconButton {
-  flex: unset;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  background: transparent;
-  border: 1px solid var(--border);
-}
-
-.emptyState {
-  text-align: center;
-  color: var(--text-muted);
-  grid-column: 1 / -1;
-}
-
-.newArrival {
+.bannerSub {
   display: flex;
-  flex-direction: column;
-  gap: 32px;
+  font-size: 1rem;
 }
-
-.editorialGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-.editorialCard {
-  border-radius: 24px;
-  overflow: hidden;
-  background: #000;
-  color: white;
-  display: flex;
-  flex-direction: column;
-}
-
-.editorialCard :global(img) {
-  width: 100%;
-  height: 220px;
+.banner img {
+  width: 40px;
+  height: 40px;
   object-fit: cover;
 }
 
-.editorialCard div {
-  padding: 20px;
+.section {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f9f9f9;
 }
 
-.assuranceBar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
+.heading {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
-.assuranceBar article {
-  padding: 24px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--card);
+.subheading {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
 }
 
-.assuranceBar h3 {
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-}
-
-.assuranceBar p {
-  margin-top: 6px;
-  color: var(--text-muted);
-}
-
-.footer {
-  padding: 48px;
-  border-radius: 32px;
-  background: #101010;
-  color: white;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+.grid {
+  display: flex;
+  justify-content: center;
   gap: 24px;
+  flex-wrap: wrap;
 }
 
-.footer h3 {
-  font-size: 1.8rem;
+.card {
+  width: 300px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
-.footer h4 {
-  margin-bottom: 10px;
+.card:hover {
+  transform: translateY(-5px);
 }
 
-@media (max-width: 900px) {
-  .page {
-    padding: 32px 20px 72px;
-  }
-
-  .section {
-    padding: 32px;
-  }
+.image {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
 }
 
-@media (max-width: 600px) {
-  .heroActions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .heroActions button {
-    width: 100%;
-  }
-
-  .productCard {
-    min-height: unset;
-  }
+.title {
+  font-size: 1.2rem;
+  margin: 12px 0;
 }
