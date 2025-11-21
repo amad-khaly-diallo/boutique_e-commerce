@@ -1,0 +1,44 @@
+.about-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 70px;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.p1 {
+    font-size: 17px;
+}
+
+.about-container2 {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 70px;
+    font-size: 7px;
+    text-align: center;
+}
+
+.logo {
+    border: 1px solid black;
+   
+}
+h2{
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+.about-container3 {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 70px;
+    font-size: 7px;
+    text-align: center;
+}
