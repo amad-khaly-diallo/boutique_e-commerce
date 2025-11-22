@@ -126,10 +126,12 @@ export function ProductCard({ product }) {
           onClick={handleAddToCart}
           disabled={isAdding || product.stock === 0}
         >
-          {isAdding ? 'Ajout...' : 'Add to Cart'}
+          {isAdding ? 'Ajout...' : 'Ajouter au panier'}
         </button>
       </div>
     </Link>
   );
+
+  
 }
 

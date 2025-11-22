@@ -152,12 +152,12 @@
 
 .addButton {
   width: 100%;
-  padding: 10px 18px;
-  border-radius: 9px;
+  padding: 12px 20px;
+  border-radius: 8px;
   background: #111827;
   color: #fff;
   border: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -167,7 +167,7 @@
 .addButton:hover:not(:disabled) {
   background: #1f2937;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.25);
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
 }
 
 .addButton:disabled {

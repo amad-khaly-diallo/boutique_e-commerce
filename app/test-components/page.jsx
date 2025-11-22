@@ -14,7 +14,7 @@ export default function Cardcomponent() {
       category: 'Montres',
       rating: 4.5,
       reviews: 65,
-      image: '/bijou.jpg',
+      image: null,
     },
     {
       product_id: 2,

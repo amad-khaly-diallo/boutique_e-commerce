@@ -1,95 +1,194 @@
 .page {
   font-family: var(--font-geist-sans);
-  background: #f9fafb;
-  color: #111827;
-  padding: 40px 64px 96px;
-  min-height: 100vh;
+  color: var(--text-primary);
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
 }
 
 .main {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 70px auto;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: 56px;
 }
 
 .hero {
-  text-align: center;
-  padding: 60px 0 40px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.title {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
+.heroPretitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  background-color: var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 50vh;
+}
+
+.heroImage {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 380px;
+  height: 400px;
+}
+
+.heroImage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.heroContent {
+  height: 100%;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
   font-weight: 700;
-  color: #111827;
-  margin: 0 0 16px 0;
-  line-height: 1.2;
+  margin: 16px 0;
 }
 
-.subtitle {
-  font-size: 1.25rem;
-  color: #6b7280;
-  margin: 0;
+.heroSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+.heroButton {
+  background-color: var(--foreground);
+  color: #fff;
+  border: none;
+  padding: 8px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.productsSection {
+.heroButton1 {
+  background-color: var(--background);
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 8px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.banner {
+  width: 100%;
+  height: 200px;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.bannerContent {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+}
+
+.feature {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+}
+
+.bannerDetails {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 4px;
+}
+.bannerTitle {
+  display: flex;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.bannerSub {
+  display: flex;
+  font-size: 1rem;
+}
+.banner img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.section {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.heading {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.subheading {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 300px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.image {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
 }
 
 .sectionTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
+  font-size: 1.5rem;
+}
+.title {
+  font-size: 1.2rem;
+  margin: 12px 0;
 }
 
 .productsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-@media (max-width: 900px) {
-  .page {
-    padding: 32px 20px 72px;
-  }
-
-  .main {
-    gap: 48px;
-  }
-
-  .hero {
-    padding: 40px 0 30px;
-  }
-
-  .productsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  .page {
-    padding: 24px 16px 60px;
-  }
-
-  .title {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1.1rem;
-  }
-
-  .sectionTitle {
-    font-size: 1.5rem;
-  }
-
-  .productsGrid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
