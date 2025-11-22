@@ -1,14 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-body,
-html {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #000;
-}
 
 .auth-container {
     display: flex;
@@ -90,7 +80,6 @@ html {
 
 .auth-image {
     flex: 1;
-    background: #b4d7ff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -185,12 +174,36 @@ form {
     flex-direction: column;
 }
 
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
 .form-group input {
     padding: 0.75rem 0;
     border: none;
     border-bottom: 1px solid #999;
     font-size: 0.95rem;
     transition: border-color 0.3s;
+}
+
+.form-group textarea {
+    padding: 0.75rem 0;
+    border: none;
+    border-bottom: 1px solid #999;
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 72px;
+    transition: border-color 0.3s;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-bottom-color: #000;
 }
 
 .form-group input::placeholder {
@@ -203,6 +216,10 @@ form {
 }
 
 .form-group input.error {
+    border-bottom-color: #dc2626;
+}
+
+.form-group textarea.error {
     border-bottom-color: #dc2626;
 }
 
@@ -318,6 +335,10 @@ form {
 
     .footer-content {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row {
+        flex-direction: column;
     }
 }
 
