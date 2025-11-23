@@ -62,6 +62,7 @@
   margin-bottom: 24px;
   max-width: 600px;
 }
+
 .heroButton {
   background-color: var(--foreground);
   color: #fff;
@@ -96,6 +97,17 @@
   border-top: 1px solid var(--border);
 }
 
+.bannerLogo {
+  background-color: #000000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
 .bannerContent {
   width: 100%;
   max-width: 1200px;
@@ -121,6 +133,7 @@
   flex-direction: column;
   gap: 4px;
 }
+
 .bannerTitle {
   display: flex;
   font-size: 1.2rem;
@@ -131,6 +144,7 @@
   display: flex;
   font-size: 1rem;
 }
+
 .banner img {
   width: 40px;
   height: 40px;
@@ -140,7 +154,6 @@
 .section {
   padding: 40px 20px;
   text-align: center;
-  background-color: #f9f9f9;
 }
 
 .heading {
@@ -162,7 +175,9 @@
 }
 
 .card {
-  width: 300px;
+  position: relative;
+  width: 200px;
+  height: 200px;
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -177,18 +192,206 @@
 .image {
   object-fit: cover;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .sectionTitle {
-  font-size: 1.5rem;
+  font-size: 1.7rem;
 }
+
 .title {
-  font-size: 1.2rem;
-  margin: 12px 0;
+  width: 100%;
+  background-color: var(--bg);
+  font-size: 1.5rem;
+  position: absolute;
+  bottom: 0;
+  color: orange;
 }
 
 .productsGrid {
-  grid-template-columns: 1fr;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  align-items: start;
+  max-width: 1200px;
+  margin: 12px auto 0 auto;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+/* New Arrival */
+.newArrival {
+  padding-top: 32px;
+  padding-bottom: 8px;
+}
+
+.badge {
+  display: inline-block;
+  background: #f87171;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.arrivalGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 18px auto 0 auto;
+  padding: 0 20px;
+}
+
+.largeTile {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden
+}
+
+.largeTile .image {
+  display: block;
+  width: 100%;
+  height: auto
+}
+
+.tileOverlay {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  color: #fff;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.tileOverlay h3 {
+  margin: 0 0 8px 0;
+  font-size: 22px
+}
+
+.tileOverlay p {
+  margin: 0 0 10px 0;
+  max-width: 320px
+}
+
+.tileCta {
+  display: inline-block;
+  margin-top: 6px;
+  color: #fff;
+  text-decoration: underline
+}
+
+.smallTiles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px
+}
+
+.smallTile {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden
+}
+
+.smallTile .image {
+  display: block;
+  width: 100%;
+  height: auto
+}
+
+.smallOverlay {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  color: #fff;
+  text-shadow: 0 6px 12px rgba(0, 0, 0, 0.4)
+}
+
+.smallOverlay h4 {
+  margin: 0 0 6px 0
+}
+
+.smallOverlay p {
+  margin: 0 0 8px 0;
+  font-size: 13px
+}
+
+.smallTileRow {
+  display: flex;
+  gap: 12px
+}
+
+.smallTileHalf {
+  position: relative;
+  flex: 1;
+  border-radius: 6px;
+  overflow: hidden
+}
+
+.smallOverlayMini {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  color: #fff
+}
+
+/* Services Row */
+.serviceRow {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px
+}
+
+.serviceItem {
+  text-align: center;
+  width: 260px
+}
+
+.serviceIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 18px rgba(20, 20, 20, 0.04)
+}
+
+.serviceItem h5 {
+  margin: 0 0 6px 0;
+  font-size: 14px
+}
+
+.serviceItem .muted {
+  color: var(--text-muted);
+  font-size: 13px
+}
+
+@media (max-width: 900px) {
+  .arrivalGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .smallTileRow {
+    flex-direction: row
+  }
 }
