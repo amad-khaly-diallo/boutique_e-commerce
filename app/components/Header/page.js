@@ -24,9 +24,16 @@ export default function Header() {
                             <Link href="/products" className={styles.navLink}>
                                 Produits
                             </Link>
-                            <Link href="/categories" className={styles.navLink}>
-                                Catégories
-                            </Link>
+                            <div className={styles.dropdown}>
+                                <button className={styles.dropdownBtn}>Catégories</button>
+                                
+                                <div className={styles.dropdownMenu}>
+                                    <Link href="/montres">Montres</Link>
+                                    <Link href="/bijoux">Bijoux</Link>
+                                    <Link href="/sacs">Sacs de luxe</Link>
+                                </div>
+                            </div>
+
                             <Link href="/deals" className={styles.navLink}>
                                 Promotions
                             </Link>

@@ -2,6 +2,8 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import { Truck, Lock, CreditCard, RefreshCw, Watch, Diamond, ShoppingBag, Headphones, ShieldCheck } from "lucide-react";
 import { ProductCard } from './components/ProductCard/page'
+import Link from "next/link";
+
 
 const sampleProducts = [
   {
@@ -117,7 +119,7 @@ export default function Home() {
           <p className={styles.subheading}>Explorez nos différentes catégories</p>
 
           <div className={styles.grid}>
-            <div className={styles.card}>
+            <Link href='/montre' className={styles.card}>
               <Image
                 src="/images/montre.webp"
                 alt="Montre en or sur fond satin"
@@ -126,9 +128,9 @@ export default function Home() {
                 className={styles.image}
               />
               <h3 className={styles.title}>Montres</h3>
-            </div>
+            </Link>
 
-            <div className={styles.card}>
+            <Link href='/bijoux' className={styles.card}>
               <Image
                 src="/images/bijoux.webp"
                 alt="Bijoux en or et diamants"
@@ -137,9 +139,9 @@ export default function Home() {
                 className={styles.image}
               />
               <h3 className={styles.title}>Bijoux</h3>
-            </div>
+            </Link>
 
-            <div className={styles.card}>
+            <Link href='/sacs' className={styles.card}>
               <Image
                 src="/images/sacs.webp"
                 alt="Sacs de luxe rose et marron"
@@ -148,7 +150,7 @@ export default function Home() {
                 className={styles.image}
               />
               <h3 className={styles.title}>Sacs</h3>
-            </div>
+            </Link>
           </div>
         </section>
 

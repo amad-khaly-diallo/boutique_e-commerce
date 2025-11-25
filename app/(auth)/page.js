@@ -24,7 +24,7 @@ export default function AuthPage() {
         if (!isLogin && !form.firstName.trim()) e.firstName = 'Le prénom est requis.'
         if (!isLogin && !form.lastName.trim()) e.lastName = 'Le nom est requis.'
         if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = "Email invalide."
-        if (form.password.length < 6) e.password = 'Le mot de passe doit contenir au moins 6 caractères.'
+        if (form.password.length < 8) e.password = 'Le mot de passe doit contenir au moins 8 caractères.'
         if (!isLogin && form.password !== form.confirm) e.confirm = 'Les mots de passe ne correspondent pas.'
         if (!isLogin && !form.address.trim()) e.address = 'L’adresse postale est requise.'
         return e
@@ -72,7 +72,6 @@ export default function AuthPage() {
 
             {/* Main Content */}
             <div className="auth-main">
-                {/* Left Side - Image */}
                 <div className="auth-image">
                     <Image
                         className=''
