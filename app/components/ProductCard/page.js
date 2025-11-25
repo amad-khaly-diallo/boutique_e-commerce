@@ -49,11 +49,11 @@ export function ProductCard({ product }) {
     for (let i = 0; i < fullStars; i++) {
       stars.push(<Star key={i} className={styles.starFull} fill="currentColor" size={16} />);
     }
-    
+
     if (hasHalfStar) {
       stars.push(<Star key="half" className={styles.starHalf} fill="currentColor" size={16} />);
     }
-    
+
     const emptyStars = 5 - Math.ceil(rating);
     for (let i = 0; i < emptyStars; i++) {
       stars.push(<Star key={`empty-${i}`} className={styles.starEmpty} size={16} />);
@@ -102,7 +102,7 @@ export function ProductCard({ product }) {
 
       <div className={styles.content}>
         <h3 className={styles.title}>{product.product_name || 'Nom du produit'}</h3>
-        
+
         {/* Prix */}
         <div className={styles.priceContainer}>
           <span className={styles.currentPrice}>{currentPrice.toFixed(0)}€</span>
@@ -132,6 +132,6 @@ export function ProductCard({ product }) {
     </Link>
   );
 
-  
+
 }
 
