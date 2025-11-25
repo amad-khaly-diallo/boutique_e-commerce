@@ -1,0 +1,178 @@
+/* --- Layout global --- */
+.container {
+    max-width: 1200px;
+    margin: 100px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.details-product {
+    display: flex;
+    gap: 40px;
+}
+
+/* --- Colonne des images (vignettes + image principale) --- */
+.product-images {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Miniatures à gauche */
+.thumbs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.thumbs img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.thumbs img:hover {
+    border-color: #CDAA7D;
+}
+
+/* Image principale */
+.main-image img {
+    width: 450px;
+    height: 450px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #f7f7f7;
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+/* --- SECTION TEXTE (si tu ajoutes les infos produit plus tard) --- */
+.product-info {
+    flex: 1;
+}
+
+.product-info h1 {
+    font-size: 35px;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+.rating {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.price {
+    font-size: 26px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.description {
+    margin: 25px 0;
+}
+/* --- Bouton Acheter + Ajouter au panier --- */
+.actions {
+    display: flex;
+    gap: 15px;
+    height: 50px;
+}
+
+.actions .buy {
+    background: #CDAA7D;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    padding: 0 1rem;
+    height: 46px;
+}
+
+.actions .cart {
+    padding: 12px 25px;
+    border-radius: 2px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    
+}
+
+.actions .favoris {
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+/* ----- QUANTITY SELECTOR ----- */
+.quantity-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 45px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    gap: 25px;
+    background: white;
+}
+
+.quantity-box button {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #444;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+}
+
+.quantity-box .number {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* === PRODUITS SIMILAIRES === */
+.related-title {
+    margin-top: 80px;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Conteneur des cartes */
+.related {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+}
+
+/* Style des cartes (si besoin d’un ajustement global) */
+.related .product-card {
+    min-width: 230px;
+    max-width: 230px;
+    flex-shrink: 0;
+}
+
+/* Désactiver le scroll bar (optionnel mais joli) */
+.related::-webkit-scrollbar {
+    height: 6px;
+}
+.related::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
