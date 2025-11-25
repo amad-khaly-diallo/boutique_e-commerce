@@ -1,12 +1,41 @@
 'use client';
 import Link from 'next/link';
-import { ShoppingCart, User, Search, Menu, Heart, X } from 'lucide-react';
-import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { ShoppingCart, User, Search, Menu, Heart, X, ChevronDown } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import styles from './header.module.css';
 
+const NAV_LINKS = [
+    { href: '/products', label: 'Produits' },
+    { href: '/deals', label: 'Promotions' },
+    { href: '/about', label: 'À propos' },
+];
+
+const CATEGORY_LINKS = [
+    { href: '/categories/montres', label: 'Montres' },
+    { href: '/categories/sacs', label: 'Sacs de luxe' },
+    { href: '/categories/bijoux', label: 'Bijoux' },
+];
+
 export default function Header() {
+    const pathname = usePathname();
     const [cartCount, setCartCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const isCategorySection = pathname?.startsWith('/categories');
+
+    const desktopLinks = useMemo(
+        () =>
+            NAV_LINKS.map((link) => (
+                <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}
+                >
+                    {link.label}
+                </Link>
+            )),
+        [pathname],
+    );
 
     return (
         <nav className={styles.navbar}>
@@ -21,25 +50,31 @@ export default function Header() {
                         </Link>
 
                         <div className={styles.navLinks}>
-                            <Link href="/products" className={styles.navLink}>
-                                Produits
-                            </Link>
+                            {desktopLinks}
+
                             <div className={styles.dropdown}>
-                                <button className={styles.dropdownBtn}>Catégories</button>
-                                
+                                <button
+                                    type="button"
+                                    className={`${styles.dropdownBtn} ${isCategorySection ? styles.navLinkActive : ''}`}
+                                    aria-haspopup="true"
+                                    aria-expanded={isCategorySection}
+                                >
+                                    Catégories
+                                    <ChevronDown className={styles.dropdownIcon} />
+                                </button>
+
                                 <div className={styles.dropdownMenu}>
-                                    <Link href="/montres">Montres</Link>
-                                    <Link href="/bijoux">Bijoux</Link>
-                                    <Link href="/sacs">Sacs de luxe</Link>
+                                    <p className={styles.dropdownLabel}>Collections</p>
+                                    <div className={styles.dropdownList}>
+                                        {CATEGORY_LINKS.map((category) => (
+                                            <Link key={category.href} href={category.href} className={styles.dropdownLink}>
+                                                <span>{category.label}</span>
+                                                <span className={styles.dropdownHint}>Voir la sélection</span>
+                                            </Link>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-
-                            <Link href="/deals" className={styles.navLink}>
-                                Promotions
-                            </Link>
-                            <Link href="/about" className={styles.navLink}>
-                                À propos
-                            </Link>
                         </div>
                     </div>
 
@@ -47,7 +82,7 @@ export default function Header() {
                         <div className={styles.searchField}>
                             <Search className={styles.searchIcon} />
                             <input
-                                placeholder="Rechercher des produits..."
+                                placeholder="Rechercher une maison, une collection..."
                                 className={styles.searchInput}
                                 type="text"
                             />
@@ -55,11 +90,18 @@ export default function Header() {
                     </div>
 
                     <div className={styles.actions}>
-                        <button type="button" className={`${styles.iconButton} ${styles.favorites}`} aria-label="Voir les favoris">
+                        <Link href="/wishlist"
+                            className={`${styles.iconButton} ${styles.favorites}`}
+                            aria-label="Voir les favoris"
+                        >
                             <Heart className="h-5 w-5" />
-                        </button>
+                        </Link>
 
-                        <Link href="/cart" className={`${styles.iconButton} ${styles.cartButton}`} aria-label="Voir le panier">
+                        <Link
+                            href="/cart"
+                            className={`${styles.iconButton} ${styles.cartButton}`}
+                            aria-label="Voir le panier"
+                        >
                             <ShoppingCart className="h-5 w-5" />
                             {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
                         </Link>
@@ -95,31 +137,37 @@ export default function Header() {
                                 <X className={styles.mobileCloseIcon} />
                             </button>
                         </div>
+
                         <div className={styles.mobileMenu}>
-                            <Link href="/products" className={styles.mobileLink} onClick={() => setIsMenuOpen(false)}>
-                                Produits
-                            </Link>
-                            <Link
-                                href="/categories"
-                                className={`${styles.mobileLink} ${styles.mobileSubtle}`}
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Catégories
-                            </Link>
-                            <Link
-                                href="/deals"
-                                className={`${styles.mobileLink} ${styles.mobileSubtle}`}
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Promotions
-                            </Link>
-                            <Link
-                                href="/about"
-                                className={`${styles.mobileLink} ${styles.mobileSubtle}`}
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                À propos
-                            </Link>
+                            {NAV_LINKS.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`${styles.mobileLink} ${
+                                        pathname === link.href ? styles.mobileLinkActive : ''
+                                    }`}
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+
+                            <div className={styles.mobileSection}>
+                                <p className={styles.mobileSectionLabel}>Catégories</p>
+                                <div className={styles.mobileCategories}>
+                                    {CATEGORY_LINKS.map((category) => (
+                                        <Link
+                                            key={category.href}
+                                            href={category.href}
+                                            className={`${styles.mobileLink} ${styles.mobileSubtle}`}
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            {category.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+
                             <div className={styles.mobileAdmin}>
                                 <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
                                     Administration
