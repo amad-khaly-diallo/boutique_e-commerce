@@ -28,7 +28,8 @@
 }
 
 .image {
-  object-fit: cover;
+  width: 70%;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
