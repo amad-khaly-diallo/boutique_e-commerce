@@ -7,6 +7,7 @@ export async function GET(request) {
     const url = new URL(request.url);
     const productId = url.searchParams.get("id");
     const category = url.searchParams.get("category");
+    const vedettes = url.searchParams.get("vedettes");
     const conn = await connect();
 
     if (productId) {
@@ -20,6 +21,12 @@ export async function GET(request) {
 
     if (category) {
       const [rows] = await conn.execute("SELECT * FROM Product WHERE category = ?", [category]);
+      await conn.end();
+      return NextResponse.json(rows);
+    }
+
+    if (vedettes === 'true') {
+      const [rows] = await conn.execute("SELECT * FROM Product LIMIT 4", [category]);
       await conn.end();
       return NextResponse.json(rows);
     }

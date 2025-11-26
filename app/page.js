@@ -1,62 +1,32 @@
+'use client'
 import Image from "next/image";
 import styles from "./page.module.css";
 import { Truck, Lock, CreditCard, RefreshCw, Watch, Diamond, ShoppingBag, Headphones, ShieldCheck } from "lucide-react";
 import { ProductCard } from './components/ProductCard/page'
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
-
-const sampleProducts = [
-  {
-    product_id: 1,
-    product_name: 'Montre Classique',
-    description: 'Montre élégante en acier inoxydable',
-    price: 199,
-    original_price: 249,
-    stock: 12,
-    category: 'Montres',
-    rating: 4.6,
-    reviews: 64,
-    image: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    product_id: 2,
-    product_name: 'Sac Cuir Luxe',
-    description: 'Sac à main en cuir premium',
-    price: 349,
-    original_price: 420,
-    stock: 8,
-    category: 'Sacs',
-    rating: 4.8,
-    reviews: 128,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    product_id: 3,
-    product_name: 'Bracelet Élégant',
-    description: 'Bracelet en or',
-    price: 129,
-    original_price: null,
-    stock: 20,
-    category: 'Bijoux',
-    rating: 4.2,
-    reviews: 43,
-    image: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    product_id: 4,
-    product_name: 'Parfum d’Exception',
-    description: 'Notes florales et boisées',
-    price: 89,
-    original_price: 99,
-    stock: 30,
-    category: 'Parfums',
-    rating: 4.5,
-    reviews: 98,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
-  },
-]
 
 export default function Home() {
+  const [vedettes, setVedettes] = useState([]);
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products?vedettes=true');
+      if (!res.ok) throw new Error('Erreur lors du chargement des produits vedettes ');
+
+      const data = await res.json();
+      setVedettes(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  console.log(vedettes);
+  
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -163,7 +133,7 @@ export default function Home() {
           </div>
 
           <div className={styles.productsGrid}>
-            {sampleProducts.map((p) => (
+            {vedettes.map((p) => (
               <ProductCard key={p.product_id} product={p} />
             ))}
           </div>
