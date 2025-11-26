@@ -6,6 +6,7 @@ export async function GET(request) {
   try {
     const url = new URL(request.url);
     const productId = url.searchParams.get("id");
+    const category = url.searchParams.get("category");
     const conn = await connect();
 
     if (productId) {
@@ -15,6 +16,12 @@ export async function GET(request) {
         return NextResponse.json({ error: "Product not found" }, { status: 404 });
       }
       return NextResponse.json(rows[0]);
+    }
+
+    if (category) {
+      const [rows] = await conn.execute("SELECT * FROM Product WHERE category = ?", [category]);
+      await conn.end();
+      return NextResponse.json(rows);
     }
 
     const [rows] = await conn.execute("SELECT * FROM Product");

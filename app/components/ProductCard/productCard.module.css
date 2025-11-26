@@ -154,7 +154,7 @@
   width: 100%;
   padding: 12px 20px;
   border-radius: 8px;
-  background: #111827;
+  background: #CDAA7D;
   color: #fff;
   border: none;
   font-size: 0.95rem;
@@ -165,7 +165,7 @@
 }
 
 .addButton:hover:not(:disabled) {
-  background: #1f2937;
+  background: #B8875A;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
 }
