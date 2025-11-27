@@ -101,7 +101,6 @@ export default function AccountPage() {
                         </div>
 
                         <div className="btn-row">
-                            <button type="button" className="btn-cancel" onClick={() => window.location.reload()}>Annuler</button>
                             <button type="submit" className="btn-save" disabled={saving}>{saving ? 'Enregistrement...' : "Enregistrer les modifications"}</button>
                         </div>
                     </form>

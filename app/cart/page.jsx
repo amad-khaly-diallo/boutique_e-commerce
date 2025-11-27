@@ -82,12 +82,4 @@ export default function CartPage() {
 
     )
 
-
-
-
-
-
-
-
-
 }

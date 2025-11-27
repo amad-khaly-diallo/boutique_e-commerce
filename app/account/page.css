@@ -5,13 +5,24 @@
     --text: #111827;
     --card-bg: #fff;
     --border: #eef0f2;
-    --accent: #db4444;
+    --accent: #d4af37;
+}
+
+.button {
+    background: #111827;
+    color: #d4af37; /* OR */
+    border: 2px solid #d4af37;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 0.5rem;
 }
 
 .account-page {
     padding: 2.5rem 1.5rem;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 70px auto;
     color: var(--text);
 }
 

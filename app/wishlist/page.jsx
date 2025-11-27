@@ -1,6 +1,7 @@
 import React from 'react';
 import "./wishlist.css";
 import Link from 'next/link';
+import { ShoppingCart } from 'lucide-react';
 
 export default function Wishlist() {
     return (
@@ -20,40 +21,144 @@ export default function Wishlist() {
 
             {/* --- Produits populaires --- */}
             <section className="wishlist-popular">
-                <h2>Articles populaires</h2>
+  <h2>Articles populaires</h2>
 
-                <div className="products-grid">
+  <div className="products-grid">
 
-                    {/* --- Produit 1 --- */}
-                    <Link href='/details-product' className="product-card">
-                        <img 
-                            src="/img/gucci.jpg" 
-                            alt="Sac Gucci" 
-                            className="product-image"
-                            width={200} 
-                            height={200}
-                        />
-                        <h3>Sac Gucci</h3>
-                        <p className="price">€2650</p>
-                        <button className="btn-add">Ajouter au panier</button>
-                    </Link>
+    {/* Produit 1 */}
+    <div className="product-card">
 
-                    {/* --- Produit 2 --- */}
-                    <Link href='/details-product' className="product-card">
-                        <img 
-                            src="/img/montre-patek-philippe-aquanaut-5261r-prix-avis.jpg" 
-                            alt="Montre Patek Philippe"
-                            className="product-image"
-                            width={200} 
-                            height={200}
-                        />
-                        <h3>Montre Patek Philippe</h3>
-                        <p className="price">€5950</p>
-                        <button className="btn-add">Ajouter au panier</button>
-                    </Link>
+      <Link href="/details-product">
+        <img src="/images/gucci_marmont.jpg" className="product-image" />
+        <h3>Sac Gucci</h3>
+      </Link>
 
-                </div>
-            </section>
+      <p className="price">€2650</p>
+
+      <Link href="/cart" className="btn-add">
+          <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+    {/* Produit 2 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/patek_nautilus.png" className="product-image" />
+        <h3>Montre Patek Philippe</h3>
+      </Link>
+
+      <p className="price">€5950</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+    {/* Produit 3 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/breitling.png" className="product-image" />
+        <h3>Air Jordan 1 Retro High</h3>
+      </Link>
+
+      <p className="price">€350</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+    {/* Produit 4 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/cartier_love.png" className="product-image" />
+        <h3>iPhone 14 Pro</h3>
+      </Link>
+
+      <p className="price">€1250</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+          {/* Produit 5 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/chanel_gabrielle.png" className="product-image" />
+        <h3>iPhone 14 Pro</h3>
+      </Link>
+
+      <p className="price">€1250</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+      {/* Produit 6 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/dior_book_tote.jpeg" className="product-image" />
+        <h3>iPhone 14 Pro</h3>
+      </Link>
+
+      <p className="price">€1250</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+      {/* Produit 7 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/bulgari_bzero1.png" className="product-image" />
+        <h3>iPhone 14 Pro</h3>
+      </Link>
+
+      <p className="price">€1250</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+
+      {/* Produit 8 */}
+    <div className="product-card">
+
+      <Link href="/details-product">
+        <img src="/images/balenciaga_hourglass.png" className="product-image" />
+        <h3>iPhone 14 Pro</h3>
+      </Link>
+
+      <p className="price">€1250</p>
+
+      <Link href="/cart" className="btn-add">
+      <ShoppingCart className="addIcon" size={20} />
+        Ajouter au panier
+      </Link>
+    </div>
+    
+
+
+
+  </div>
+</section>
+
 
         </main>
     );

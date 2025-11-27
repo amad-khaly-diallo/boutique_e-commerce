@@ -152,6 +152,9 @@
 }
 
 .addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 12px 20px;
   border-radius: 8px;
@@ -161,12 +164,16 @@
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease;  
   margin-top: auto;
 }
 
+.addIcon {
+  margin-right: 8px;
+}
+
 .addButton:hover:not(:disabled) {
-  background: #B8875A;
+  background: #CDAA7D;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
 }

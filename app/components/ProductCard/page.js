@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Eye, Star } from 'lucide-react';
+import { Heart, Eye, Star, ShoppingCart} from 'lucide-react';
 import { useState } from 'react';
 import styles from './productCard.module.css';
 
@@ -126,6 +126,8 @@ export function ProductCard({ product }) {
           onClick={handleAddToCart}
           disabled={isAdding || product.stock === 0}
         >
+          <ShoppingCart className={styles.addIcon} size={20} />
+
           {isAdding ? 'Ajout...' : 'Ajouter au panier'}
         </button>
       </div>

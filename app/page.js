@@ -65,8 +65,8 @@ export default function Home() {
             <span className={styles.heroPretitle}>Une collection autonome.</span>
             <h1 className={styles.heroTitle}>L'Excellence <br /> à portée de main</h1>
             <p className={styles.heroSubtitle}>Découvrez notre sélection premium de produits soigneusement choisis pour leur qualité exceptionnelle.</p>
-            <button className={styles.heroButton}>Découvrir la boutique.</button>
-            <button className={styles.heroButton1}>Voir les catégories.</button>
+            <Link href="/products" className={styles.heroButton}>Découvrir la boutique.</Link>
+            <Link href="/login" className={styles.heroButton1}>Connectez-vous.</Link>
           </div>
           <div className={styles.heroImage}>
             <Image

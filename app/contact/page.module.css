@@ -29,13 +29,18 @@
 
 .button {
   background: #111827;
-  color: #fff;
-  border: none;
+  color: #d4af37; /* OR */;
+  border: 2px solid #d4af37;
   padding: 0.6rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   margin-top: 0.5rem;
+}
+
+.button:hover {
+    background: #d4af37;
+    color: #000;
 }
 
 .button:disabled {

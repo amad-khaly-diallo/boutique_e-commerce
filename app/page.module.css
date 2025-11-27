@@ -64,9 +64,9 @@
 }
 
 .heroButton {
-  background-color: var(--foreground);
-  color: #fff;
-  border: none;
+  background: #111827;
+  color: #d4af37; /* OR */;
+  border: 2px solid #d4af37;
   padding: 8px 24px;
   font-size: 1rem;
   font-weight: 600;
@@ -74,6 +74,11 @@
   cursor: pointer;
   margin-right: 16px;
   transition: background-color 0.3s ease;
+}
+
+.heroButton:hover {
+    background: #d4af37;
+    color: #000;
 }
 
 .heroButton1 {
@@ -87,6 +92,12 @@
   cursor: pointer;
   margin-right: 16px;
   transition: background-color 0.3s ease;
+}
+
+.heroButton1:hover {
+  background-color: #d4af37;
+  border: 1px solid #d4af37;
+  color: #000;
 }
 
 .banner {
