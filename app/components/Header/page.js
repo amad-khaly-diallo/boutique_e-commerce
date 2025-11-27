@@ -7,7 +7,7 @@ import styles from './header.module.css';
 
 const NAV_LINKS = [
     { href: '/products', label: 'Produits' },
-    { href: '/deals', label: 'Promotions' },
+    { href: '/contact', label: 'Contactez-nous' },
     { href: '/about', label: 'À propos' },
 ];
 
