@@ -8,6 +8,7 @@ export async function GET(request) {
     const productId = url.searchParams.get("id");
     const category = url.searchParams.get("category");
     const vedettes = url.searchParams.get("vedettes");
+    const last = url.searchParams.get('last');
     const conn = await connect();
 
     if (productId) {
@@ -26,7 +27,13 @@ export async function GET(request) {
     }
 
     if (vedettes === 'true') {
-      const [rows] = await conn.execute("SELECT * FROM Product LIMIT 4", [category]);
+      const [rows] = await conn.execute("SELECT * FROM Product LIMIT 4");
+      await conn.end();
+      return NextResponse.json(rows);
+    }
+
+    if (last) {
+      const [rows] = await conn.execute("SELECT * FROM Product ORDER BY product_id DESC LIMIT 4");
       await conn.end();
       return NextResponse.json(rows);
     }

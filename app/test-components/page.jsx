@@ -1,4 +1,4 @@
-import { ProductCard } from '../components/ProductCard/page';
+import { ProductCard } from '../components/ProductCard/productCard';
 import styles from './page.module.css';
 
 export default function Cardcomponent() {
