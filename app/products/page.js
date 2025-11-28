@@ -164,60 +164,61 @@ export default function Products() {
 
       <section className={styles.catalogSection}>
         <div className={styles.catalogLayout}>
+          <aside className={styles.filtersCard} aria-label="Filtres">
+            <div className={styles.filtersHeader}>
+              <p>Filtres</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory("all");
+                  setMaxPrice(3000);
+                  setSortOption("price-asc");
+                }}
+              >
+                Réinitialiser
+              </button>
+            </div>
 
-          <div className={styles.productsPanel}>
-            <div className={styles.filtersCard}>
-              <div className={styles.filtersHeader}>
-                <p>Filtres</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    setMaxPrice(3000);
-                    setSortOption("price-asc");
-                  }}
+            <div className={styles.filterGroup}>
+              <label htmlFor="category">Catégorie</label>
+              <div className={styles.selectWrapper}>
+                <select
+                  id="category"
+                  value={selectedCategory}
+                  onChange={(event) => setSelectedCategory(event.target.value)}
                 >
-                  Réinitialiser
-                </button>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <label htmlFor="category">Catégorie</label>
-                <div className={styles.selectWrapper}>
-                  <select
-                    id="category"
-                    value={selectedCategory}
-                    onChange={(event) => setSelectedCategory(event.target.value)}
-                  >
-                    {CATEGORIES.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className={styles.filterGroup}>
-                <div className={styles.priceHeader}>
-                  <label htmlFor="price">Prix</label>
-                  <span>{maxPrice} €</span>
-                </div>
-                <input
-                  id="price"
-                  type="range"
-                  min="0"
-                  max="3000"
-                  step="10"
-                  value={maxPrice}
-                  onChange={(event) => setMaxPrice(Number(event.target.value))}
-                />
-                <div className={styles.priceScale}>
-                  <span>0 €</span>
-                  <span>3000 €</span>
-                </div>
+                  {CATEGORIES.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.label}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
+
+            <div className={styles.filterGroup}>
+              <div className={styles.priceHeader}>
+                <label htmlFor="price">Prix</label>
+                <span>{maxPrice} €</span>
+              </div>
+              <input
+                id="price"
+                type="range"
+                min="0"
+                max="3000"
+                step="10"
+                value={maxPrice}
+                onChange={(event) => setMaxPrice(Number(event.target.value))}
+              />
+              <div className={styles.priceScale}>
+                <span>0 €</span>
+                <span>3000 €</span>
+              </div>
+            </div>
+          </aside>
+
+          <div className={styles.productsPanel} role="region" aria-label="Liste des produits">
+
             <div className={styles.productsHeader}>
               <div>
                 <p className={styles.resultsCount}>

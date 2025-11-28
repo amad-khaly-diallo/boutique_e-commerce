@@ -82,12 +82,12 @@
 .catalogLayout {
   width: 100%;
   max-width: 1200px;
-  display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 32px;
-  align-items: flex-start;
   margin: 0 auto;
   padding: 0 24px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
 .filtersCard {
@@ -99,7 +99,10 @@
   flex-direction: column;
   gap: 24px;
   position: sticky;
-  top: 120px;
+  top: 96px;
+  align-self: start;
+  width: 100%;
+  max-width: 320px;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
 }
 
@@ -171,7 +174,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-height: calc(100vh);
+  max-height: calc(100vh - 160px);
   overflow-y: auto;
   padding-right: 12px;
 }
