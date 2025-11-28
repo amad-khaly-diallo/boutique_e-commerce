@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ProductCard } from "../components/ProductCard/productCard";
+import { ProductCard } from "../components/ProductCard/ProductCard";
 import styles from "./page.module.css";
 
 const PRODUCTS = [
@@ -156,8 +156,7 @@ export default function Products() {
             <p className={styles.kicker}>Catalogue complet • EliteShop</p>
             <h1>Tous les Produits</h1>
             <p className={styles.subtitle}>
-              Découvrez des nouveautés sélectionnées avec soin pour tous vos
-              besoins lifestyle, tech et bien-être.
+              Découvrez notre sélection exclusive de produits de luxe, alliant élégance, innovation et style pour chaque moment de votre vie.
             </p>
           </div>
         </div>
@@ -165,60 +164,60 @@ export default function Products() {
 
       <section className={styles.catalogSection}>
         <div className={styles.catalogLayout}>
-          <aside className={styles.filtersCard}>
-            <div className={styles.filtersHeader}>
-              <p>Filtres</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory("all");
-                  setMaxPrice(3000);
-                  setSortOption("price-asc");
-                }}
-              >
-                Réinitialiser
-              </button>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <label htmlFor="category">Catégorie</label>
-              <div className={styles.selectWrapper}>
-                <select
-                  id="category"
-                  value={selectedCategory}
-                  onChange={(event) => setSelectedCategory(event.target.value)}
-                >
-                  {CATEGORIES.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <div className={styles.priceHeader}>
-                <label htmlFor="price">Prix</label>
-                <span>{maxPrice} €</span>
-              </div>
-              <input
-                id="price"
-                type="range"
-                min="0"
-                max="3000"
-                step="10"
-                value={maxPrice}
-                onChange={(event) => setMaxPrice(Number(event.target.value))}
-              />
-              <div className={styles.priceScale}>
-                <span>0 €</span>
-                <span>3000 €</span>
-              </div>
-            </div>
-          </aside>
 
           <div className={styles.productsPanel}>
+            <div className={styles.filtersCard}>
+              <div className={styles.filtersHeader}>
+                <p>Filtres</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    setMaxPrice(3000);
+                    setSortOption("price-asc");
+                  }}
+                >
+                  Réinitialiser
+                </button>
+              </div>
+
+              <div className={styles.filterGroup}>
+                <label htmlFor="category">Catégorie</label>
+                <div className={styles.selectWrapper}>
+                  <select
+                    id="category"
+                    value={selectedCategory}
+                    onChange={(event) => setSelectedCategory(event.target.value)}
+                  >
+                    {CATEGORIES.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.filterGroup}>
+                <div className={styles.priceHeader}>
+                  <label htmlFor="price">Prix</label>
+                  <span>{maxPrice} €</span>
+                </div>
+                <input
+                  id="price"
+                  type="range"
+                  min="0"
+                  max="3000"
+                  step="10"
+                  value={maxPrice}
+                  onChange={(event) => setMaxPrice(Number(event.target.value))}
+                />
+                <div className={styles.priceScale}>
+                  <span>0 €</span>
+                  <span>3000 €</span>
+                </div>
+              </div>
+            </div>
             <div className={styles.productsHeader}>
               <div>
                 <p className={styles.resultsCount}>

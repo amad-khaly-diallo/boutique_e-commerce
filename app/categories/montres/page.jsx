@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ProductCard } from '@/app/components/ProductCard/productCard';
+import { ProductCard } from '@/app/components/ProductCard/ProductCard';
 import styles from '../page.module.css'
 
 export default function MontresPage() {

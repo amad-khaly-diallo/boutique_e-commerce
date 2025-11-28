@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShoppingCart, User, Search, Menu, Heart, X, ChevronDown } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import styles from './header.module.css';
 
 const NAV_LINKS = [
@@ -22,6 +22,37 @@ export default function Header() {
     const [cartCount, setCartCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const isCategorySection = pathname?.startsWith('/categories');
+
+    //pour la bar de recherche
+    const [search, setSearch] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
+
+    useEffect(() => {
+        if (!search || search.length < 2) {
+            setSuggestions([]);
+            return;
+        }
+
+        const controller = new AbortController();
+        const delay = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/products/search?query=${search}`, {
+                    signal: controller.signal,
+                });
+                const data = await res.json();
+                setSuggestions(data);
+            } catch (err) {
+                if (err.name !== "AbortError") console.error(err);
+            }
+        }, 300);
+
+        return () => {
+            clearTimeout(delay);
+            controller.abort();
+        };
+    }, [search]);
+
+
 
     const desktopLinks = useMemo(
         () =>
@@ -81,13 +112,34 @@ export default function Header() {
                     <div className={styles.searchWrapper}>
                         <div className={styles.searchField}>
                             <Search className={styles.searchIcon} />
+
                             <input
                                 placeholder="Rechercher une maison, une collection..."
                                 className={styles.searchInput}
                                 type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
+
+                        {/* Suggestions */}
+                        {suggestions.length > 0 && (
+                            <div className={styles.suggestionsBox}>
+                                {suggestions.map((item) => (
+                                    <Link
+                                        key={item.product_id}
+                                        href={`/products/${item.product_id}`}
+                                        className={styles.suggestionItem}
+                                        onClick={() => setSearch("")}
+                                    >
+                                        <img src={item.image} className={styles.suggestionImg} />
+                                        <span>{item.product_name}</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
                     </div>
+
 
                     <div className={styles.actions}>
                         <Link href="/wishlist"
@@ -107,7 +159,7 @@ export default function Header() {
                         </Link>
 
                         <Link href="/account" className={styles.iconButton} aria-label="Voir le compte">
-                            <User className="h-5 w-5" />
+                            <User />
                         </Link>
 
                         <button
@@ -143,9 +195,8 @@ export default function Header() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`${styles.mobileLink} ${
-                                        pathname === link.href ? styles.mobileLinkActive : ''
-                                    }`}
+                                    className={`${styles.mobileLink} ${pathname === link.href ? styles.mobileLinkActive : ''
+                                        }`}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {link.label}

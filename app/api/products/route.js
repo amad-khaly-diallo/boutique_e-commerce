@@ -9,6 +9,9 @@ export async function GET(request) {
     const category = url.searchParams.get("category");
     const vedettes = url.searchParams.get("vedettes");
     const last = url.searchParams.get('last');
+    const pageParam = url.searchParams.get('page');
+    const limitParam = url.searchParams.get('limit');
+    const maxPrice = url.searchParams.get('maxPrice');
     const conn = await connect();
 
     if (productId) {
@@ -38,9 +41,36 @@ export async function GET(request) {
       return NextResponse.json(rows);
     }
 
-    const [rows] = await conn.execute("SELECT * FROM Product");
+    // Pagination & filtering support
+    const page = Math.max(1, parseInt(pageParam || '1', 10));
+    const limit = Math.max(1, parseInt(limitParam || '12', 10));
+    const offset = (page - 1) * limit;
+
+    // Build WHERE clause if needed
+    const whereClauses = [];
+    const params = [];
+    if (category) {
+      whereClauses.push('category = ?');
+      params.push(category);
+    }
+    if (maxPrice) {
+      whereClauses.push('price <= ?');
+      params.push(Number(maxPrice));
+    }
+
+    const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+    // Get total count for pagination
+    const [countRows] = await conn.execute(`SELECT COUNT(*) as total FROM Product ${whereSQL}`, params);
+    const total = countRows && countRows[0] ? countRows[0].total : 0;
+
+    const [rows] = await conn.execute(
+      `SELECT * FROM Product ${whereSQL} LIMIT ? OFFSET ?`,
+      [...params, limit, offset]
+    );
+
     await conn.end();
-    return NextResponse.json(rows);
+    return NextResponse.json({ data: rows, total });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
