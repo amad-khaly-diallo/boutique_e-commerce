@@ -89,18 +89,17 @@
 
 .btn-return,
 .btn-update {
-    padding: 12px 20px;
-    background: #111827;
-    color: #d4af37; /* OR */;
-    border: 2px solid #cdaa7d;
-    cursor: pointer;
-    border-radius: 5px;
-    color: white;
+  padding: 12px 20px;
+  background: #d4af37;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  color: white;
 }
 
 .btn-return:hover {
-    background: #cdaa7d;
-    color: #000;   
+  background: #000000;
+  color: #ffffff;
 }
 
 .btn-update {
