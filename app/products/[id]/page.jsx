@@ -64,7 +64,7 @@ export default function ProductsDetail() {
                     </div>
 
                     <div className="main-image">
-                        <Image src="/img/img-3-removebg-preview.png" alt="" width={450} height={450} />
+                        <Image src={product.image} alt="" width={450} height={450} />
                     </div>
                 </div>
 
