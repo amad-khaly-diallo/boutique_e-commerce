@@ -1,62 +1,43 @@
+'use client'
 import Image from "next/image";
 import styles from "./page.module.css";
 import { Truck, Lock, CreditCard, RefreshCw, Watch, Diamond, ShoppingBag, Headphones, ShieldCheck } from "lucide-react";
-import { ProductCard } from './components/ProductCard/page'
+import { ProductCard } from './components/ProductCard/ProductCard'
 import Link from "next/link";
-
-
-const sampleProducts = [
-  {
-    product_id: 1,
-    product_name: 'Montre Classique',
-    description: 'Montre élégante en acier inoxydable',
-    price: 199,
-    original_price: 249,
-    stock: 12,
-    category: 'Montres',
-    rating: 4.6,
-    reviews: 64,
-    image: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    product_id: 2,
-    product_name: 'Sac Cuir Luxe',
-    description: 'Sac à main en cuir premium',
-    price: 349,
-    original_price: 420,
-    stock: 8,
-    category: 'Sacs',
-    rating: 4.8,
-    reviews: 128,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    product_id: 3,
-    product_name: 'Bracelet Élégant',
-    description: 'Bracelet en or',
-    price: 129,
-    original_price: null,
-    stock: 20,
-    category: 'Bijoux',
-    rating: 4.2,
-    reviews: 43,
-    image: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    product_id: 4,
-    product_name: 'Parfum d’Exception',
-    description: 'Notes florales et boisées',
-    price: 89,
-    original_price: 99,
-    stock: 30,
-    category: 'Parfums',
-    rating: 4.5,
-    reviews: 98,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
-  },
-]
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [vedettes, setVedettes] = useState([]);
+  const [newArrival, setNewArrival] = useState([]);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products?vedettes=true', { cache: "no-store" });
+      if (!res.ok) throw new Error('Erreur lors du chargement des produits vedettes');
+      const data = await res.json();
+      setVedettes(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchNewArrival = async () => {
+    try {
+      const res = await fetch('/api/products?last=4', { cache: "no-store" });
+      if (!res.ok) throw new Error('Erreur lors du chargement des nouveaux produits');
+      const data = await res.json();
+      setNewArrival(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchNewArrival();
+  }, []);
+  console.log({ vedettes, newArrival });
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -163,58 +144,79 @@ export default function Home() {
           </div>
 
           <div className={styles.productsGrid}>
-            {sampleProducts.map((p) => (
-              <ProductCard key={p.product_id} product={p} />
-            ))}
+            {vedettes.largeTile === 0 ? (
+              <p> <RefreshCw /> Chargement...</p>
+            ) : (
+              vedettes.map((p) => (
+                <ProductCard key={p.product_id} product={p} />
+              ))
+            )}
+
           </div>
         </section>
 
         {/* New Arrival */}
-        <section className={styles.newArrival}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.badge}>Featured</span>
-            <h2 className={styles.sectionTitle}>New Arrival</h2>
-          </div>
 
-          <div className={styles.arrivalGrid}>
-            <div className={styles.largeTile}>
-              <Image
-                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80"
-                alt="New arrival"
-                width={760}
-                height={460}
-                className={styles.image}
-              />
-              <div className={styles.tileOverlay}>
-                <h3>PlayStation 5</h3>
-                <p>Black and white version of the PS5 coming out on sale.</p>
-                <a className={styles.tileCta}>Shop Now</a>
-              </div>
+        {newArrival.length === 0 ? (
+          <p> <RefreshCw /> Chargement...</p>
+        ) : (
+          <section className={styles.newArrival}>
+            <div className={styles.sectionHeader}>
+              <span className={styles.badge}>Featured</span>
+              <h2 className={styles.sectionTitle}>New Arrival</h2>
             </div>
 
-            <div className={styles.smallTiles}>
-              <div className={styles.smallTile}>
-                <Image src="https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=800&q=80" alt="women" width={400} height={220} className={styles.image} />
-                <div className={styles.smallOverlay}>
-                  <h4>Women's Collections</h4>
-                  <p>Featured women collections that give you another vibe.</p>
+            <div className={styles.arrivalGrid}>
+              <div className={styles.largeTile}>
+                <Image
+                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80"
+                  alt={newArrival[0].product_name}
+                  width={760}
+                  height={460}
+                  className={styles.image}
+                />
+                <div className={styles.tileOverlay}>
+                  <h3>{newArrival[0].product_name}</h3>
+                  <p>{newArrival[0].description}</p>
                   <a className={styles.tileCta}>Shop Now</a>
                 </div>
               </div>
 
-              <div className={styles.smallTileRow}>
-                <div className={styles.smallTileHalf}>
-                  <Image src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80" alt="speakers" width={400} height={180} className={styles.image} />
-                  <div className={styles.smallOverlayMini}><h5>Speakers</h5><a className={styles.tileCta}>Shop Now</a></div>
+              <div className={styles.smallTiles}>
+                <div className={styles.smallTile}>
+                  <Image
+                    src="https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=800&q=80"
+                    alt={newArrival[1].product_name}
+                    width={400}
+                    height={220}
+                    className={styles.image} />
+                  <div className={styles.smallOverlay}>
+                    <h3>{newArrival[1].product_name}</h3>
+                    <p>{newArrival[1].description}</p>
+                    <a className={styles.tileCta}>Shop Now</a>
+                  </div>
                 </div>
-                <div className={styles.smallTileHalf}>
-                  <Image src="/montre.avif" alt="perfume" width={400} height={180} className={styles.image} />
-                  <div className={styles.smallOverlayMini}><h5>Perfume</h5><a className={styles.tileCta}>Shop Now</a></div>
+
+                <div className={styles.smallTileRow}>
+                  <div className={styles.smallTileHalf}>
+                    <Image src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80" alt="speakers" width={400} height={180} className={styles.image} />
+                    <div className={styles.smallOverlayMini}>
+                      <h5>{newArrival[2].product_name}</h5>
+                      <a className={styles.tileCta}>Shop Now</a></div>
+                  </div>
+                  <div className={styles.smallTileHalf}>
+                    <Image src="/montre.avif" alt="perfume" width={400} height={180} className={styles.image} />
+                    <div className={styles.smallOverlayMini}>
+                      <h5>{newArrival[3].product_name}</h5>
+                      <a className={styles.tileCta}>Shop Now</a></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
+
+
 
         {/* Services Row */}
         <section className={styles.serviceRow}>
@@ -237,6 +239,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-    </div>
+    </div >
   );
 }

@@ -4,74 +4,74 @@ import React from 'react';
 import Image from 'next/image';
 import { Heart, Star } from 'lucide-react';
 import { useState } from "react";
-import { ProductCard } from '../components/ProductCard/page';
+import { ProductCard } from '../components/ProductCard/ProductCard';
 
 export default function ProductsDetail() {
     const [favoris, setFavoris] = useState(false);
 
-      const sampleProducts = [
-    {
-      product_id: 1,
-      product_name: 'Montre Chanel Premium',
-      description: 'Montre de luxe avec bracelet en chaîne dorée et cadran noir élégant',
-      price: 960,
-      original_price: 1160,
-      stock: 5,
-      category: 'Montres',
-      rating: 4.5,
-      reviews: 65,
-      image: '/img/img-1.png',
-    },
-    {
-      product_id: 2,
-      product_name: 'Sac à Main Cuir',
-      description: 'Sac à main en cuir véritable avec finition premium',
-      price: 450,
-      original_price: 599,
-      stock: 12,
-      category: 'Accessoires',
-      rating: 4.8,
-      reviews: 128,
-      image: '/img/img-2.png',
-    },
-    {
-      product_id: 3,
-      product_name: 'Parfum Exclusif',
-      description: 'Parfum de luxe avec notes florales et boisées',
-      price: 120,
-      original_price: null,
-      stock: 20,
-      category: 'Parfums',
-      rating: 4.2,
-      reviews: 43,
-      image: '/img/img-3.png',
-    },
-    {
-      product_id: 4,
-      product_name: 'Bracelet Diamant',
-      description: 'Bracelet en or blanc avec diamants sertis',
-      price: 2500,
-      original_price: 3200,
-      stock: 3,
-      category: 'Bijoux',
-      rating: 5.0,
-      reviews: 25,
-      image: '/img/img-4.png',
-    },
-     {
-      product_id: 5,
-      product_name: ' Sac Diore',
-      description: 'Sac à main en cuir véritable avec finition premium',
-      price: 2500,
-      original_price: 3200,
-      stock: 3,
-      category: 'Sac',
-      rating: 5.0,
-      reviews: 25,
-      image: '/img/img-5.png',
-    },
-    
-  ];
+    const sampleProducts = [
+        {
+            product_id: 1,
+            product_name: 'Montre Chanel Premium',
+            description: 'Montre de luxe avec bracelet en chaîne dorée et cadran noir élégant',
+            price: 960,
+            original_price: 1160,
+            stock: 5,
+            category: 'Montres',
+            rating: 4.5,
+            reviews: 65,
+            image: '/img/img-1.png',
+        },
+        {
+            product_id: 2,
+            product_name: 'Sac à Main Cuir',
+            description: 'Sac à main en cuir véritable avec finition premium',
+            price: 450,
+            original_price: 599,
+            stock: 12,
+            category: 'Accessoires',
+            rating: 4.8,
+            reviews: 128,
+            image: '/img/img-2.png',
+        },
+        {
+            product_id: 3,
+            product_name: 'Parfum Exclusif',
+            description: 'Parfum de luxe avec notes florales et boisées',
+            price: 120,
+            original_price: null,
+            stock: 20,
+            category: 'Parfums',
+            rating: 4.2,
+            reviews: 43,
+            image: '/img/img-3.png',
+        },
+        {
+            product_id: 4,
+            product_name: 'Bracelet Diamant',
+            description: 'Bracelet en or blanc avec diamants sertis',
+            price: 2500,
+            original_price: 3200,
+            stock: 3,
+            category: 'Bijoux',
+            rating: 5.0,
+            reviews: 25,
+            image: '/img/img-4.png',
+        },
+        {
+            product_id: 5,
+            product_name: ' Sac Diore',
+            description: 'Sac à main en cuir véritable avec finition premium',
+            price: 2500,
+            original_price: 3200,
+            stock: 3,
+            category: 'Sac',
+            rating: 5.0,
+            reviews: 25,
+            image: '/img/img-5.png',
+        },
+
+    ];
 
     const toggleFavoris = () => {
         setFavoris(!favoris);
