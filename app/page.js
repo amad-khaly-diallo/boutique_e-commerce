@@ -2,7 +2,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import { Truck, Lock, CreditCard, RefreshCw, Watch, Diamond, ShoppingBag, Headphones, ShieldCheck } from "lucide-react";
-import { ProductCard } from './components/ProductCard/productCard'
+import { ProductCard } from './components/ProductCard/ProductCard'
 import Link from "next/link";
 import { useState, useEffect } from "react";
 

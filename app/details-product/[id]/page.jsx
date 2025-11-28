@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ProductCard } from '../../components/ProductCard/productCard';
+import { ProductCard } from '../../components/ProductCard/ProductCard';
 import DetailsClient from './DetailsClient';
 import ProductActions from '../../components/ProductActions/client';
 

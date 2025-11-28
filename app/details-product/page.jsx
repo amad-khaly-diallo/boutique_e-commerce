@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Heart, Star } from 'lucide-react';
 import { useState } from "react";
-import { ProductCard } from '../components/ProductCard/productCard';
+import { ProductCard } from '../components/ProductCard/ProductCard';
 
 export default function ProductsDetail() {
     const [favoris, setFavoris] = useState(false);
