@@ -128,7 +128,7 @@ export default function ProductsDetail() {
             {/* PRODUITS ASSOCIÉS */}
             <h2 className="related-title">PRODUITS SIMILAIRES</h2>
 
-            <div className="related">
+            <div className="products-grid">
                 {sampleProducts.map((product) => (
                     <ProductCard key={product.product_id} product={product} />
                 ))}

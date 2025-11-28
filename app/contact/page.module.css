@@ -1,0 +1,59 @@
+.container {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1rem;
+  margin-top: 100px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+}
+
+.input,
+.textarea {
+  margin-top: 0.35rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.button {
+  background: #111827;
+  color: #d4af37; /* OR */;
+  border: 2px solid #d4af37;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.button:hover {
+    background: #d4af37;
+    color: #000;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.success {
+  color: green;
+  margin-top: 0.5rem;
+}
+
+.error {
+  color: #b91c1c;
+  margin-top: 0.5rem;
+}

@@ -28,7 +28,8 @@
 }
 
 .image {
-  object-fit: cover;
+  width: 70%;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -151,21 +152,28 @@
 }
 
 .addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 12px 20px;
   border-radius: 8px;
-  background: #111827;
+  background: #CDAA7D;
   color: #fff;
   border: none;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease;  
   margin-top: auto;
 }
 
+.addIcon {
+  margin-right: 8px;
+}
+
 .addButton:hover:not(:disabled) {
-  background: #1f2937;
+  background: #CDAA7D;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
 }
