@@ -1,11 +1,13 @@
 ﻿"use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Golden from "../components/GoldenBotton/GoldenBotton";
 import { Trash } from "lucide-react";
 import "./cart.css";
 import Image from "next/image";
+import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 
 export default function CartPage() {
+  const [luxeLoading, setluxeLoading] = useState(true);
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -29,8 +31,15 @@ export default function CartPage() {
     setCartItems((prev) => prev.filter((it) => it.id !== id));
   }
 
+  useEffect(()=>{
+    setTimeout(() => {
+      setluxeLoading(false)
+    }, 1000);
+  },[]);
+
   return (
-    <main className="cart-container">
+    <main className="cart-container">      
+    {luxeLoading && <LuxuryLoader />}
       <h1 className="title">Votre panier</h1>
 
       <div className="cart-table">

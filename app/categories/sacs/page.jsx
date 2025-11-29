@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProductCard } from "@/app/components/ProductCard/ProductCard";
 import styles from "../page.module.css";
 import Golden from "@/app/components/GoldenBotton/GoldenBotton";
+import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 
 export default function BijouxPage() {
   const [products, setProducts] = useState([]);
@@ -13,6 +14,7 @@ export default function BijouxPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fade, setFade] = useState(false);
+  const [luxeLoading, setluxeLoading] = useState(true);
 
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
@@ -54,10 +56,14 @@ export default function BijouxPage() {
     };
 
     fetchProducts();
+    setTimeout(() => {
+      setluxeLoading(false)
+    }, 1000);
   }, [page, limit]);
 
   return (
     <main className={styles.main}>
+      {luxeLoading && <LuxuryLoader />}
       <section className={styles.pageTitle}>
         <div className={styles.pageTitleContent}>
           <div className={styles.titleWrapper}>

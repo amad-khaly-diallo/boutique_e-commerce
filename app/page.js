@@ -5,12 +5,15 @@ import { Truck, Lock, CreditCard, RefreshCw, Watch, Diamond, ShoppingBag, Headph
 import { ProductCard } from './components/ProductCard/ProductCard'
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import LuxuryLoader from "./components/LuxuryLoader/LuxuryLoader";
 
 export default function Home() {
   const [vedettes, setVedettes] = useState([]);
   const [newArrival, setNewArrival] = useState([]);
   const [isLoadingVedettes, setIsLoadingVedettes] = useState(true);
   const [isLoadingNew, setIsLoadingNew] = useState(true);
+  const [loading, setLoading] = useState(true);
+
 
   const fetchProducts = async () => {
     try {
@@ -43,6 +46,8 @@ export default function Home() {
   useEffect(() => {
     fetchProducts();
     fetchNewArrival();
+    setTimeout(()=>{setLoading(false)},2000);
+
   }, []);
 
   return (
@@ -68,6 +73,8 @@ export default function Home() {
             />
           </div>
         </div>
+
+        {loading && <LuxuryLoader />}
 
         {/* Banner */}
         <div className={styles.banner}>
@@ -108,15 +115,15 @@ export default function Home() {
           <h2 className={styles.heading}>Catégories Populaires</h2>
           <p className={styles.subheading}>Explorez nos différentes catégories</p>
           <div className={styles.grid}>
-            <Link href='/montre' className={styles.card}>
+            <Link href='/categories/montres' className={styles.card}>
               <Image src="/images/montre.webp" alt="Montre en or sur fond satin" width={300} height={200} className={styles.image} />
               <h3 className={styles.title}>Montres</h3>
             </Link>
-            <Link href='/bijoux' className={styles.card}>
+            <Link href='/categories/bijoux' className={styles.card}>
               <Image src="/images/bijoux.webp" alt="Bijoux en or et diamants" width={300} height={200} className={styles.image} />
               <h3 className={styles.title}>Bijoux</h3>
             </Link>
-            <Link href='/sacs' className={styles.card}>
+            <Link href='/categories/sacs' className={styles.card}>
               <Image src="/images/sacs.webp" alt="Sacs de luxe rose et marron" width={300} height={200} className={styles.image} />
               <h3 className={styles.title}>Sacs</h3>
             </Link>

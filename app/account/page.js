@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './page.css'
+import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 
 export default function AccountPage() {
     const [form, setForm] = useState({
@@ -11,7 +12,8 @@ export default function AccountPage() {
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
-    })
+    });
+  const [luxeLoading, setluxeLoading] = useState(true);
 
     const [saving, setSaving] = useState(false)
 
@@ -35,8 +37,14 @@ export default function AccountPage() {
         }
     }
 
+    useEffect(()=>{
+    setTimeout(() => {
+      setluxeLoading(false)
+    }, 1000);
+    }, []);
+
     return (
-        <main className="account-page">
+        <main className="account-page">      {luxeLoading && <LuxuryLoader />}
             <div className="breadcrumb">Accueil / Mon compte</div>
 
             <div className="account-grid">
