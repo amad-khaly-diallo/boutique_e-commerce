@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import '../auth.css'
 import Image from 'next/image'
+import Golden from '@/app/components/GoldenBotton/GoldenBotton';
 
 export default function LoginPage() {
     const [form, setForm] = useState({ email: '', password: '' })
@@ -85,9 +86,9 @@ export default function LoginPage() {
                             </div>
 
                             <div className="form-buttons">
-                                <button type="submit" className="btn-primary" disabled={loading}>
+                                <Golden type="submit" className="btn-primary" disabled={loading}>
                                     {loading ? 'Chargement...' : 'Se connecter'}
-                                </button>
+                                </Golden>
                                 <button type="button" className="btn-google">S'inscrire avec Google</button>
                             </div>
                         </form>

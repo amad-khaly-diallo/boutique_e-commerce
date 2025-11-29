@@ -7,8 +7,9 @@ import styles from './header.module.css';
 
 const NAV_LINKS = [
     { href: '/products', label: 'Produits' },
-    { href: '/contact', label: 'Contactez-nous' },
     { href: '/about', label: 'À propos' },
+    { href: '/login', label: 'Connectez-vous' },
+    { href: '/admin', label: 'Admin' }
 ];
 
 const CATEGORY_LINKS = [
@@ -81,8 +82,6 @@ export default function Header() {
                         </Link>
 
                         <div className={styles.navLinks}>
-                            {desktopLinks}
-
                             <div className={styles.dropdown}>
                                 <button
                                     type="button"
@@ -106,6 +105,7 @@ export default function Header() {
                                     </div>
                                 </div>
                             </div>
+                            {desktopLinks}
                         </div>
                     </div>
 

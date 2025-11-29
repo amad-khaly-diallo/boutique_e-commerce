@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import '../auth.css'
 import Image from 'next/image'
+import Golden from '@/app/components/GoldenBotton/GoldenBotton';
 
 const INITIAL_FORM = {
     firstName: '',
@@ -148,9 +149,9 @@ export default function RegisterPage() {
                             </div>
 
                             <div className="form-buttons">
-                                <button type="submit" className="btn-primary" disabled={loading}>
+                                <Golden type="submit" className="btn-primary" disabled={loading}>
                                     {loading ? 'Chargement...' : 'Créer un compte'}
-                                </button>
+                                </Golden>
                             </div>
                         </form>
 

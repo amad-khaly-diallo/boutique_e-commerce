@@ -24,11 +24,11 @@ export default function Footer() {
                     <div className="footer-section">
                         <h3>conte   </h3>
                         <ul>
-                            <li><a href="#">Mon conte </a></li>
-                            <li><a href="#">connetion  / enregistrement </a></li>
-                            <li><a href="#">Cart</a></li>
-                            <li><a href="#">Liste de souhaits</a></li>
-                            <li><a href="#">Shop</a></li>
+                            <li><a href="/account">Mon conte </a></li>
+                            <li><a href="/login">connetion  / enregistrement </a></li>
+                            <li><a href="/cart">Cart</a></li>
+                            <li><a href="whislist">Liste de souhaits</a></li>
+                            <li><a href="/checkout">Shop</a></li>
                         </ul>
                     </div>
                     <div className="footer-section">
@@ -37,17 +37,8 @@ export default function Footer() {
                             <li><a href="#">politique de confidentialité</a></li>
                             <li><a href="#">Conditions d'utilisation</a></li>
                             <li><a href="#">FAQ</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <li><a href="/contact">Contact</a></li>
                         </ul>
-                    </div>
-                    <div className="footer-section">
-                        <h3>Télécharger l'application</h3>
-                        <p>Économisez 3 $ avec l'application pour les nouveaux utilisateurs uniquement</p>
-                        <div className="qr-code">QR</div>
-                        <div className="app-links">
-                            <button>Google Play</button>
-                            <button>App Store</button>
-                        </div>
                     </div>
                 </div>
                 <div className="footer-bottom">

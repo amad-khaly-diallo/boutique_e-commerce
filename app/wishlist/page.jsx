@@ -36,10 +36,10 @@ export default function Wishlist() {
 
       <p className="price">€2650</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden >
           <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
     {/* Produit 2 */}
@@ -52,10 +52,10 @@ export default function Wishlist() {
 
       <p className="price">€5950</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden className="btn-add">
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
     {/* Produit 3 */}
@@ -68,10 +68,10 @@ export default function Wishlist() {
 
       <p className="price">€350</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden >
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
     {/* Produit 4 */}
@@ -84,10 +84,10 @@ export default function Wishlist() {
 
       <p className="price">€1250</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden >
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
           {/* Produit 5 */}
@@ -100,10 +100,10 @@ export default function Wishlist() {
 
       <p className="price">€1250</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden className="btn-add">
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
       {/* Produit 6 */}
@@ -116,10 +116,10 @@ export default function Wishlist() {
 
       <p className="price">€1250</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden >
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
       {/* Produit 7 */}
@@ -132,10 +132,10 @@ export default function Wishlist() {
 
       <p className="price">€1250</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden >
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
 
       {/* Produit 8 */}
@@ -148,10 +148,10 @@ export default function Wishlist() {
 
       <p className="price">€1250</p>
 
-      <Link href="/cart" className="btn-add">
+      <Golden >
       <ShoppingCart className="addIcon" size={20} />
         Ajouter au panier
-      </Link>
+      </Golden>
     </div>
     
 
