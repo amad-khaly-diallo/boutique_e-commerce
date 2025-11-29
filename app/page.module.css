@@ -125,7 +125,6 @@
 }
 
 .bannerContent {
-  border: 1px solid red;
   width: 100%;
   max-width: 1200px;
   display: flex;
