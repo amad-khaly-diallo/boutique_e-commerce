@@ -13,7 +13,7 @@ const CATEGORIES = [
 
 export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [maxPrice, setMaxPrice] = useState(3000);
+  const [maxPrice, setMaxPrice] = useState(1000000);
   const [sortOption, setSortOption] = useState("price-asc");
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
