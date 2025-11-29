@@ -2,6 +2,7 @@ import React from 'react';
 import "./wishlist.css";
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
+import Golden from '../components/GoldenBotton/GoldenBotton';
 
 export default function Wishlist() {
     return (
@@ -16,7 +17,7 @@ export default function Wishlist() {
                 <p>
                     Explorez nos produits et ajoutez vos articles préférés pour les retrouver facilement plus tard.
                 </p>
-                <button className="btn-return">Retourner à la boutique</button>
+                <Golden className="btn-return">Retourner à la boutique</Golden>
             </section>
 
             {/* --- Produits populaires --- */}

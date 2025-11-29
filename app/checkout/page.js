@@ -1,6 +1,7 @@
 "use client";
 "use client";
 import { useState } from "react";
+import Golden from "../components/GoldenBotton/GoldenBotton";
 import Image from "next/image";
 import "./checkout.css";
 
@@ -134,9 +135,9 @@ export default function Checkout() {
           </label>
 
           <div className="mobile-only">
-            <button type="submit" className="place-order">
+            <Golden type="submit" className="place-order">
               Passer la commande
-            </button>
+            </Golden>
           </div>
         </form>
 
@@ -167,32 +168,11 @@ export default function Checkout() {
               <span>€{total}</span>
             </div>
           </div>
-
-          <div className="payments">
-            <label className="radio">
-              <input
-                type="radio"
-                name="payment"
-                checked={form.payment === "bank"}
-                onChange={() => setForm((f) => ({ ...f, payment: "bank" }))}
-              />{" "}
-              Virement bancaire
-            </label>
-            <label className="radio">
-              <input
-                type="radio"
-                name="payment"
-                checked={form.payment === "cod"}
-                onChange={() => setForm((f) => ({ ...f, payment: "cod" }))}
-              />{" "}
-              Paiement à la livraison
-            </label>
-          </div>
-
+          
           <div className="desktop-only">
-            <button className="place-order" onClick={placeOrder}>
+            <Golden className="place-order" onClick={placeOrder}>
               Passer la commande
-            </button>
+            </Golden>
           </div>
         </aside>
       </div>

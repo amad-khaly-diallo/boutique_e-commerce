@@ -9,26 +9,34 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [vedettes, setVedettes] = useState([]);
   const [newArrival, setNewArrival] = useState([]);
+  const [isLoadingVedettes, setIsLoadingVedettes] = useState(true);
+  const [isLoadingNew, setIsLoadingNew] = useState(true);
 
   const fetchProducts = async () => {
     try {
+      setIsLoadingVedettes(true);
       const res = await fetch('/api/products?vedettes=true', { cache: "no-store" });
       if (!res.ok) throw new Error('Erreur lors du chargement des produits vedettes');
       const data = await res.json();
       setVedettes(data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoadingVedettes(false);
     }
   };
 
   const fetchNewArrival = async () => {
     try {
+      setIsLoadingNew(true);
       const res = await fetch('/api/products?last=4', { cache: "no-store" });
       if (!res.ok) throw new Error('Erreur lors du chargement des nouveaux produits');
       const data = await res.json();
       setNewArrival(data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoadingNew(false);
     }
   };
 
@@ -36,16 +44,18 @@ export default function Home() {
     fetchProducts();
     fetchNewArrival();
   }, []);
-  console.log({ vedettes, newArrival });
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        {/* Hero */}
         <div className={styles.hero}>
           <div className={styles.heroContent}>
             <span className={styles.heroPretitle}>Une collection autonome.</span>
             <h1 className={styles.heroTitle}>L'Excellence <br /> à portée de main</h1>
-            <p className={styles.heroSubtitle}>Découvrez notre sélection premium de produits soigneusement choisis pour leur qualité exceptionnelle.</p>
+            <p className={styles.heroSubtitle}>
+              Découvrez notre sélection premium de produits soigneusement choisis pour leur qualité exceptionnelle.
+            </p>
             <Link href="/products" className={styles.heroButton}>Découvrir la boutique.</Link>
             <Link href="/login" className={styles.heroButton1}>Connectez-vous.</Link>
           </div>
@@ -59,6 +69,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Banner */}
         <div className={styles.banner}>
           <div className={styles.bannerContent}>
             <div className={styles.feature}>
@@ -68,7 +79,6 @@ export default function Home() {
                 <div className={styles.bannerSub}>Dès 50€ d'achat</div>
               </div>
             </div>
-
             <div className={styles.feature}>
               <div className={styles.bannerLogo}><Lock size={32} /></div>
               <div className={styles.bannerDetails}>
@@ -76,7 +86,6 @@ export default function Home() {
                 <div className={styles.bannerSub}>Sur tout nos produits</div>
               </div>
             </div>
-
             <div className={styles.feature}>
               <div className={styles.bannerLogo}><CreditCard size={32} /></div>
               <div className={styles.bannerDetails}>
@@ -84,7 +93,6 @@ export default function Home() {
                 <div className={styles.bannerSub}>SSL et 3D Secure</div>
               </div>
             </div>
-
             <div className={styles.feature}>
               <div className={styles.bannerLogo}><RefreshCw size={32} /></div>
               <div className={styles.bannerDetails}>
@@ -95,77 +103,54 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Catégories Populaires */}
         <section className={styles.section}>
           <h2 className={styles.heading}>Catégories Populaires</h2>
           <p className={styles.subheading}>Explorez nos différentes catégories</p>
-
           <div className={styles.grid}>
             <Link href='/montre' className={styles.card}>
-              <Image
-                src="/images/montre.webp"
-                alt="Montre en or sur fond satin"
-                width={300}
-                height={200}
-                className={styles.image}
-              />
+              <Image src="/images/montre.webp" alt="Montre en or sur fond satin" width={300} height={200} className={styles.image} />
               <h3 className={styles.title}>Montres</h3>
             </Link>
-
             <Link href='/bijoux' className={styles.card}>
-              <Image
-                src="/images/bijoux.webp"
-                alt="Bijoux en or et diamants"
-                width={300}
-                height={200}
-                className={styles.image}
-              />
+              <Image src="/images/bijoux.webp" alt="Bijoux en or et diamants" width={300} height={200} className={styles.image} />
               <h3 className={styles.title}>Bijoux</h3>
             </Link>
-
             <Link href='/sacs' className={styles.card}>
-              <Image
-                src="/images/sacs.webp"
-                alt="Sacs de luxe rose et marron"
-                width={300}
-                height={200}
-                className={styles.image}
-              />
+              <Image src="/images/sacs.webp" alt="Sacs de luxe rose et marron" width={300} height={200} className={styles.image} />
               <h3 className={styles.title}>Sacs</h3>
             </Link>
           </div>
         </section>
 
-
-
+        {/* Produits Vedettes */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Produits Vedettes</h2>
             <button className={styles.heroButton1}>Voir Tout</button>
           </div>
 
-          <div className={styles.productsGrid}>
-            {vedettes.largeTile === 0 ? (
-              <p> <RefreshCw /> Chargement...</p>
-            ) : (
-              vedettes.map((p) => (
+          {isLoadingVedettes ? (
+            <p className={styles.loader}><RefreshCw className={styles.spin} /> Chargement...</p>
+          ) : (
+            <div className={styles.productsGrid}>
+              {vedettes.map(p => (
                 <ProductCard key={p.product_id} product={p} />
-              ))
-            )}
-
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* New Arrival */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.badge}>Featured</span>
+            <h2 className={styles.sectionTitle}>New Arrival</h2>
+          </div>
 
-        {newArrival.length === 0 ? (
-          <p> <RefreshCw /> Chargement...</p>
-        ) : (
-          <section className={styles.newArrival}>
-            <div className={styles.sectionHeader}>
-              <span className={styles.badge}>Featured</span>
-              <h2 className={styles.sectionTitle}>New Arrival</h2>
-            </div>
-
+          {isLoadingNew ? (
+            <p className={styles.loader}><RefreshCw className={styles.spin} /> Chargement...</p>
+          ) : (
             <div className={styles.arrivalGrid}>
               <div className={styles.largeTile}>
                 <Image
@@ -213,10 +198,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </section>
-        )}
-
-
+          )}
+        </section>
 
         {/* Services Row */}
         <section className={styles.serviceRow}>
@@ -239,6 +222,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-    </div >
+    </div>
   );
 }

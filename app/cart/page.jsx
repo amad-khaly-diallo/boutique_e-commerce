@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState } from "react";
+import Golden from "../components/GoldenBotton/GoldenBotton";
 import { Trash } from "lucide-react";
 import "./cart.css";
 import Image from "next/image";
@@ -68,7 +69,7 @@ export default function CartPage() {
 
       {/* Boutons */}
       <div className="cart-buttons">
-        <button className="btn-return" onClick={() => (window.location.href = "/")}>Return To Shop</button>
+        <Golden className="btn-return" onClick={() => (window.location.href = "/")}>Return To Shop</Golden>
       </div>
 
       {/* Coupon + Résumé total */}
@@ -88,7 +89,7 @@ export default function CartPage() {
             <span>€{subtotal}</span>
           </div>
 
-          <button className="btn-checkout" onClick={() => (window.location.href = "/checkout")}>Proceed to checkout</button>
+          <Golden className="btn-checkout" onClick={() => (window.location.href = "/checkout")}>Proceed to checkout</Golden>
         </div>
       </div>
 

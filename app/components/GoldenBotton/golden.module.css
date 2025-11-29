@@ -1,0 +1,34 @@
+.gold {
+  display: inline-block;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #a06f1f 0%,
+    #ffcc66 45%,
+    #ffd700 50%,
+    #ffcc66 55%,
+    #a06f1f 100%
+  );
+  background-size: 200% 200%;
+  color: #fff;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  animation: goldMove 4s ease infinite;
+}
+
+.gold:hover {
+  animation: goldMove 3s ease infinite;
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 9px rgba(255, 200, 0, 0.8));
+}
+
+@keyframes goldMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
