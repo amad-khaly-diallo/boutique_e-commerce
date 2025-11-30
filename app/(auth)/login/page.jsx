@@ -3,42 +3,57 @@
 import { useState } from 'react'
 import '../auth.css'
 import Image from 'next/image'
-import Golden from '@/app/components/GoldenBotton/GoldenBotton';
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
     const [form, setForm] = useState({ email: '', password: '' })
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
-    function validate() {
+    // Validation côté client
+    const validate = () => {
         const e = {}
-        if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = "Email invalide."
-        if (form.password.length < 8) e.password = 'Le mot de passe doit contenir au moins 8 caractères.'
+        if (!form.email) e.email = 'L’email est requis.'
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Email invalide."
+        if (!form.password) e.password = 'Le mot de passe est requis.'
+        else if (form.password.length < 8) e.password = 'Le mot de passe doit contenir au moins 8 caractères.'
         return e
     }
 
-    async function handleSubmit(e) {
+    const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+        // Supprime l'erreur en temps réel
+        if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }))
+        if (errors.form) setErrors(prev => ({ ...prev, form: undefined }))
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        const v = validate()
-        setErrors(v)
-        if (Object.keys(v).length) return
+        const validationErrors = validate()
+        setErrors(validationErrors)
+        if (Object.keys(validationErrors).length > 0) return
 
         setLoading(true)
         try {
-            const res = await fetch('/api/login', {
+            const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: form.email,
+                    email: form.email.trim(),
                     password: form.password
                 })
             })
 
-            if (!res.ok) {
-                const data = await res.json().catch(() => ({}))
-                setErrors({ form: data?.message || 'Une erreur est survenue.' })
+            const data = await res.json().catch(() => ({}))
+
+            if (!data.success) {
+                // Gestion uniforme des erreurs serveur
+                setErrors({ form: data.message || data.error || 'Une erreur est survenue.' })
             } else {
                 setForm({ email: '', password: '' })
+                router.push('/')
             }
         } catch {
             setErrors({ form: 'Impossible de contacter le serveur.' })
@@ -66,9 +81,9 @@ export default function LoginPage() {
                             <div className="form-group">
                                 <input
                                     type="email"
-                                    placeholder="Email ou numéro de téléphone"
+                                    placeholder="Email..."
                                     value={form.email}
-                                    onChange={e => setForm({ ...form, email: e.target.value })}
+                                    onChange={e => handleChange('email', e.target.value)}
                                     className={errors.email ? 'error' : ''}
                                 />
                                 {errors.email && <span className="error-text">{errors.email}</span>}
@@ -79,22 +94,21 @@ export default function LoginPage() {
                                     type="password"
                                     placeholder="Mot de passe"
                                     value={form.password}
-                                    onChange={e => setForm({ ...form, password: e.target.value })}
+                                    onChange={e => handleChange('password', e.target.value)}
                                     className={errors.password ? 'error' : ''}
                                 />
                                 {errors.password && <span className="error-text">{errors.password}</span>}
                             </div>
 
                             <div className="form-buttons">
-                                <Golden type="submit" className="btn-primary" disabled={loading}>
+                                <button type="submit" className="btn-primary" disabled={loading}>
                                     {loading ? 'Chargement...' : 'Se connecter'}
-                                </Golden>
-                                <button type="button" className="btn-google">S'inscrire avec Google</button>
+                                </button>
                             </div>
                         </form>
 
                         <div className="auth-toggle">
-                            <p>Pas de compte ? <a href="/register">S'inscrire</a></p>
+                            <p>Pas de compte ? <Link href="/register">S'inscrire</Link></p>
                         </div>
                     </div>
                 </div>
