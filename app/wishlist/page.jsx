@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./wishlist.css";
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
