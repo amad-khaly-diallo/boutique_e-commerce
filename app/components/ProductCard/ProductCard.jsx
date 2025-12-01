@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, Eye, Star, ShoppingCart} from 'lucide-react';
+import { Heart, Eye, Star, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import styles from './productCard.module.css';
 import Golden from '../GoldenBotton/GoldenBotton';
@@ -14,10 +14,42 @@ export function ProductCard({ product }) {
     e.preventDefault();
     e.stopPropagation();
     setIsAdding(true);
-    setTimeout(() => {
-      setIsAdding(false);
-    }, 1000);
+
+    try {
+      const res = await fetch("/api/carts/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          productId: product.product_id,
+          quantity: 1
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.status === 401) {
+        alert("Vous devez être connecté pour ajouter au panier");
+        return;
+      }
+
+      if (!res.ok) {
+        alert(data.error || "Erreur lors de l’ajout au panier");
+        return;
+      }
+
+      console.log("Ajouté au panier :", data);
+
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Impossible de contacter le serveur");
+    } finally {
+      setTimeout(()=>setIsAdding(false), 1000);
+    }
   };
+
 
   const handleToggleFavorite = (e) => {
     e.preventDefault();
@@ -37,7 +69,7 @@ export function ProductCard({ product }) {
   const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
   const hasDiscount = originalPrice && originalPrice > currentPrice;
 
-  
+
   const renderStars = () => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -75,7 +107,7 @@ export function ProductCard({ product }) {
             <span>Image</span>
           </div>
         )}
-        
+
         {/* Icônes d'action en haut à droite */}
         <div className={styles.actionIcons}>
           <button
