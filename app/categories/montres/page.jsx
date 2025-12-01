@@ -81,7 +81,7 @@ export default function BijouxPage() {
             <div className={styles.productsHeader}>
               <div>
                 <p className={styles.resultsCount}>
-                  {isLoading ? "Chargement des bijoux…" : `${total} bijoux trouvés`}
+                  {isLoading ? "Chargement des Montres…" : `${total} Montres trouvés`}
                 </p>
                 <p className={styles.resultsHint}>
                   Découvrez notre collection de bijoux raffinés pour sublimer chaque tenue.
