@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
+import LuxuryLoader from '@/app/components/LuxuryLoader/LuxuryLoader';
 
 export default function ProductsDetail() {
     const { id } = useParams();
@@ -13,6 +14,8 @@ export default function ProductsDetail() {
     const [error, setError] = useState('');
     const [sampleProducts, setSampleProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
+    const [loading, setLoading] = useState(true);
+
 
     const increase = () => {
         if (product && quantity < product.stock) {
@@ -47,7 +50,7 @@ export default function ProductsDetail() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await fetch(`/api/products/${id}`);
+                const res = await fetch(`/api/products?id=${id}`);
                 if (!res.ok) throw new Error('Produit non trouvé');
                 const data = await res.json();
                 setProduct(data);
@@ -56,6 +59,9 @@ export default function ProductsDetail() {
             }
         };
         fetchProduct();
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
     }, [id]);
 
     //  Fetch produits similaires
@@ -67,7 +73,7 @@ export default function ProductsDetail() {
                 const res = await fetch(`/api/products?category=${product.category}`);
                 if (!res.ok) throw new Error('Produits similaires non trouvés');
                 const data = await res.json();
-                setSampleProducts(data);
+                setSampleProducts(data.data);
             } catch (err) {
                 setError(err.message);
             }
@@ -80,6 +86,7 @@ export default function ProductsDetail() {
 
     return (
         <div className="container">
+            {loading && <LuxuryLoader />}
             <div className="details-product">
 
                 {/* Images à gauche */}

@@ -7,8 +7,9 @@ import styles from './header.module.css';
 
 const NAV_LINKS = [
     { href: '/products', label: 'Produits' },
-    { href: '/contact', label: 'Contactez-nous' },
     { href: '/about', label: 'À propos' },
+    { href: '/login', label: 'Connectez-vous' },
+    { href: '/admin', label: 'Admin' }
 ];
 
 const CATEGORY_LINKS = [
@@ -81,8 +82,6 @@ export default function Header() {
                         </Link>
 
                         <div className={styles.navLinks}>
-                            {desktopLinks}
-
                             <div className={styles.dropdown}>
                                 <button
                                     type="button"
@@ -106,6 +105,7 @@ export default function Header() {
                                     </div>
                                 </div>
                             </div>
+                            {desktopLinks}
                         </div>
                     </div>
 
@@ -114,7 +114,7 @@ export default function Header() {
                             <Search className={styles.searchIcon} />
 
                             <input
-                                placeholder="Rechercher une maison, une collection..."
+                                placeholder="Votre recherche commence ici…"
                                 className={styles.searchInput}
                                 type="text"
                                 value={search}
@@ -146,7 +146,7 @@ export default function Header() {
                             className={`${styles.iconButton} ${styles.favorites}`}
                             aria-label="Voir les favoris"
                         >
-                            <Heart className="h-5 w-5" />
+                            <Heart />
                         </Link>
 
                         <Link
@@ -154,7 +154,7 @@ export default function Header() {
                             className={`${styles.iconButton} ${styles.cartButton}`}
                             aria-label="Voir le panier"
                         >
-                            <ShoppingCart className="h-5 w-5" />
+                            <ShoppingCart />
                             {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
                         </Link>
 
@@ -169,7 +169,7 @@ export default function Header() {
                             aria-expanded={isMenuOpen}
                             onClick={() => setIsMenuOpen(true)}
                         >
-                            <Menu className="h-5 w-5" />
+                            <Menu />
                         </button>
                     </div>
                 </div>
