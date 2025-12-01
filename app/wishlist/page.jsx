@@ -62,7 +62,7 @@ export default function Wishlist() {
 
       <Link href="/details-product">
         <img src="/images/breitling.png" className="product-image" />
-        <h3>Air Jordan 1 Retro High</h3>
+        <h3> sdfghjk </h3>
       </Link>
 
       <p className="price">€350</p>
@@ -78,7 +78,7 @@ export default function Wishlist() {
 
       <Link href="/details-product">
         <img src="/images/cartier_love.png" className="product-image" />
-        <h3>iPhone 14 Pro</h3>
+        <h3>dfghjkl</h3>
       </Link>
 
       <p className="price">€1250</p>
@@ -94,7 +94,7 @@ export default function Wishlist() {
 
       <Link href="/details-product">
         <img src="/images/chanel_gabrielle.png" className="product-image" />
-        <h3>iPhone 14 Pro</h3>
+        <h3>dfghjkl</h3>
       </Link>
 
       <p className="price">€1250</p>
@@ -110,7 +110,7 @@ export default function Wishlist() {
 
       <Link href="/details-product">
         <img src="/images/dior_book_tote.jpeg" className="product-image" />
-        <h3>iPhone 14 Pro</h3>
+        <h3>dfghjkl</h3>
       </Link>
 
       <p className="price">€1250</p>
@@ -126,7 +126,7 @@ export default function Wishlist() {
 
       <Link href="/details-product">
         <img src="/images/bulgari_bzero1.png" className="product-image" />
-        <h3>iPhone 14 Pro</h3>
+        <h3>dfghjkl</h3>
       </Link>
 
       <p className="price">€1250</p>
@@ -142,7 +142,7 @@ export default function Wishlist() {
 
       <Link href="/details-product">
         <img src="/images/balenciaga_hourglass.png" className="product-image" />
-        <h3>iPhone 14 Pro</h3>
+        <h3>dfghjkl</h3>
       </Link>
 
       <p className="price">€1250</p>
