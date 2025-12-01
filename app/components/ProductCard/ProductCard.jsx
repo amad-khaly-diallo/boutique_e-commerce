@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Heart, Eye, Star, ShoppingCart} from 'lucide-react';
 import { useState } from 'react';
 import styles from './productCard.module.css';
+import Golden from '../GoldenBotton/GoldenBotton';
 
 export function ProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -13,7 +14,6 @@ export function ProductCard({ product }) {
     e.preventDefault();
     e.stopPropagation();
     setIsAdding(true);
-    // TODO: Implémenter l'ajout au panier via API
     setTimeout(() => {
       setIsAdding(false);
     }, 1000);
@@ -28,19 +28,16 @@ export function ProductCard({ product }) {
   const handleQuickView = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // TODO: Implémenter la vue rapide
   };
 
   if (!product) return null;
-
-  // Calculer le rating (par défaut 4.5 si non défini)
   const rating = product.rating || 4.5;
   const reviews = product.reviews || 65;
   const currentPrice = parseFloat(product.price || 0);
   const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
   const hasDiscount = originalPrice && originalPrice > currentPrice;
 
-  // Rendre les étoiles
+  
   const renderStars = () => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -120,7 +117,7 @@ export function ProductCard({ product }) {
         </div>
 
         {/* Bouton Add to Cart */}
-        <button
+        <Golden
           type="button"
           className={`${styles.addButton} ${isAdding ? styles.adding : ''}`}
           onClick={handleAddToCart}
@@ -129,7 +126,7 @@ export function ProductCard({ product }) {
           <ShoppingCart className={styles.addIcon} size={20} />
 
           {isAdding ? 'Ajout...' : 'Ajouter au panier'}
-        </button>
+        </Golden>
       </div>
     </Link>
   );

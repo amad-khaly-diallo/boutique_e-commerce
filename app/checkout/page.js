@@ -1,8 +1,10 @@
 "use client";
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Golden from "../components/GoldenBotton/GoldenBotton";
 import Image from "next/image";
 import "./checkout.css";
+import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 
 const mockProducts = [
   { id: 1, title: "Écran LCD", price: 650, img: "/images/prod1.svg" },
@@ -10,6 +12,7 @@ const mockProducts = [
 ];
 
 export default function Checkout() {
+  const [luxeLoading, setluxeLoading] = useState(true);
   const [form, setForm] = useState({
     prenom: "",
     nom: "",
@@ -50,8 +53,15 @@ export default function Checkout() {
     );
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      setluxeLoading(false)
+    }, 1000);
+  }, [])
+
   return (
     <div className="checkout-container">
+      {luxeLoading && <LuxuryLoader />}
       <div className="breadcrumb">
         Compte / Mon compte / Voir panier / <strong>Paiement</strong>
       </div>
@@ -134,9 +144,9 @@ export default function Checkout() {
           </label>
 
           <div className="mobile-only">
-            <button type="submit" className="place-order">
+            <Golden type="submit" className="place-order">
               Passer la commande
-            </button>
+            </Golden>
           </div>
         </form>
 
@@ -168,31 +178,10 @@ export default function Checkout() {
             </div>
           </div>
 
-          <div className="payments">
-            <label className="radio">
-              <input
-                type="radio"
-                name="payment"
-                checked={form.payment === "bank"}
-                onChange={() => setForm((f) => ({ ...f, payment: "bank" }))}
-              />{" "}
-              Virement bancaire
-            </label>
-            <label className="radio">
-              <input
-                type="radio"
-                name="payment"
-                checked={form.payment === "cod"}
-                onChange={() => setForm((f) => ({ ...f, payment: "cod" }))}
-              />{" "}
-              Paiement à la livraison
-            </label>
-          </div>
-
           <div className="desktop-only">
-            <button className="place-order" onClick={placeOrder}>
+            <Golden className="place-order" onClick={placeOrder}>
               Passer la commande
-            </button>
+            </Golden>
           </div>
         </aside>
       </div>

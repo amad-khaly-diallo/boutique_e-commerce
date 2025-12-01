@@ -1,12 +1,21 @@
 'use client'
 import Image from 'next/image';
 import { Users, DollarSign, ShoppingCart, TrendingUp, Truck, Headphones, ShieldCheck } from 'lucide-react';
-
 import './page.css'
+import { useEffect, useState } from 'react';
+import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
+
 
 export default function About() {
+    const [luxeLoading, setluxeLoading] = useState(true);
+    useEffect(() => {
+        setTimeout(() => {
+            setluxeLoading(false)
+        }, 1000);
+    }, [])
     return (
         <main className="about-page">
+            {luxeLoading && <LuxuryLoader />}
             <div className="container">
                 <nav className="breadcrumb">Home <span>/</span> About</nav>
 

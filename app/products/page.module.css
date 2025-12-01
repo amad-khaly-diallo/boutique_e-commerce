@@ -2,17 +2,18 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 78px 24px 80px;
+  padding: 80px 24px;
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+  line-height: 1.6;
 }
 
 .pageTitle {
   width: 100%;
-  background: var(--background);
+  background: var(--background, #f9fafb);
   padding: 40px 0;
-  border-bottom: 1px solid var(--border);
 }
 
 .pageTitleContent {
@@ -28,12 +29,13 @@
 
 .titleWrapper h1 {
   margin: 12px 0 8px;
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   color: #0f172a;
+  line-height: 1.2;
 }
 
 .kicker {
-  color: #6366f1;
+  color: var(--accent);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -43,64 +45,28 @@
 .subtitle {
   color: #64748b;
   margin: 0;
-  max-width: 520px;
-  line-height: 1.6;
-}
-
-.metrics {
-  display: flex;
-  gap: 32px;
-  background: #fff;
-  padding: 24px 32px;
-  border-radius: 16px;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-}
-
-.metrics div {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.metricValue {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.metricLabel {
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.75rem;
+  max-width: 560px;
+  line-height: 1.7;
 }
 
 .catalogSection {
   width: 100%;
-}
-
-.catalogLayout {
-  width: 100%;
-  max-width: 1200px;
-  display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 32px;
-  align-items: flex-start;
-  margin: 0 auto;
-  padding: 0 24px;
+  margin-top: 40px;
 }
 
 .filtersCard {
-  background: #fff;
-  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 24px;
+  background: #fff;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  position: sticky;
-  top: 120px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.filtersCard:hover {
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1);
 }
 
 .filtersHeader {
@@ -117,6 +83,11 @@
   color: #6366f1;
   font-weight: 500;
   cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.filtersHeader button:hover {
+  color: #4f46e5;
 }
 
 .filterGroup {
@@ -127,7 +98,6 @@
 
 .filterGroup label {
   font-weight: 600;
-  color: #0f172a;
 }
 
 .selectWrapper {
@@ -135,6 +105,7 @@
   border-radius: 12px;
   padding: 0 12px;
   background: #f8fafc;
+  transition: border 0.3s ease;
 }
 
 .selectWrapper select {
@@ -145,6 +116,11 @@
   font-size: 0.95rem;
   color: #0f172a;
   outline: none;
+  cursor: pointer;
+}
+
+.selectWrapper select:focus {
+  border-color: #6366f1;
 }
 
 .priceHeader {
@@ -156,8 +132,8 @@
 
 .filterGroup input[type="range"] {
   width: 100%;
-  accent-color: #111827;
-  margin-top: 4px;
+  accent-color: var(--accent);
+  margin-top: 6px;
 }
 
 .priceScale {
@@ -171,9 +147,9 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-height: calc(100vh);
   overflow-y: auto;
-  padding-right: 12px;
+  max-height: 800px;
+  padding-right: 8px;
 }
 
 .productsPanel::-webkit-scrollbar {
@@ -191,7 +167,8 @@
 
 .productsHeader {
   background: #fff;
-  border: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 12px;
   padding: 24px 28px;
   display: flex;
   align-items: center;
@@ -228,30 +205,22 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 24px;
   padding-bottom: 24px;
+}
+
+.paginationContainer {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 25px auto;
 }
 
 @media (max-width: 1024px) {
   .pageTitleContent {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .catalogLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .filtersCard {
-    position: static;
-    width: 100%;
-  }
-
-  .productsPanel {
-    max-height: none;
-    height: auto;
-    overflow: visible;
-    padding-right: 0;
   }
 
   .grid {
@@ -270,17 +239,6 @@
 
   .pageTitleContent {
     padding: 0 16px;
-  }
-
-  .metrics {
-    flex-direction: column;
-    width: 100%;
-    gap: 16px;
-  }
-
-  .productsHeader {
-    flex-direction: column;
-    align-items: flex-start;
   }
 
   .filtersCard {

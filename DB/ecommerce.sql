@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 26 nov. 2025 à 15:13
+-- Généré le : ven. 28 nov. 2025 à 14:00
 -- Version du serveur : 10.11.13-MariaDB-0ubuntu0.24.04.1
 -- Version de PHP : 8.3.6
 
@@ -177,7 +177,27 @@ INSERT INTO `Product` (`product_id`, `product_name`, `description`, `price`, `st
 (46, 'Chanel J12', 'Montre céramique noire.', 7200.00, 5, 'Montre', '/images/chanel_j12.png', 'Très tendance.'),
 (47, 'Chanel Gabrielle Bag', 'Sac Gabrielle en cuir.', 5300.00, 3, 'Sac', '/images/chanel_gabrielle.png', 'Luxe moderne.'),
 (48, 'Dior Caro Bag', 'Sac Dior Caro matelassé.', 3800.00, 4, 'Sac', '/images/dior_caro.png', 'Élégant.'),
-(49, 'Dior Bobby', 'Sac Dior arrondi.', 3200.00, 5, 'Sac', '/images/dior_bobby.png', 'Très chic.');
+(49, 'Dior Bobby', 'Sac Dior arrondi.', 3200.00, 5, 'Sac', '/images/dior_bobby.png', 'Très chic.'),
+(50, 'Collier Or 18K', 'Collier en or 18 carats élégant pour femme.', 450.00, 15, 'bijoux', '/images/collier_or.png', NULL),
+(51, 'Bracelet Diamant', 'Bracelet serti de petits diamants véritables.', 890.00, 8, 'bijoux', '/images/bracelet_diamant.png', NULL),
+(52, 'Bague Saphir Bleu', 'Bague en argent incrustée d’un saphir bleu.', 650.00, 10, 'bijoux', '/images/bague_saphir.png', NULL),
+(53, 'Boucles d’Oreilles Or', 'Paire de boucles en or massif.', 280.00, 25, 'bijoux', '/images/boucles_or..png', NULL),
+(54, 'Montre Or Femme', 'Montre bracelet en or, édition luxe.', 1200.00, 5, 'bijoux', '/images/montre_or_femme.png', NULL),
+(55, 'Collier Perles', 'Collier composé de perles fines naturelles.', 330.00, 18, 'bijoux', '/images/collier_perles.png', NULL),
+(56, 'Bracelet Argent', 'Bracelet en argent véritable 925.', 150.00, 30, 'bijoux', '/images/bracelet_argent.png', NULL),
+(57, 'Bague Rubis Rouge', 'Bague élégante avec un rubis rouge profond.', 720.00, 12, 'bijoux', '/images/bague_rubis.png', NULL),
+(58, 'Chaîne Or Homme', 'Chaîne en or massif pour homme.', 990.00, 6, 'bijoux', '/images/chaine_or_homme.png', NULL),
+(59, 'Collier Coeur Diamant', 'Collier cœur serti d’un diamant central.', 540.00, 9, 'bijoux', '/images/collier.png', NULL),
+(60, 'Bracelet Or Rose', 'Bracelet moderne en or rose 18k.', 260.00, 22, 'bijoux', '/images/bracelet_or_rose.png', NULL),
+(61, 'Boucles Saphir', 'Boucles d’oreilles décorées de saphirs bleus.', 340.00, 19, 'bijoux', '/images/boucles_saphir.png', NULL),
+(62, 'Bague Émeraude', 'Bague classique sertie d’une émeraude.', 780.00, 14, 'bijoux', '/images/bague_emeraude.png', NULL),
+(63, 'Bracelet Cuir & Or', 'Bracelet mix cuir noir et or.', 200.00, 17, 'bijoux', '/images/bracelet_cuir_or.png', NULL),
+(64, 'Pendentif Lune Argent', 'Pendentif en forme de lune en argent.', 120.00, 35, 'bijoux', '/images/pendentif_lune.png', NULL),
+(65, 'Collier Croix Or', 'Collier croix en or jaune 18k.', 310.00, 10, 'bijoux', '/images/collier_croix_or.png', NULL),
+(66, 'Boucles Or Blanc', 'Boucles d’oreilles en or blanc poli.', 390.00, 13, 'bijoux', '/images/boucles_or_blanc.png', NULL),
+(67, 'Bague Solitaire Diamant', 'Bague solitaire en diamant haut de gamme.', 1450.00, 4, 'bijoux', '/images/bague_solitaire.png', NULL),
+(68, 'Bracelet Perles Noires', 'Bracelet perles noires naturelles.', 190.00, 28, 'bijoux', '/images/bracelet_perles_noires.png', NULL),
+(69, 'Pendentif Papillon Or', 'Pendentif papillon en or 18k.', 240.00, 20, 'bijoux', '/images/pendentif_papillon.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -284,7 +304,7 @@ ALTER TABLE `Order_item`
 -- AUTO_INCREMENT pour la table `Product`
 --
 ALTER TABLE `Product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT pour la table `User`
