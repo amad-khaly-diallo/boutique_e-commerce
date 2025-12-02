@@ -35,6 +35,6 @@ export const config = {
     matcher: [
         "/dashboard/:path*",   // protéger le dashboard
         "/profile/:path*",     // protéger profile
-        "/admin/:path*",       // protéger admin
+       // "/admin/:path*",       // protéger admin
     ],
 };
