@@ -48,7 +48,7 @@ export default function Wishlist() {
                 <h3>{item.product_name}</h3>
                 <p>{item.description}</p>
                 <p>Prix : {item.price} €</p>
-                <Link href={`/product/${item.product_id}`} className="btn-details">Voir le produit</Link>
+                <Link href={`/product/${item.product_id}`} className="btn-details"><Golden>Ajouter au panier</Golden></Link>
               </div>
             </li>
           ))}
