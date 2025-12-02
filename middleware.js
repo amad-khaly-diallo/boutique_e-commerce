@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import next from "next";
 
 export function middleware(req) {
     const token = req.cookies.get("token")?.value;
@@ -22,6 +23,10 @@ export function middleware(req) {
             return NextResponse.redirect(new URL("/unauthorized", req.url));
         }
 
+        if (req.nextUrl.pathname.startsWith("/cart") && decoded) {
+            return NextResponse.redirect(new URL("/login", req.url));
+        }
+
         // Si tout va bien :
         return NextResponse.next();
     } catch (error) {
@@ -36,5 +41,6 @@ export const config = {
         "/dashboard/:path*",   // protéger le dashboard
         "/profile/:path*",     // protéger profile
         "/admin/:path*",       // protéger admin
+        "/cart/:path*"       // protéger admin
     ],
 };

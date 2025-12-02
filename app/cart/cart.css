@@ -87,8 +87,7 @@
   margin: 25px 0;
 }
 
-.btn-return,
-.btn-update {
+.btn-return {
   padding: 12px 20px;
   background: #d4af37;
   cursor: pointer;
@@ -100,10 +99,6 @@
 .btn-return:hover {
   background: #000000;
   color: #ffffff;
-}
-
-.btn-update {
-  background: #cdaa7d;
 }
 
 /* BAS DE PAGE */
@@ -142,9 +137,14 @@
   width: 100%;
   margin-top: 20px;
   padding: 12px;
-  background: #cdaa7d;
+  background: #d4af37;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.btn-checkout:hover {
+  background: #000000;
+  color: #ffffff;
 }

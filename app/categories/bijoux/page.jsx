@@ -29,7 +29,7 @@ export default function BijouxPage() {
 
       try {
         const res = await fetch(
-          `/api/products?category=bijoux&page=${page}&limit=${limit}`
+          `/api/products?category=Bijoux&page=${page}&limit=${limit}`
         );
 
         if (!res.ok) {
