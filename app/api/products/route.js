@@ -36,7 +36,7 @@ export async function GET(request) {
 
     if (category) {
       // Liste blanche = protection contre injection + meilleure cohérence
-      const allowedCategories = ["bijoux", "Montre", "Sac"];
+      const allowedCategories = ["Bijoux", "Montre", "Sac"];
       if (!allowedCategories.includes(category)) {
         await conn.end();
         return NextResponse.json(
