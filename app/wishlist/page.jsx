@@ -11,7 +11,7 @@ export default function Wishlist() {
 
   const fetchWishlist = async () => {
     try {
-      const response = await fetch('/api/favorites?userId=1');
+      const response = await fetch('/api/favorites');
       const data = await response.json();
       setWishlist(data);
     } catch (error) {

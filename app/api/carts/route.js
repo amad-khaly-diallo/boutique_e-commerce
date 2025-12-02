@@ -5,7 +5,7 @@ import { verifyAuth } from "@/lib/auth";
 export async function GET(request) {
     try {
 
-        const { user } = verifyAuth(request);
+        const { user } = await verifyAuth(request);
         const userId = user.user_id;
 
         if (!user) {
