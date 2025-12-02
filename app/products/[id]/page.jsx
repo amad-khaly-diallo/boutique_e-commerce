@@ -13,10 +13,40 @@ export default function ProductsDetail() {
     const [favoris, setFavoris] = useState(false);
     const [error, setError] = useState('');
     const [sampleProducts, setSampleProducts] = useState([]);
+    const [quantity, setQuantity] = useState(1);
     const [loading, setLoading] = useState(true);
 
 
-    // Fetch du produit principal
+    const increase = () => {
+        if (product && quantity < product.stock) {
+            setQuantity(quantity + 1);
+        }
+    };
+
+    const decrease = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
+    };
+
+    //  Charger favoris depuis localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem(`favoris_${id}`);
+        if (saved) {
+            setFavoris(JSON.parse(saved));
+        }
+    }, [id]);
+
+    //  Sauvegarde toggle favoris
+    const toggleFavoris = () => {
+        const newValue = !favoris;
+        setFavoris(newValue);
+        localStorage.setItem(`favoris_${id}`, JSON.stringify(newValue));
+    };
+
+    
+
+    //  Fetch du produit principal
     useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -34,7 +64,7 @@ export default function ProductsDetail() {
         }, 1000);
     }, [id]);
 
-    // Fetch des produits similaires **après que le produit soit chargé**
+    //  Fetch produits similaires
     useEffect(() => {
         if (!product?.category) return;
 
@@ -51,8 +81,6 @@ export default function ProductsDetail() {
         fetchSampleProducts();
     }, [product]);
 
-    const toggleFavoris = () => setFavoris(!favoris);
-
     if (error) return <p>{error}</p>;
     if (!product) return <p>Chargement du produit...</p>;
 
@@ -64,10 +92,23 @@ export default function ProductsDetail() {
                 {/* Images à gauche */}
                 <div className="product-images">
                     <div className="thumbs">
-                        <Image src="/img/Montre-Luxe-Occasion-Rolex-Submariner-bleu-or-acier.jpg" alt="" width={90} height={90} />
-                        <Image src="/img/montre-omega-de-ville-prestige-.jpg" alt="" width={90} height={90} />
-                        <Image src="/img/montre-patek-philippe-aquanaut-5261r-prix-avis.jpg" alt="" width={90} height={90} />
-                        <Image src="/img/tag-Heuer.jpg" alt="" width={90} height={90} />
+
+                        <div className="thumb">
+                            <Image src={product.image} alt="" width={90} height={90} />
+                        </div>
+
+                        <div className="thumb">
+                            <Image src={product.image} alt="" width={90} height={90} />
+                        </div>
+
+                        <div className="thumb">
+                            <Image src={product.image} alt="" width={90} height={90} />
+                        </div>
+
+                        <div className="thumb">
+                            <Image src={product.image} alt="" width={90} height={90} />
+                        </div>
+
                     </div>
 
                     <div className="main-image">
@@ -79,7 +120,7 @@ export default function ProductsDetail() {
                 <div className="product-info">
                     <h1>{product.product_name}</h1>
                     <div className="rating">
-                        ⭐⭐⭐⭐⭐ <span>({product.reviews || 150} reviews)</span>
+                        ⭐⭐⭐⭐⭐ <span>{product.reviews || 150} reviews</span>
                         <p className="stock">{product.stock > 0 ? "En stock" : "Rupture de stock"}</p>
                     </div>
                     <p className="price">{product.price}€</p>
@@ -87,31 +128,34 @@ export default function ProductsDetail() {
 
                     <div className="actions">
                         <div className="quantity-box">
-                            <button className="minus">−</button>
-                            <span className="number">1</span>
-                            <button className="plus">+</button>
+                            <button className="minus" onClick={decrease}>−</button>
+                            <span className="number">{quantity}</span>
+                            <button className="plus" onClick={increase}>+</button>
                         </div>
-                        <button className="buy">Acheter</button>
+
+                        <button className="buy">Ajouter au Panier</button>
+
+                        {/* FAVORIS */}
                         <a className="favoris" onClick={toggleFavoris} style={{ cursor: "pointer" }}>
-                            <Heart fill={favoris ? "red" : "none"} stroke={favoris ? "red" : "currentColor"} />
+                            <Heart
+                                fill={favoris ? "red" : "none"}
+                                stroke={favoris ? "red" : "currentColor"}
+                            />
                         </a>
                     </div>
                 </div>
             </div>
 
-
             {/* PRODUITS ASSOCIÉS */}
             <h2 className="related-title">PRODUITS SIMILAIRES</h2>
 
             <div className="products-grid">
-                {
-                    sampleProducts && (
-                        sampleProducts.map((product) => (
-                            <ProductCard key={product.product_id} product={product} />
-                        )))
+                {sampleProducts &&
+                    sampleProducts.map((product) => (
+                        <ProductCard key={product.product_id} product={product} />
+                    ))
                 }
             </div>
-
         </div>
     );
 }
