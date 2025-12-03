@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
+const JWT_SECRET = new TextEncoder().encode("maPhraseQuiEstSenseEtreSecret");
+
 export async function middleware(request) {
   const url = request.nextUrl.pathname;
 
@@ -11,14 +13,20 @@ export async function middleware(request) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    const { payload } = await jwtVerify(token, secret);
+    // Vérification du token
+    const { payload } = await jwtVerify(token, JWT_SECRET);
 
-    if (url.startsWith("/admin") && payload.role !== "admin") {
+    // Routes admin
+    if (url.startsWith("/admin") && payload.role?.toLowerCase() !== "admin") {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if ((url.startsWith("/cart") || url.startsWith("/dashboard") || url.startsWith("/profile")) && !payload.user_id ) {
+    if (
+      (url.startsWith("/cart") ||
+        url.startsWith("/dashboard") ||
+        url.startsWith("/profile")) &&
+      !payload.user_id
+    ) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
@@ -28,6 +36,7 @@ export async function middleware(request) {
   }
 }
 
+// ⚡ Seulement appliquer le middleware sur ces routes
 export const config = {
   matcher: [
     "/dashboard/:path*",
