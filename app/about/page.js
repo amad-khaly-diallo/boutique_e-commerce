@@ -30,7 +30,7 @@ export default function About() {
                     </div>
 
                     <div className="hero-right">
-                        <Image src="/about-us.jpg" alt="About Us" width={720} height={480} />
+                        <Image src="/images/about-us.jpg" alt="About Us" width={720} height={480} />
                     </div>
                 </section>
 
@@ -70,19 +70,19 @@ export default function About() {
 
                 <section className="team">
                     <div className="team-member">
-                        <div className="avatar"><Image src="/person.png" alt="Tom Cruise" width={380} height={380} /></div>
+                        <div className="avatar"><Image src="/images/person.png" alt="Tom Cruise" width={380} height={380} /></div>
                         <h4>Tom Cruise</h4>
                         <p className="role">Founder & Chairman</p>
                     </div>
 
                     <div className="team-member">
-                        <div className="avatar"><Image src="/person.png" alt="Emma Watson" width={380} height={380} /></div>
+                        <div className="avatar"><Image src="/images/person.png" alt="Emma Watson" width={380} height={380} /></div>
                         <h4>Emma Watson</h4>
                         <p className="role">Managing Director</p>
                     </div>
 
                     <div className="team-member">
-                        <div className="avatar"><Image src="/person.png" alt="Will Smith" width={380} height={380} /></div>
+                        <div className="avatar"><Image src="/images/person.png" alt="Will Smith" width={380} height={380} /></div>
                         <h4>Will Smith</h4>
                         <p className="role">Product Designer</p>
                     </div>

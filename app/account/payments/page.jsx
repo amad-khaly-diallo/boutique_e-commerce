@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import "./payments.css";
 import Link from "next/link";
 
-const STORAGE_KEY = "userPayments";
-
 function emptyCard() {
   return {
-    id: null,
+    payment_id: null,
     titulaire: "",
     type: "Visa",
     numero: "",
@@ -21,23 +19,40 @@ export default function PaymentsPage() {
   const [cards, setCards] = useState([]);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyCard());
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setCards(JSON.parse(raw));
-      else setCards([]);
+      const fetchCards = async () => {
+        setLoading(true);
+        const res = await fetch("/api/payments", {
+          credentials: "include",
+        });
+
+        if (res.status === 401) {
+          setCards([]);
+          return;
+        }
+
+        if (!res.ok) {
+          console.warn("Erreur chargement paiements");
+          setCards([]);
+          return;
+        }
+
+        const data = await res.json().catch(() => []);
+        if (Array.isArray(data)) setCards(data);
+        else setCards([]);
+      };
+
+      fetchCards();
     } catch (e) {
       console.warn(e);
       setCards([]);
+    } finally {
+      setLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
-    } catch (e) {}
-  }, [cards]);
 
   function onChange(e) {
     const { name, value, type, checked } = e.target;
@@ -50,12 +65,12 @@ export default function PaymentsPage() {
   }
 
   function startEdit(card) {
-    setEditing(card.id);
+    setEditing(card.payment_id);
     // do not preload CVV for security - leave empty
-    setForm({ ...card, cvv: "" });
+    setForm({ ...card, numero: "", cvv: "" });
   }
 
-  function saveCard(e) {
+  async function saveCard(e) {
     e.preventDefault();
     const data = { ...form };
     if (!data.titulaire || !data.numero || !data.expiry) return alert("Veuillez remplir les champs requis.");
@@ -74,34 +89,92 @@ export default function PaymentsPage() {
 
     if (data.parDefaut) setCards((prev) => prev.map((c) => ({ ...c, parDefaut: false })));
 
-    // Do NOT persist CVV. Remove it before saving the card info.
-    const cardToSave = { ...data };
-    delete cardToSave.cvv;
+    // Do NOT persist CVV. Remove it before envoyer vers l'API.
+    const { cvv, ...payload } = data;
 
-    if (editing) {
-      setCards((prev) => prev.map((c) => (c.id === editing ? { ...cardToSave, id: editing } : c)));
+    try {
+      let res;
+      if (editing) {
+        res = await fetch(`/api/payments/${editing}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch("/api/payments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(payload),
+        });
+      }
+
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(body.error || "Erreur lors de l'enregistrement de la carte.");
+        return;
+      }
+
+      // Recharger la liste depuis l'API
+      const listRes = await fetch("/api/payments", {
+        credentials: "include",
+      });
+      const listData = await listRes.json().catch(() => []);
+      if (Array.isArray(listData)) {
+        setCards(listData);
+      }
+
       setEditing(null);
-    } else {
-      const id = Date.now();
-      setCards((prev) => [{ ...cardToSave, id }, ...prev]);
+      setForm(emptyCard());
+    } catch (err) {
+      console.error(err);
+      alert("Impossible d'enregistrer la carte.");
     }
-
-    setForm(emptyCard());
   }
 
-  function removeCard(id) {
+  async function removeCard(id) {
     if (!confirm("Supprimer cette méthode de paiement ?")) return;
-    setCards((prev) => prev.filter((c) => c.id !== id));
+    try {
+      const res = await fetch(`/api/payments/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Erreur lors de la suppression.");
+        return;
+      }
+      setCards((prev) => prev.filter((c) => c.payment_id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Impossible de supprimer la carte.");
+    }
   }
 
-  function setDefault(id) {
-    setCards((prev) => prev.map((c) => ({ ...c, parDefaut: c.id === id })));
-  }
+  async function setDefault(id) {
+    try {
+      const res = await fetch(`/api/payments/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ parDefaut: true }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Erreur lors de la mise à jour.");
+        return;
+      }
 
-  function maskNumber(num) {
-    const s = String(num).replace(/\s+/g, "");
-    if (s.length <= 4) return s;
-    return "•••• •••• •••• " + s.slice(-4);
+      const listRes = await fetch("/api/payments", {
+        credentials: "include",
+      });
+      const listData = await listRes.json().catch(() => []);
+      if (Array.isArray(listData)) setCards(listData);
+    } catch (err) {
+      console.error(err);
+      alert("Impossible de mettre à jour la carte par défaut.");
+    }
   }
 
   return (
@@ -115,21 +188,23 @@ export default function PaymentsPage() {
             <button className="btn" onClick={startAdd}>Ajouter une carte</button>
           </div>
 
-          {cards.length === 0 ? (
+          {loading ? (
+            <div className="empty">Chargement…</div>
+          ) : cards.length === 0 ? (
             <div className="empty">Aucune méthode enregistrée.</div>
           ) : (
             <ul className="cards-list">
               {cards.map((c) => (
-                <li key={c.id} className={`card-item ${c.parDefaut ? 'default' : ''}`}>
+                <li key={c.payment_id} className={`card-item ${c.parDefaut ? 'default' : ''}`}>
                   <div className="card-main">
                     <div className="card-type">{c.type} {c.parDefaut && <span className="badge">Par défaut</span>}</div>
-                    <div className="card-number">{maskNumber(c.numero)}</div>
+                    <div className="card-number">{c.numero_masque}</div>
                     <div className="card-holder">{c.titulaire} • {c.expiry}</div>
                   </div>
                   <div className="card-actions">
-                    {!c.parDefaut && <button className="link" onClick={() => setDefault(c.id)}>Définir par défaut</button>}
+                    {!c.parDefaut && <button className="link" onClick={() => setDefault(c.payment_id)}>Définir par défaut</button>}
                     <button className="link" onClick={() => startEdit(c)}>Éditer</button>
-                    <button className="link danger" onClick={() => removeCard(c.id)}>Supprimer</button>
+                    <button className="link danger" onClick={() => removeCard(c.payment_id)}>Supprimer</button>
                   </div>
                 </li>
               ))}
