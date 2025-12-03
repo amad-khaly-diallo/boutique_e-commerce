@@ -5,7 +5,7 @@ import { addToCart } from '@/lib/cart';
 export async function POST(request) {
     try {
         // ⛔ Vérifie si l'utilisateur est connecté
-        const { user } = verifyAuth(request);
+        const { user } = await verifyAuth(request);
 
         if (!user) {
             return NextResponse.json(

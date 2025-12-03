@@ -1,46 +1,38 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import next from "next";
+import { jwtVerify } from "jose";
 
-export function middleware(req) {
-    const token = req.cookies.get("token")?.value;
+export async function middleware(request) {
+  const url = request.nextUrl.pathname;
 
-    // Si pas de token, redirige vers login
+  try {
+    const token = request.cookies.get("token")?.value;
+
     if (!token) {
-        return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
 
-        // Tu peux vérifier un rôle (admin, etc.)
-        if (decoded.role === "admin") {
-            return NextResponse.next();
-        }
-
-        // Exemple : protéger une route admin :
-        if (req.nextUrl.pathname.startsWith("/admin") && decoded.role !== "admin") {
-            return NextResponse.redirect(new URL("/unauthorized", req.url));
-        }
-
-        if (req.nextUrl.pathname.startsWith("/cart") && decoded) {
-            return NextResponse.redirect(new URL("/login", req.url));
-        }
-
-        // Si tout va bien :
-        return NextResponse.next();
-    } catch (error) {
-        console.error("JWT invalid:", error);
-        return NextResponse.redirect(new URL("/login", req.url));
+    if (url.startsWith("/admin") && payload.role !== "admin") {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
+
+    if ((url.startsWith("/cart") || url.startsWith("/dashboard") || url.startsWith("/profile")) && !payload.user_id ) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    return NextResponse.next();
+  } catch (err) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 }
 
-// Sélectionner les routes protégées
 export const config = {
-    matcher: [
-        "/dashboard/:path*",   // protéger le dashboard
-        "/profile/:path*",     // protéger profile
-        "/admin/:path*",       // protéger admin
-        "/cart/:path*"       // protéger admin
-    ],
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/admin/:path*",
+    "/cart/:path*",
+  ],
 };
