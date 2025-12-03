@@ -66,8 +66,6 @@
 .heroButton {
   background: #111827;
   color: #d4af37;
-  /* OR */
-  ;
   border: 2px solid #d4af37;
   padding: 8px 24px;
   font-size: 1rem;
@@ -77,6 +75,17 @@
   margin-right: 16px;
   transition: background-color 0.3s ease;
 }
+
+.sectionHeader, .sectionHeader[class*="sectionHeader"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.sectionHeader .heroButton1 {
+  margin-left: auto !important;
+}
+
 
 .heroButton:hover {
   background: #d4af37;
@@ -95,6 +104,7 @@
   margin-right: 16px;
   transition: background-color 0.3s ease;
 }
+
 
 .heroButton1:hover {
   background-color: #d4af37;
@@ -162,62 +172,96 @@
   height: 40px;
   object-fit: cover;
 }
-
+/* ===== Section Luxe Catégories ===== */
 .section {
-  padding: 40px 20px;
+  padding: 60px 20px;
   text-align: center;
 }
 
 .heading {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #222;
+  letter-spacing: 0.5px;
 }
 
 .subheading {
-  font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 40px;
 }
 
+/* Grille des cartes */
 .grid {
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: 30px;
   flex-wrap: wrap;
 }
 
+/* Carte de catégorie */
 .card {
   position: relative;
-  width: 200px;
-  height: 200px;
-  background: white;
-  border-radius: 8px;
+  width: 290px;
+  height: 290px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
+/* Image avec overlay doré */
 .image {
-  object-fit: cover;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.sectionTitle {
-  font-size: 1.7rem;
+.card:hover .image {
+  transform: scale(1.10);
 }
 
-.title {
-  width: 100%;
-  background-color: var(--bg);
-  font-size: 1.5rem;
+/* Overlay doré */
+.card::after {
+  content: "";
   position: absolute;
-  bottom: 0;
-  color: orange;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(243, 187, 2, 0.4), rgba(212,175,55,0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+/* Titre de la carte */
+.title {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #f1f1f1; /* doré */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: color 0.3s ease;
+}
+
+.card:hover .title {
+  color: #fff; /* titre devient blanc au hover pour contraste avec overlay */
 }
 
 .productsGrid {
@@ -245,122 +289,221 @@
   margin: 0;
 }
 
-/* New Arrival */
+/* ===== Section New Arrival Luxe ===== */
 .newArrival {
-  padding-top: 32px;
-  padding-bottom: 8px;
+  padding: 60px 20px;
+  background-color: #fdf8f3; /* fond très clair, premium */
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  padding: 0 20px;
 }
 
 .badge {
   display: inline-block;
-  background: #f87171;
+  background: #d4af37; /* doré */
   color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  margin-right: 12px;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Loader */
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  color: #444;
+  margin: 50px 0;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Grille principale */
 .arrivalGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
   max-width: 1200px;
-  margin: 18px auto 0 auto;
+  margin: 0 auto;
   padding: 0 20px;
 }
 
+
+/* Grande image */
 .largeTile {
+  width: 100%;
+  height: 460px; 
   position: relative;
-  border-radius: 8px;
-  overflow: hidden
+  overflow: hidden;
+  border-radius: 12px;
 }
 
-.largeTile .image {
-  display: block;
+/* Petite image horizontale */
+.smallTile {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Petites images de la row */
+.smallTileHalf {
+  width: 100%;
+  height: 230px; 
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Toutes les images */
+.largeTile img,
+.smallTile img,
+.smallTileHalf img {
   width: 100%;
   height: 100%;
-
+  object-fit: cover; /* 🔥 évite les déformations */
 }
 
-.tileOverlay {
+.largeTile:hover, .smallTile:hover, .smallTileHalf:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+/* Images avec overlay doré */
+.largeTile .image,
+.smallTile .image,
+.smallTileHalf .image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.largeTile:hover .image,
+.smallTile:hover .image,
+.smallTileHalf:hover .image {
+  transform: scale(1.05);
+}
+
+/* Overlay doré pour effet luxe */
+.largeTile::after,
+.smallTile::after,
+.smallTileHalf::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(212,175,55,0.25), rgba(212,175,55,0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.largeTile:hover::after,
+.smallTile:hover::after,
+.smallTileHalf:hover::after {
+  opacity: 1;
+}
+
+/* Overlay de texte */
+.tileOverlay, .smallOverlay, .smallOverlayMini {
   position: absolute;
   left: 20px;
   bottom: 20px;
   color: #fff;
-  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 4px 12px rgba(0,0,0,0.45);
+  max-width: 90%;
 }
 
-.tileOverlay h3 {
-  margin: 0 0 8px 0;
-  font-size: 22px
+.tileOverlay h3, .smallOverlay h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.8rem;
+  font-weight: 700;
 }
 
-.tileOverlay p {
+.tileOverlay p, .smallOverlay p {
   margin: 0 0 10px 0;
-  max-width: 320px
+  font-size: 14px;
+  color: #fdf6e3;
 }
 
+.smallOverlayMini h5 {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* CTA Button doré */
 .tileCta {
   display: inline-block;
-  margin-top: 6px;
+  margin-top: 8px;
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
   color: #fff;
-  text-decoration: underline
+  border: 1px solid #d4af37;
+  border-radius: 6px;
+  text-decoration: none;
+  background: linear-gradient(90deg, #d4af37, #b28b2c);
+  transition: background 0.3s, transform 0.2s;
 }
 
+.tileCta:hover {
+  background: #fff;
+  color: #b28b2c;
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+/* Petite grille pour petits tiles */
 .smallTiles {
   display: flex;
   flex-direction: column;
-  gap: 16px
-}
-
-.smallTile {
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden
-}
-
-.smallTile .image {
-  display: block;
-  width: 100%;
-  height: auto
-}
-
-.smallOverlay {
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  color: #fff;
-  text-shadow: 0 6px 12px rgba(0, 0, 0, 0.4)
-}
-
-.smallOverlay h4 {
-  margin: 0 0 6px 0
-}
-
-.smallOverlay p {
-  margin: 0 0 8px 0;
-  font-size: 13px
+  gap: 16px;
 }
 
 .smallTileRow {
   display: flex;
-  gap: 12px
+  gap: 12px;
 }
 
 .smallTileHalf {
-  position: relative;
   flex: 1;
-  border-radius: 6px;
-  overflow: hidden
 }
 
-.smallOverlayMini {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  color: #fff
+/* Responsive */
+@media (max-width: 900px) {
+  .arrivalGrid {
+    grid-template-columns: 1fr;
+  }
+  .smallTileRow {
+    flex-direction: row;
+  }
 }
+
 
 /* Services Row */
 .serviceRow {
@@ -410,6 +553,8 @@
 .spin {
   animation: spin 1s linear infinite;
 }
+
+
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

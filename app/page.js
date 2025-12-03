@@ -161,7 +161,7 @@ export default function Home() {
             <div className={styles.arrivalGrid}>
               <div className={styles.largeTile}>
                 <Image
-                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80"
+                  src="/images/pendatif_2.jpg"
                   alt={newArrival[0].product_name}
                   width={760}
                   height={460}
@@ -170,14 +170,13 @@ export default function Home() {
                 <div className={styles.tileOverlay}>
                   <h3>{newArrival[0].product_name}</h3>
                   <p>{newArrival[0].description}</p>
-                  <a className={styles.tileCta}>Shop Now</a>
                 </div>
               </div>
 
               <div className={styles.smallTiles}>
                 <div className={styles.smallTile}>
                   <Image
-                    src="https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=800&q=80"
+                    src="/images/baracelet.jpg"
                     alt={newArrival[1].product_name}
                     width={400}
                     height={220}
@@ -185,22 +184,21 @@ export default function Home() {
                   <div className={styles.smallOverlay}>
                     <h3>{newArrival[1].product_name}</h3>
                     <p>{newArrival[1].description}</p>
-                    <a className={styles.tileCta}>Shop Now</a>
                   </div>
                 </div>
 
                 <div className={styles.smallTileRow}>
                   <div className={styles.smallTileHalf}>
-                    <Image src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80" alt="speakers" width={400} height={180} className={styles.image} />
+                    <Image src="/images/bague_1.jpg" alt="speakers" width={400} height={180} className={styles.image} />
                     <div className={styles.smallOverlayMini}>
                       <h5>{newArrival[2].product_name}</h5>
-                      <a className={styles.tileCta}>Shop Now</a></div>
+                    </div>
                   </div>
                   <div className={styles.smallTileHalf}>
-                    <Image src="/montre.avif" alt="perfume" width={400} height={180} className={styles.image} />
+                    <Image src="/images/boucles_3.jpg" alt="perfume" width={400} height={180} className={styles.image} />
                     <div className={styles.smallOverlayMini}>
                       <h5>{newArrival[3].product_name}</h5>
-                      <a className={styles.tileCta}>Shop Now</a></div>
+                    </div>
                   </div>
                 </div>
               </div>

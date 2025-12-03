@@ -21,7 +21,7 @@ export default function About() {
 
                 <section className="hero">
                     <div className="hero-left">
-                        <h1 className="hero-title">Our Story</h1>
+                        <h1 className="hero-title">A propos des nous </h1>
                         <p className="lead">Lancé en 2015, Exclusive est le premier site de vente en ligne d'Asie du Sud, avec une présence
                             active au Bangladesh. Soutenu par une large gamme de solutions de marketing, de données et de services sur mesure,
                             Exclusive compte 10 500 sellers et 300 marques et sert 3 millions de clients dans la région.</p>
