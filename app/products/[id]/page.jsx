@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { ProductCard } from "../../components/ProductCard/ProductCard";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import { useToastContext } from "@/app/contexts/ToastContext";
 
 export default function ProductsDetail() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ export default function ProductsDetail() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const showLoader = useLuxuryLoader(loading, 1000);
+  const toast = useToastContext();
 
 
   const increase = () => {
@@ -62,12 +64,12 @@ export default function ProductsDetail() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 401) {
-        alert("Vous devez être connecté pour gérer vos favoris.");
+        toast.warning("Vous devez être connecté pour gérer vos favoris.");
         setFavoris(previous);
         return;
       }
       if (!res.ok) {
-        alert(data.error || "Erreur lors de la mise à jour des favoris.");
+        toast.error(data.error || "Erreur lors de la mise à jour des favoris.");
         setFavoris(previous);
         return;
       }

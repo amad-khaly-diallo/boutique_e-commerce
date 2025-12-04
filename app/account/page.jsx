@@ -4,6 +4,7 @@ import "./page.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import { useToastContext } from "@/app/contexts/ToastContext";
 
 export default function AccountPage() {
   const [form, setForm] = useState({
@@ -18,6 +19,7 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState(null);
   const showLoader = useLuxuryLoader(loading, 1000);
+  const toast = useToastContext();
 
   function onChange(e) {
     const { name, value } = e.target;
@@ -47,7 +49,7 @@ export default function AccountPage() {
         }
       } catch (err) {
         console.error(err);
-        alert("Erreur lors du chargement des données utilisateur");
+        toast.error("Erreur lors du chargement des données utilisateur");
       } finally {
         // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
         setTimeout(() => {
@@ -63,19 +65,19 @@ export default function AccountPage() {
 
     // Validation
     if (form.newPassword && form.newPassword !== form.confirmPassword) {
-      alert("Les nouveaux mots de passe ne correspondent pas.");
+      toast.warning("Les nouveaux mots de passe ne correspondent pas.");
       return;
     }
 
     if (form.newPassword && form.newPassword.length < 8) {
-      alert("Le nouveau mot de passe doit contenir au moins 8 caractères.");
+      toast.warning("Le nouveau mot de passe doit contenir au moins 8 caractères.");
       return;
     }
 
     setSaving(true);
     try {
       if (!user || !user.user_id) {
-        alert("Erreur: utilisateur non identifié.");
+        toast.error("Erreur: utilisateur non identifié.");
         setSaving(false);
         return;
       }
@@ -89,7 +91,7 @@ export default function AccountPage() {
       // Si un nouveau mot de passe est fourni, vérifier l'ancien d'abord
       if (form.newPassword) {
         if (!form.currentPassword) {
-          alert("Veuillez entrer votre mot de passe actuel pour le modifier.");
+          toast.warning("Veuillez entrer votre mot de passe actuel pour le modifier.");
           setSaving(false);
           return;
         }
@@ -105,7 +107,7 @@ export default function AccountPage() {
 
         const verifyData = await verifyRes.json().catch(() => ({}));
         if (!verifyRes.ok || !verifyData.valid) {
-          alert("Mot de passe actuel incorrect.");
+          toast.error("Mot de passe actuel incorrect.");
           setSaving(false);
           return;
         }
@@ -123,7 +125,7 @@ export default function AccountPage() {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Erreur lors de l'enregistrement");
+        toast.error(data.error || "Erreur lors de l'enregistrement");
         setSaving(false);
         return;
       }
@@ -137,10 +139,10 @@ export default function AccountPage() {
         confirmPassword: "",
       }));
 
-      alert("Modifications enregistrées avec succès !");
+      toast.success("Modifications enregistrées avec succès !");
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de l'enregistrement");
+      toast.error("Erreur lors de l'enregistrement");
     } finally {
       setSaving(false);
     }
@@ -159,14 +161,16 @@ export default function AccountPage() {
 
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        alert("Déconnexion réussie");
-        window.location.href = "/";
+        toast.success("Déconnexion réussie");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
       } else {
-        alert(data.error || "Erreur lors de la déconnexion");
+        toast.error(data.error || "Erreur lors de la déconnexion");
       }
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la déconnexion");
+      toast.error("Erreur lors de la déconnexion");
     }
   }
 
@@ -191,13 +195,13 @@ export default function AccountPage() {
 
       const verifyData = await verifyRes.json().catch(() => ({}));
       if (!verifyRes.ok || !verifyData.valid) {
-        alert("Mot de passe incorrect. Suppression annulée.");
+        toast.error("Mot de passe incorrect. Suppression annulée.");
         return;
       }
 
       // Supprimer le compte
       if (!user || !user.user_id) {
-        alert("Erreur: utilisateur non identifié.");
+        toast.error("Erreur: utilisateur non identifié.");
         return;
       }
 
@@ -208,7 +212,7 @@ export default function AccountPage() {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Erreur lors de la suppression du compte");
+        toast.error(data.error || "Erreur lors de la suppression du compte");
         return;
       }
 
@@ -218,11 +222,13 @@ export default function AccountPage() {
         credentials: "include",
       });
 
-      alert("Votre compte a été supprimé avec succès.");
-      window.location.href = "/";
+      toast.success("Votre compte a été supprimé avec succès.");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la suppression du compte");
+      toast.error("Erreur lors de la suppression du compte");
     }
   }
 

@@ -6,12 +6,14 @@ import "./cart.css";
 import Image from "next/image";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import { useToastContext } from "@/app/contexts/ToastContext";
 
 export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const showLoader = useLuxuryLoader(loading, 1000);
+  const toast = useToastContext();
 
   const fetchProducts = async () => {
     try {
@@ -50,9 +52,10 @@ export default function CartPage() {
 
       // Supprime localement après confirmation côté serveur
       setCartItems((prev) => prev.filter((it) => it.cart_item_id !== cartItemId));
+      toast.success("Article supprimé du panier");
     } catch (err) {
       console.error(err);
-      alert("Impossible de supprimer l'article, réessayez.");
+      toast.error("Impossible de supprimer l'article, réessayez.");
     }
   }
 
@@ -153,7 +156,7 @@ export default function CartPage() {
                 className="btn-checkout"
                 onClick={() => {
                   if (cartItems.length === 0) {
-                    alert("Votre panier est vide. Veuillez ajouter des produits avant de continuer.");
+                    toast.warning("Votre panier est vide. Veuillez ajouter des produits avant de continuer.");
                     return;
                   }
                   window.location.href = "/checkout";

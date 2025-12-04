@@ -6,12 +6,14 @@ import Golden from '../components/GoldenBotton/GoldenBotton';
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { ProductCard } from "@/app/components/ProductCard/ProductCard";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import { useToastContext } from "@/app/contexts/ToastContext";
 
 
 export default function Wishlist() {
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
   const showLoader = useLuxuryLoader(loading, 1000);
+  const toast = useToastContext();
 
   const fetchWishlist = async () => {
     try {
@@ -40,8 +42,9 @@ export default function Wishlist() {
           prevWishlist.filter((item) => item.product_id !== productId)
         );
         fetchWishlist();
+        toast.success('Article retiré des favoris');
       } else {
-        alert('Failed to remove item from wishlist');
+        toast.error('Impossible de retirer l\'article des favoris');
       }
     } catch (error) {
       console.error('Error removing item from wishlist:', error.message);
@@ -68,21 +71,21 @@ export default function Wishlist() {
         </section>
       )}
 
-     {wishlist.length > 0 && !showLoader && (
-  <section className="wishlist-items">
-    {wishlist.map((item) => (
-      <div className="wishlist-item" key={item.product_id}>
-        <ProductCard product={item} />
-        <button
-          className="remove-btn"
-          onClick={() => removeFromWishlist(item.product_id)}
-        >
-          Retirer des favoris
-        </button>
-      </div>
-    ))}
-  </section>
-)}
+      {wishlist.length > 0 && !showLoader && (
+        <section className="wishlist-items">
+          {wishlist.map((item) => (
+            <div className="wishlist-item" key={item.product_id}>
+              <ProductCard product={item} />
+              <button
+                className="remove-btn"
+                onClick={() => removeFromWishlist(item.product_id)}
+              >
+                Retirer des favoris
+              </button>
+            </div>
+          ))}
+        </section>
+      )}
 
     </main>
   );

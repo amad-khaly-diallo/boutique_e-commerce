@@ -167,14 +167,21 @@
   transition: all 0.3s ease;
 }
 
+.progress-step span {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .progress-step::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 36px;
-  height: 36px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #fff;
   border: 2px solid #e5e7eb;

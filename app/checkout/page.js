@@ -6,6 +6,7 @@ import "./checkout.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import { useToastContext } from "@/app/contexts/ToastContext";
 
 const STEPS = {
   CART: 1,
@@ -44,6 +45,7 @@ function emptyPayment() {
 export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const showLoader = useLuxuryLoader(loading, 1000);
+  const toast = useToastContext();
   const [currentStep, setCurrentStep] = useState(STEPS.CART);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -79,8 +81,10 @@ export default function Checkout() {
         const data = await res.json().catch(() => ({}));
         if (res.ok && Array.isArray(data.cart)) {
           if (data.cart.length === 0) {
-            alert("Votre panier est vide. Redirection vers la boutique...");
-            window.location.href = "/";
+            toast.warning("Votre panier est vide. Redirection vers la boutique...");
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000);
             return;
           }
           setCartItems(data.cart);
@@ -91,8 +95,10 @@ export default function Checkout() {
           setSubtotal(s);
         } else {
           setCartItems([]);
-          alert("Votre panier est vide. Redirection vers la boutique...");
-          window.location.href = "/";
+          toast.warning("Votre panier est vide. Redirection vers la boutique...");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 2000);
         }
       } catch (err) {
         console.error(err);
@@ -115,13 +121,17 @@ export default function Checkout() {
           setUser(data.user);
         } else {
           // Utilisateur non connecté, rediriger vers login
-          alert("Vous devez être connecté pour passer commande.");
-          window.location.href = "/login";
+          toast.warning("Vous devez être connecté pour passer commande.");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 2000);
         }
       } catch (err) {
         console.error(err);
-        alert("Erreur de connexion. Redirection vers la page de connexion...");
-        window.location.href = "/login";
+        toast.error("Erreur de connexion. Redirection vers la page de connexion...");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
       }
     };
     loadUser();
@@ -178,12 +188,14 @@ export default function Checkout() {
   // Validation étape 1: Panier
   function validateCart() {
     if (!cartItems || cartItems.length === 0) {
-      alert("Votre panier est vide. Veuillez ajouter des produits avant de continuer.");
+      toast.warning("Votre panier est vide. Veuillez ajouter des produits avant de continuer.");
       return false;
     }
     if (!user) {
-      alert("Vous devez être connecté pour passer commande.");
-      window.location.href = "/login";
+      toast.warning("Vous devez être connecté pour passer commande.");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
       return false;
     }
     return true;
@@ -194,11 +206,11 @@ export default function Checkout() {
     if (showNewDeliveryForm) {
       const addr = newDeliveryAddress;
       if (!addr.prenom || !addr.nom || !addr.adresse || !addr.ville) {
-        alert("Veuillez remplir tous les champs requis pour l'adresse de livraison.");
+        toast.warning("Veuillez remplir tous les champs requis pour l'adresse de livraison.");
         return false;
       }
     } else if (!selectedDeliveryAddress) {
-      alert("Veuillez sélectionner ou créer une adresse de livraison.");
+      toast.warning("Veuillez sélectionner ou créer une adresse de livraison.");
       return false;
     }
     return true;
@@ -212,11 +224,11 @@ export default function Checkout() {
     if (showNewBillingForm) {
       const addr = newBillingAddress;
       if (!addr.prenom || !addr.nom || !addr.adresse || !addr.ville) {
-        alert("Veuillez remplir tous les champs requis pour l'adresse de facturation.");
+        toast.warning("Veuillez remplir tous les champs requis pour l'adresse de facturation.");
         return false;
       }
     } else if (!selectedBillingAddress) {
-      alert("Veuillez sélectionner ou créer une adresse de facturation.");
+      toast.warning("Veuillez sélectionner ou créer une adresse de facturation.");
       return false;
     }
     return true;
@@ -227,22 +239,22 @@ export default function Checkout() {
     if (showNewPaymentForm) {
       const pay = newPayment;
       if (!pay.titulaire || !pay.numero || !pay.expiry || !pay.cvv) {
-        alert("Veuillez remplir tous les champs requis pour la méthode de paiement.");
+        toast.warning("Veuillez remplir tous les champs requis pour la méthode de paiement.");
         return false;
       }
       // Validation CVV
       const cvvClean = String(pay.cvv || "").trim();
       const requires4 = pay.type === "American Express";
       if (requires4 && !/^\d{4}$/.test(cvvClean)) {
-        alert("Le CVV pour American Express doit contenir 4 chiffres.");
+        toast.warning("Le CVV pour American Express doit contenir 4 chiffres.");
         return false;
       }
       if (!requires4 && !/^\d{3}$/.test(cvvClean)) {
-        alert("Le CVV doit contenir 3 chiffres.");
+        toast.warning("Le CVV doit contenir 3 chiffres.");
         return false;
       }
     } else if (!selectedPayment) {
-      alert("Veuillez sélectionner ou ajouter une méthode de paiement.");
+      toast.warning("Veuillez sélectionner ou ajouter une méthode de paiement.");
       return false;
     }
     return true;
@@ -259,9 +271,10 @@ export default function Checkout() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Erreur lors de l'enregistrement de l'adresse.");
+        toast.error(data.error || "Erreur lors de l'enregistrement de l'adresse.");
         return false;
       }
+      toast.success("Adresse enregistrée avec succès");
       setSelectedDeliveryAddress(data.address_id);
       setShowNewDeliveryForm(false);
       setNewDeliveryAddress(emptyAddress());
@@ -274,7 +287,7 @@ export default function Checkout() {
       return true;
     } catch (err) {
       console.error(err);
-      alert("Impossible d'enregistrer l'adresse.");
+      toast.error("Impossible d'enregistrer l'adresse.");
       return false;
     }
   }
@@ -290,9 +303,10 @@ export default function Checkout() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Erreur lors de l'enregistrement de l'adresse.");
+        toast.error(data.error || "Erreur lors de l'enregistrement de l'adresse.");
         return false;
       }
+      toast.success("Adresse enregistrée avec succès");
       setSelectedBillingAddress(data.address_id);
       setShowNewBillingForm(false);
       setNewBillingAddress(emptyAddress());
@@ -305,7 +319,7 @@ export default function Checkout() {
       return true;
     } catch (err) {
       console.error(err);
-      alert("Impossible d'enregistrer l'adresse.");
+      toast.error("Impossible d'enregistrer l'adresse.");
       return false;
     }
   }
@@ -322,9 +336,10 @@ export default function Checkout() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Erreur lors de l'enregistrement de la méthode de paiement.");
+        toast.error(data.error || "Erreur lors de l'enregistrement de la méthode de paiement.");
         return false;
       }
+      toast.success("Méthode de paiement enregistrée avec succès");
       setSelectedPayment(data.payment_id);
       setShowNewPaymentForm(false);
       setNewPayment(emptyPayment());
@@ -337,7 +352,7 @@ export default function Checkout() {
       return true;
     } catch (err) {
       console.error(err);
-      alert("Impossible d'enregistrer la méthode de paiement.");
+      toast.error("Impossible d'enregistrer la méthode de paiement.");
       return false;
     }
   }
@@ -412,7 +427,7 @@ export default function Checkout() {
       }
 
       if (!deliveryAddr) {
-        alert("Erreur: adresse de livraison introuvable.");
+        toast.error("Erreur: adresse de livraison introuvable.");
         setPlacing(false);
         return;
       }
@@ -441,7 +456,7 @@ export default function Checkout() {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Erreur lors de la création de la commande.");
+        toast.error(data.error || "Erreur lors de la création de la commande.");
         setPlacing(false);
         return;
       }
@@ -460,11 +475,13 @@ export default function Checkout() {
         console.error("Erreur lors de la suppression du panier:", err);
       }
 
-      alert("Commande enregistrée avec succès !");
-      window.location.href = "/account/orders";
+      toast.success("Commande enregistrée avec succès !");
+      setTimeout(() => {
+        window.location.href = "/account/orders";
+      }, 2000);
     } catch (err) {
       console.error(err);
-      alert("Impossible de passer la commande pour le moment.");
+      toast.error("Impossible de passer la commande pour le moment.");
       setPlacing(false);
     }
   }

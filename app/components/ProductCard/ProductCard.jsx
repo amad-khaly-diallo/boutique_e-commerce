@@ -5,10 +5,12 @@ import { Heart, Eye, Star, ShoppingCart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './productCard.module.css';
 import Golden from '../GoldenBotton/GoldenBotton';
+import { useToastContext } from '@/app/contexts/ToastContext';
 
 export function ProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const toast = useToastContext();
   const [notification, setNotification] = useState(null); // { message, type }
 
 useEffect(() => {
@@ -53,20 +55,20 @@ useEffect(() => {
       const data = await res.json();
 
       if (res.status === 401) {
-        alert("Vous devez être connecté pour ajouter au panier");
+        toast.warning("Vous devez être connecté pour ajouter au panier");
         return;
       }
 
       if (!res.ok) {
-        alert(data.error || "Erreur lors de l’ajout au panier");
+        toast.error(data.error || "Erreur lors de l'ajout au panier");
         return;
       }
 
-      alert("Produit ajouté au panier avec succès");
+      toast.success("Produit ajouté au panier avec succès");
 
     } catch (error) {
       console.error("Erreur réseau :", error);
-      alert("Impossible de contacter le serveur");
+      toast.error("Impossible de contacter le serveur");
     } finally {
       setTimeout(()=>setIsAdding(false), 1000);
     }
@@ -97,14 +99,14 @@ const handleToggleFavorite = async (e) => {
 
     // Pas connecté
     if (res.status === 401) {
-      alert("Vous devez être connecté pour ajouter aux favoris");
+      toast.warning("Vous devez être connecté pour ajouter aux favoris");
       setIsFavorite(previousState);
       return;
     }
 
     // Erreur serveur
     if (!res.ok) {
-      alert(data.error || "Erreur lors de la mise à jour des favoris");
+      toast.error(data.error || "Erreur lors de la mise à jour des favoris");
       setIsFavorite(previousState);
       return;
     }
