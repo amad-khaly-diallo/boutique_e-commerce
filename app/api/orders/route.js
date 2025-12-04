@@ -44,6 +44,7 @@ export async function POST(request) {
       user_id,
       total_amount,
       status = "pending",
+      address = null,
       items = [],
     } = await request.json();
 
@@ -70,8 +71,8 @@ export async function POST(request) {
       await conn.beginTransaction();
 
       const [result] = await conn.execute(
-        "INSERT INTO `Order` (user_id, total_amount, status) VALUES (?, ?, ?)",
-        [user_id, total_amount, status],
+        "INSERT INTO `Order` (user_id, address, total_amount, status) VALUES (?, ?, ?, ?)",
+        [user_id, address, total_amount, status],
       );
 
       const orderId = result.insertId;

@@ -67,7 +67,7 @@ export default function LoginPage() {
             <div className="auth-main">
 
                 <div className="auth-image">
-                    <Image src="/lux.png" alt="Auth" width={500} height={500} />
+                    <Image src="/images/lux.png" alt="Auth" width={500} height={500} />
                 </div>
 
                 <div className="auth-form-container">

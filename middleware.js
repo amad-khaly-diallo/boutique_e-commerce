@@ -1,46 +1,47 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import next from "next";
+import { jwtVerify } from "jose";
 
-export function middleware(req) {
-    const token = req.cookies.get("token")?.value;
+const JWT_SECRET = new TextEncoder().encode("maPhraseQuiEstSenseEtreSecret");
 
-    // Si pas de token, redirige vers login
+export async function middleware(request) {
+  const url = request.nextUrl.pathname;
+
+  try {
+    const token = request.cookies.get("token")?.value;
+
     if (!token) {
-        return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Vérification du token
+    const { payload } = await jwtVerify(token, JWT_SECRET);
 
-        // Tu peux vérifier un rôle (admin, etc.)
-        if (decoded.role === "admin") {
-            return NextResponse.next();
-        }
-
-        // Exemple : protéger une route admin :
-        if (req.nextUrl.pathname.startsWith("/admin") && decoded.role !== "admin") {
-            return NextResponse.redirect(new URL("/unauthorized", req.url));
-        }
-
-        if (req.nextUrl.pathname.startsWith("/cart") && decoded) {
-            return NextResponse.redirect(new URL("/login", req.url));
-        }
-
-        // Si tout va bien :
-        return NextResponse.next();
-    } catch (error) {
-        console.error("JWT invalid:", error);
-        return NextResponse.redirect(new URL("/login", req.url));
+    // Routes admin
+    if (url.startsWith("/admin") && payload.role?.toLowerCase() !== "admin") {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
+
+    if (
+      (url.startsWith("/cart") ||
+        url.startsWith("/dashboard") ||
+        url.startsWith("/profile")) &&
+      !payload.user_id
+    ) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    return NextResponse.next();
+  } catch (err) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 }
 
-// Sélectionner les routes protégées
+// ⚡ Seulement appliquer le middleware sur ces routes
 export const config = {
-    matcher: [
-        "/dashboard/:path*",   // protéger le dashboard
-        "/profile/:path*",     // protéger profile
-        "/admin/:path*",       // protéger admin
-        "/cart/:path*"       // protéger admin
-    ],
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/admin/:path*",
+    "/cart/:path*",
+  ],
 };

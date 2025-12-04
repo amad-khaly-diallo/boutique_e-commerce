@@ -1,18 +1,14 @@
 "use client";
-"use client";
 import { useEffect, useState } from "react";
 import Golden from "../components/GoldenBotton/GoldenBotton";
 import Image from "next/image";
 import "./checkout.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 
-const mockProducts = [
-  { id: 1, title: "Écran LCD", price: 650, img: "/images/prod1.svg" },
-  { id: 2, title: "Manette H1", price: 1100, img: "/images/prod2.svg" },
-];
-
 export default function Checkout() {
   const [luxeLoading, setluxeLoading] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
+  const [subtotals, setSubtotals] = useState({ subtotal: 0, shipping: 0 });
   const [form, setForm] = useState({
     prenom: "",
     nom: "",
@@ -26,9 +22,10 @@ export default function Checkout() {
     payment: "cod",
     coupon: "",
   });
+  const [placing, setPlacing] = useState(false);
 
-  const subtotal = mockProducts.reduce((s, p) => s + p.price, 0);
-  const shipping = 0; // mock
+  const subtotal = subtotals.subtotal;
+  const shipping = subtotals.shipping;
   const total = subtotal + shipping;
 
   function onChange(e) {
@@ -39,25 +36,91 @@ export default function Checkout() {
     }));
   }
 
-  function placeOrder(e) {
+  async function placeOrder(e) {
     e.preventDefault();
-    const order = { form, items: mockProducts, subtotal, shipping, total };
-    try {
-      localStorage.setItem("lastOrder", JSON.stringify(order));
-    } catch (err) {
-      console.warn("localStorage not available", err);
+    if (!cartItems.length) {
+      alert("Votre panier est vide.");
+      return;
     }
-    console.log("Commande enregistrée (simulation):", order);
-    alert(
-      "Commande enregistrée (simulation). Vérifiez la console pour les détails."
-    );
+
+    setPlacing(true);
+    try {
+      const meRes = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+      const meData = await meRes.json().catch(() => ({}));
+      if (!meRes.ok || !meData.user) {
+        alert("Vous devez être connecté pour passer commande.");
+        setPlacing(false);
+        return;
+      }
+
+      const orderPayload = {
+        user_id: meData.user.user_id,
+        address: `${form.prenom} ${form.nom}, ${form.adresse} ${form.apt || ""}, ${form.ville} - ${form.telephone}`,
+        total_amount: subtotal,
+        status: "pending",
+        items: cartItems.map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price_unit: item.price,
+        })),
+      };
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(orderPayload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Erreur lors de la création de la commande.");
+        setPlacing(false);
+        return;
+      }
+
+      alert("Commande enregistrée avec succès.");
+      window.location.href = "/account/orders";
+    } catch (err) {
+      console.error(err);
+      alert("Impossible de passer la commande pour le moment.");
+    } finally {
+      setPlacing(false);
+    }
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      setluxeLoading(false)
-    }, 1000);
-  }, [])
+    const loadCart = async () => {
+      try {
+        const res = await fetch("/api/carts", {
+          credentials: "include",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && Array.isArray(data.cart)) {
+          setCartItems(data.cart);
+          const s = data.cart.reduce(
+            (acc, item) => acc + Number(item.price || 0) * Number(item.quantity || 1),
+            0,
+          );
+          setSubtotals({ subtotal: s, shipping: 0 });
+        } else {
+          setCartItems([]);
+          setSubtotals({ subtotal: 0, shipping: 0 });
+        }
+      } catch (err) {
+        console.error(err);
+        setCartItems([]);
+        setSubtotals({ subtotal: 0, shipping: 0 });
+      } finally {
+        setTimeout(() => {
+          setluxeLoading(false);
+        }, 1000);
+      }
+    };
+    loadCart();
+  }, []);
 
   return (
     <div className="checkout-container">
@@ -144,21 +207,24 @@ export default function Checkout() {
           </label>
 
           <div className="mobile-only">
-            <Golden type="submit" className="place-order">
-              Passer la commande
+            <Golden type="submit" className="place-order" disabled={placing}>
+              {placing ? "Traitement..." : "Passer la commande"}
             </Golden>
           </div>
         </form>
 
         <aside className="summary">
           <div className="cart-items">
-            {mockProducts.map((p) => (
-              <div key={p.id} className="cart-row">
-                <Image src={p.img} alt={p.title} width={60} height={60} />
+            {cartItems.map((p) => (
+              <div key={p.cart_item_id} className="cart-row">
+                <Image src={p.image} alt={p.product_name} width={60} height={60} />
                 <div className="cart-info">
-                  <div className="cart-title">{p.title}</div>
+                  <div className="cart-title">{p.product_name}</div>
+                  <div className="small">Qté : {p.quantity}</div>
                 </div>
-                <div className="cart-price">€{p.price}</div>
+                <div className="cart-price">
+                  €{Number(p.price || 0) * Number(p.quantity || 1)}
+                </div>
               </div>
             ))}
           </div>
@@ -179,8 +245,8 @@ export default function Checkout() {
           </div>
 
           <div className="desktop-only">
-            <Golden className="place-order" onClick={placeOrder}>
-              Passer la commande
+            <Golden className="place-order" onClick={placeOrder} disabled={placing}>
+              {placing ? "Traitement..." : "Passer la commande"}
             </Golden>
           </div>
         </aside>

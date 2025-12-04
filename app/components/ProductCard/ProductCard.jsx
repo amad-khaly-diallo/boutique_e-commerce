@@ -2,13 +2,34 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, Eye, Star, ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './productCard.module.css';
 import Golden from '../GoldenBotton/GoldenBotton';
 
 export function ProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+
+useEffect(() => {
+  const fetchFavoriteStatus = async () => {
+    try {
+      const res = await fetch(`/api/favorites/check?productId=${product.product_id}`, {
+        credentials: "include"
+      });
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      setIsFavorite(data.favorite);
+    } catch (err) {
+      console.error("Erreur récupération favoris :", err);
+    }
+  };
+
+  fetchFavoriteStatus();
+}, [product.product_id]);
+
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -40,7 +61,7 @@ export function ProductCard({ product }) {
         return;
       }
 
-      console.log("Ajouté au panier :", data);
+      alert("Produit ajouté au panier avec succès");
 
     } catch (error) {
       console.error("Erreur réseau :", error);
@@ -51,11 +72,52 @@ export function ProductCard({ product }) {
   };
 
 
-  const handleToggleFavorite = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsFavorite(!isFavorite);
-  };
+const handleToggleFavorite = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const previousState = isFavorite; 
+
+  setIsFavorite(!isFavorite); 
+
+  try {
+    const res = await fetch("/api/favorites/toggle", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        productId: product.product_id,
+      })
+    });
+
+    const data = await res.json();
+
+    // Pas connecté
+    if (res.status === 401) {
+      alert("Vous devez être connecté pour ajouter aux favoris");
+      setIsFavorite(previousState);
+      return;
+    }
+
+    // Erreur serveur
+    if (!res.ok) {
+      alert(data.error || "Erreur lors de la mise à jour des favoris");
+      setIsFavorite(previousState);
+      return;
+    }
+    setIsFavorite(data.favorite);
+
+    alert("Favorite updated:", data.message);
+    console.log(data)
+
+  } catch (error) {
+    console.error("Erreur réseau :", error);
+    setIsFavorite(previousState);
+  }
+};
+
 
   const handleQuickView = (e) => {
     e.preventDefault();
@@ -116,7 +178,7 @@ export function ProductCard({ product }) {
             onClick={handleToggleFavorite}
             aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
           >
-            <Heart className={styles.actionIcon} fill={isFavorite ? 'currentColor' : 'none'} size={18} />
+            <Heart className={styles.actionIcon} key={product.product_id} fill={isFavorite ? 'currentColor' : 'none'} size={18} />
           </button>
           <button
             type="button"

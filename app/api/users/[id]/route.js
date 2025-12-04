@@ -23,7 +23,7 @@ export async function GET(_request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const payload = await request.json();
-    const allowedFields = ["first_name", "last_name", "email", "password", "address"];
+    const allowedFields = ["first_name", "last_name", "email", "password", "address", "role"];
     const fields = [];
     const values = [];
     for (const [key, value] of Object.entries(payload)) {
