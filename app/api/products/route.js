@@ -50,7 +50,7 @@ export async function GET(request) {
       );
       const total = countRows[0]?.total || 0;
 
-      // Prepared statement 🔥 (aucune injection possible)
+      // Prepared statement  (aucune injection possible)
       const [rows] = await conn.execute(
         `SELECT * FROM Product WHERE category = ? LIMIT ${limit} OFFSET ${offset}`,
         [category]

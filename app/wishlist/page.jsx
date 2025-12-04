@@ -4,6 +4,8 @@ import "./wishlist.css";
 import Link from 'next/link';
 import Golden from '../components/GoldenBotton/GoldenBotton';
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
+import { ProductCard } from "@/app/components/ProductCard/ProductCard";
+
 
 export default function Wishlist() {
   const [luxeLoading, setluxeLoading] = useState(true);
@@ -20,6 +22,33 @@ export default function Wishlist() {
       setluxeLoading(false);
     }
   };
+  // retire au favorits
+  const removeFromWishlist = async (productId) => {
+    try {
+      const response = await fetch(`/api/favorites/toggle`, {
+        method: 'POST',
+        body: JSON.stringify({ productId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        setWishlist((prevWishlist) =>
+          prevWishlist.filter((item) => item.id !== productId)
+        );
+        fetchWishlist();
+      } else {
+        alert('Failed to remove item from wishlist');
+      }
+    } catch (error) {
+      console.error('Error removing item from wishlist:', error.message);
+    }
+  };
+
+  // notification pour ajout ou retrait
+ 
+
+
 
   useEffect(() => {
     fetchWishlist();
@@ -35,27 +64,27 @@ export default function Wishlist() {
         <section className="wishlist-empty">
           <h2>Votre liste de souhaits est vide</h2>
           <p>Explorez nos produits et ajoutez vos articles préférés pour les retrouver facilement plus tard.</p>
-          <Golden className="btn-return">Retourner à la boutique</Golden>
+          <Golden className="btn-return" onClick={() => (window.location.href = "/")}>
+            Retourner à la boutique</Golden>
         </section>
       )}
 
-      {wishlist.length > 0 && !luxeLoading && (
-        <section className="wishlist-items">
-          {wishlist.map((item) => (
-            <li key={item.favorite_id} className="wishlist-item">
-              <img src={item.image} alt={item.product_name} className="wishlist-item-image" />
-              <div className="wishlist-item-info">
-                <h3>{item.product_name}</h3>
-                <p>{item.description}</p>
-                <p>Prix : {item.price} €</p>
-                <Link href={`/products/${item.product_id}`} className="btn-details">
-                  <Golden>Ajouter au panier</Golden>
-                </Link>
-              </div>
-            </li>
-          ))}
-        </section>
-      )}
+     {wishlist.length > 0 && !luxeLoading && (
+  <section className="wishlist-items">
+    {wishlist.map((item) => (
+      <div className="wishlist-item" key={item.id}>
+        <ProductCard product={item} />
+        <button
+          className="remove-btn"
+          onClick={() => removeFromWishlist(item.product_id)}
+        >
+          Retirer des favoris
+        </button>
+      </div>
+    ))}
+  </section>
+)}
+
     </main>
   );
 }

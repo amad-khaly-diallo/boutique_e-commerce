@@ -9,6 +9,7 @@ import Golden from '../GoldenBotton/GoldenBotton';
 export function ProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [notification, setNotification] = useState(null); // { message, type }
 
 useEffect(() => {
   const fetchFavoriteStatus = async () => {
@@ -109,7 +110,14 @@ const handleToggleFavorite = async (e) => {
     }
     setIsFavorite(data.favorite);
 
-    alert("Favorite updated:", data.message);
+    // Afficher notification au lieu d'alert
+    setNotification({
+      message: `Produit ${data.favorite ? 'ajouté' : 'retiré'} des favoris`,
+      type: data.favorite ? 'success' : 'info'
+    });
+    // auto-hide
+    setTimeout(() => setNotification(null), 3000);
+
     console.log(data)
 
   } catch (error) {
@@ -154,7 +162,28 @@ const handleToggleFavorite = async (e) => {
   };
 
   return (
-    <Link href={`/products/${product.product_id}`} className={styles.card}>
+    <Link href={`/products/${product.product_id}`} className={styles.card} style={{ position: 'relative' }}>
+      {/* Notification toast */}
+      {notification && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            left: 18, 
+            backgroundColor: notification.type === 'success' ? 'rgba(34,197,94,0.95)' : 'rgba(248, 22, 22, 0.95)',
+            color: '#fff',
+            padding: '6px 10px',
+            borderRadius: 6,
+            fontSize: 12,
+            zIndex: 50,
+            pointerEvents: 'none',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+          }}
+        >
+          {notification.message}
+        </div>
+      )}
+
       <div className={styles.imageWrapper}>
         {product.image ? (
           <Image
