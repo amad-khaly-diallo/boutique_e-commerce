@@ -11,8 +11,9 @@ export async function GET(request) {
 
   const productId = request.nextUrl.searchParams.get("productId");
 
+  let db = null;
   try {
-    const db = await connect();
+    db = await connect();
 
     const [rows] = await db.execute(
       "SELECT * FROM favorites WHERE user_id = ? AND product_id = ?", 
@@ -25,5 +26,7 @@ export async function GET(request) {
   } catch (err) {
     console.error(err);
     return NextResponse.json({ favorite: false }, { status: 200 });
+  } finally {
+    if (db) await db.end();
   }
 }

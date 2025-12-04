@@ -148,7 +148,16 @@ export default function ProductsDetail() {
         <div className="product-info">
           <h1>{product.product_name}</h1>
           <div className="rating">
-            ⭐⭐⭐⭐⭐ <span>{product.reviews || 150} reviews</span>
+            {product.note ? (
+              <>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i}>{i < Math.floor(product.note) ? "⭐" : "☆"}</span>
+                ))} 
+                <span>{product.note.toFixed(1)}/5</span>
+              </>
+            ) : (
+              <span>Aucune note</span>
+            )}
             <p className="stock">
               {product.stock > 0 ? "En stock" : "Rupture de stock"}
             </p>

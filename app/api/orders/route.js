@@ -9,6 +9,7 @@ async function fetchOrderWithItems(conn, orderId) {
 }
 
 export async function GET(request) {
+  let conn = null;
   try {
     const url = new URL(request.url);
     const userId = url.searchParams.get("userId");
@@ -26,19 +27,24 @@ export async function GET(request) {
     }
     const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
-    const conn = await connect();
+    conn = await connect();
     const [orders] = await conn.execute(
-      `SELECT * FROM \`Order\` ${whereClause} ORDER BY created_at DESC`.trim(),
+      `SELECT o.*, u.first_name, u.last_name, u.email 
+       FROM \`Order\` o 
+       LEFT JOIN User u ON o.user_id = u.user_id 
+       ${whereClause} ORDER BY o.created_at DESC`.trim(),
       values,
     );
-    await conn.end();
     return NextResponse.json(orders);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
 export async function POST(request) {
+  let conn = null;
   try {
     const {
       user_id,
@@ -66,7 +72,7 @@ export async function POST(request) {
       }
     }
 
-    const conn = await connect();
+    conn = await connect();
     try {
       await conn.beginTransaction();
 
@@ -87,16 +93,16 @@ export async function POST(request) {
 
       await conn.commit();
       const order = await fetchOrderWithItems(conn, orderId);
-      await conn.end();
 
       return NextResponse.json(order, { status: 201 });
     } catch (transactionError) {
       await conn.rollback();
-      await conn.end();
       throw transactionError;
     }
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 

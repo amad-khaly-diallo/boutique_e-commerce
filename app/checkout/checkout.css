@@ -143,6 +143,368 @@
   display: block;
 }
 
+/* Progress bar */
+.checkout-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 24px 20px;
+  background: linear-gradient(135deg, #f8fafb 0%, #ffffff 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.progress-step {
+  flex: 1;
+  text-align: center;
+  padding: 12px 8px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.progress-step::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+.progress-step.active::before {
+  background: #d4af37;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+}
+
+.progress-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 18px);
+  width: calc(100% - 36px);
+  height: 3px;
+  background: #e5e7eb;
+  transform: translateY(-50%);
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active:not(:last-child)::after {
+  background: linear-gradient(90deg, #d4af37 0%, #c19b2f 100%);
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.progress-step span {
+  display: block;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .checkout-progress {
+    padding: 16px 8px;
+  }
+  
+  .progress-step {
+    font-size: 0.75rem;
+    padding: 8px 4px;
+  }
+  
+  .progress-step::before {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .progress-step:not(:last-child)::after {
+    left: calc(50% + 14px);
+    width: calc(100% - 28px);
+  }
+  
+  .progress-step span {
+    font-size: 0.7rem;
+    margin-top: 4px;
+  }
+}
+
+/* Checkout steps */
+.checkout-step {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.checkout-step h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.checkout-main {
+  flex: 1;
+}
+
+.checkout-sidebar {
+  position: sticky;
+  top: 20px;
+}
+
+.cart-summary {
+  background: #f8fafb;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.cart-summary h3 {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.cart-items-mini {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.cart-row-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.cart-info-mini {
+  flex: 1;
+  font-size: 0.85rem;
+}
+
+/* Address list */
+.address-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.address-item {
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.address-item:hover {
+  border-color: #d4af37;
+}
+
+.address-item.selected {
+  border-color: #d4af37;
+  background: #fef9e7;
+}
+
+.addr-main {
+  margin-bottom: 8px;
+}
+
+.addr-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.addr-line {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+/* Payment list */
+.payment-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.payment-item {
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.payment-item:hover {
+  border-color: #d4af37;
+}
+
+.payment-item.selected {
+  border-color: #d4af37;
+  background: #fef9e7;
+}
+
+.payment-type {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.payment-number {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.payment-holder {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Forms */
+.address-form,
+.payment-form {
+  display: grid;
+  gap: 12px;
+}
+
+.address-form .row,
+.payment-form .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.address-form input,
+.payment-form input,
+.payment-form select {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.checkbox input {
+  width: auto;
+}
+
+/* Confirmation */
+.confirmation-summary {
+  display: grid;
+  gap: 24px;
+}
+
+.summary-section {
+  padding: 16px;
+  background: #f8fafb;
+  border-radius: 8px;
+}
+
+.summary-section h3 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-address,
+.summary-payment {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* Checkout actions */
+.checkout-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-cart p {
+  margin-bottom: 16px;
+  color: #6b7280;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: #f8fafb;
+}
+
+.btn-primary {
+  background: #d4af37;
+  color: #fff;
+  border-color: #d4af37;
+}
+
+.btn-primary:hover {
+  background: #c19b2f;
+}
+
+.btn-plain {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  text-decoration: underline;
+}
+
+.btn-plain:hover {
+  color: #111;
+}
+
+.small {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
 @media (max-width: 900px) {
   .checkout-grid {
     grid-template-columns: 1fr;
@@ -152,5 +514,16 @@
   }
   .mobile-only {
     display: block;
+  }
+  .checkout-progress {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-step:not(:last-child)::after {
+    display: none;
+  }
+  .address-form .row,
+  .payment-form .row {
+    grid-template-columns: 1fr;
   }
 }

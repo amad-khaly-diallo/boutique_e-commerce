@@ -148,7 +148,13 @@ export default function CartPage() {
 
               <Golden
                 className="btn-checkout"
-                onClick={() => (window.location.href = "/checkout")}
+                onClick={() => {
+                  if (cartItems.length === 0) {
+                    alert("Votre panier est vide. Veuillez ajouter des produits avant de continuer.");
+                    return;
+                  }
+                  window.location.href = "/checkout";
+                }}
               >
                 Proceed to checkout
               </Golden>

@@ -9,7 +9,6 @@ const NAV_LINKS = [
     { href: '/products', label: 'Produits' },
     { href: '/about', label: 'À propos' },
     { href: '/login', label: 'Connectez-vous' },
-    { href: '/admin', label: 'Admin' }
 ];
 
 const CATEGORY_LINKS = [
@@ -22,11 +21,28 @@ export default function Header() {
     const pathname = usePathname();
     const [cartCount, setCartCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [user, setUser] = useState(null);
     const isCategorySection = pathname?.startsWith('/categories');
 
     //pour la bar de recherche
     const [search, setSearch] = useState("");
     const [suggestions, setSuggestions] = useState([]);
+
+    // Charger les informations de l'utilisateur
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const res = await fetch("/api/auth/me", { credentials: "include" });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.user) {
+                    setUser(data.user);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        loadUser();
+    }, []);
 
     useEffect(() => {
         if (!search || search.length < 2) {
@@ -55,19 +71,22 @@ export default function Header() {
 
 
 
-    const desktopLinks = useMemo(
-        () =>
-            NAV_LINKS.map((link) => (
-                <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}
-                >
-                    {link.label}
-                </Link>
-            )),
-        [pathname],
-    );
+    const desktopLinks = useMemo(() => {
+        const links = [...NAV_LINKS];
+        // Ajouter le lien Admin seulement si l'utilisateur est admin
+        if (user && user.role === 'admin') {
+            links.push({ href: '/admin', label: 'Admin' });
+        }
+        return links.map((link) => (
+            <Link
+                key={link.href}
+                href={link.href}
+                className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}
+            >
+                {link.label}
+            </Link>
+        ));
+    }, [pathname, user]);
 
     return (
         <nav className={styles.navbar}>
@@ -219,11 +238,13 @@ export default function Header() {
                                 </div>
                             </div>
 
-                            <div className={styles.mobileAdmin}>
-                                <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
-                                    Administration
-                                </Link>
-                            </div>
+                            {user && user.role === 'admin' && (
+                                <div className={styles.mobileAdmin}>
+                                    <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
+                                        Administration
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

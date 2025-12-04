@@ -13,8 +13,6 @@ const CATEGORIES = [
 ];
 
 export default function Products() {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [maxPrice, setMaxPrice] = useState(1000000);
   const [sortOption, setSortOption] = useState("price-asc");
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
@@ -31,10 +29,8 @@ export default function Products() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        // Ajouter category et maxPrice dans la query si besoin
+        // Ajouter category et  dans la query si besoin
         let url = `/api/products?page=${page}&limit=${limit}`;
-        if (selectedCategory !== "all") url += `&category=${selectedCategory}`;
-        if (maxPrice) url += `&maxPrice=${maxPrice}`;
 
         const res = await fetch(url);
         const json = await res.json();
@@ -62,14 +58,14 @@ export default function Products() {
     return () => {
       isMounted = false;
     };
-  }, [page, selectedCategory, maxPrice]);
+  }, [page]);
 
 
   // --- Tri côté client ---
   const sortedProducts = products.slice().sort((a, b) => {
     if (sortOption === "price-asc") return a.price - b.price;
     if (sortOption === "price-desc") return b.price - a.price;
-    if (sortOption === "rating-desc") return (b.rating || 0) - (a.rating || 0);
+    if (sortOption === "rating-desc") return (b.note || 0) - (a.note || 0); // Utiliser note de la DB
     return 0;
   });
 
@@ -89,59 +85,6 @@ export default function Products() {
       </section>
 
       <section className={styles.catalogSection}>
-        <div className={styles.filtersCard} aria-label="Filtres">
-          <div className={styles.filtersHeader}>
-            <p>Filtres</p>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedCategory("all");
-                setMaxPrice(2000000);
-                setSortOption("price-asc");
-              }}
-            >
-              Réinitialiser
-            </button>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="category">Catégorie</label>
-            <div className={styles.selectWrapper}>
-              <select
-                id="category"
-                value={selectedCategory}
-                onChange={(event) => setSelectedCategory(event.target.value)}
-              >
-                {CATEGORIES.map((category) => (
-                  <option key={category.value} value={category.value}>
-                    {category.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <div className={styles.priceHeader}>
-              <label htmlFor="price">Prix</label>
-              <span>{maxPrice} €</span>
-            </div>
-            <input
-              id="price"
-              type="range"
-              min="2000"
-              max="2000000"
-              step="10"
-              value={maxPrice}
-              onChange={(event) => setMaxPrice(Number(event.target.value))}
-            />
-            <div className={styles.priceScale}>
-              <span>2000 €</span>
-              <span>2000000 €</span>
-            </div>
-          </div>
-        </div>
-
         <div className={styles.productsHeader}>
           <div>
             <p className={styles.resultsCount}>{total} produits trouvés</p>

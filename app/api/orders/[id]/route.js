@@ -4,27 +4,40 @@ import { connect } from "@/lib/db";
 async function fetchOrderWithItems(conn, orderId) {
   const [orders] = await conn.execute("SELECT * FROM `Order` WHERE order_id = ?", [orderId]);
   if (!orders.length) return null;
+  
   const [items] = await conn.execute("SELECT * FROM Order_item WHERE order_id = ?", [orderId]);
   return { ...orders[0], items };
 }
 
+
 export async function GET(_request, { params }) {
+  let conn = null;
   try {
-    const conn = await connect();
-    const order = await fetchOrderWithItems(conn, params.id);
-    await conn.end();
+    const { id } = await params;
+    const orderId = parseInt(id, 10);
+
+    conn = await connect();
+    const order = await fetchOrderWithItems(conn, orderId);
+
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+
     return NextResponse.json(order);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
 export async function PUT(request, { params }) {
+  let conn = null;
   try {
+    const { id } = await params;
+    const orderId = parseInt(id, 10);
     const payload = await request.json();
+
     const fields = [];
     const values = [];
 
@@ -42,36 +55,47 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: "No valid fields provided" }, { status: 400 });
     }
 
-    const conn = await connect();
+    conn = await connect();
+
     const [result] = await conn.execute(
       `UPDATE \`Order\` SET ${fields.join(", ")} WHERE order_id = ?`,
-      [...values, params.id],
+      [...values, orderId],
     );
 
     if (!result.affectedRows) {
-      await conn.end();
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const order = await fetchOrderWithItems(conn, params.id);
-    await conn.end();
-    return NextResponse.json(order);
+    const updatedOrder = await fetchOrderWithItems(conn, orderId);
+
+    return NextResponse.json(updatedOrder);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
 export async function DELETE(_request, { params }) {
+  let conn = null;
   try {
-    const conn = await connect();
-    const [result] = await conn.execute("DELETE FROM `Order` WHERE order_id = ?", [params.id]);
-    await conn.end();
+    const { id } = await params;
+    const orderId = parseInt(id, 10);
+
+    conn = await connect();
+    const [result] = await conn.execute(
+      "DELETE FROM `Order` WHERE order_id = ?",
+      [orderId]
+    );
+
     if (!result.affectedRows) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
-

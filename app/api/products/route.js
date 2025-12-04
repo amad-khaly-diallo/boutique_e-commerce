@@ -98,6 +98,7 @@ export async function GET(request) {
 
 
 export async function POST(request) {
+  let conn = null;
   try {
     const {
       product_name = null,
@@ -116,7 +117,7 @@ export async function POST(request) {
       );
     }
 
-    const conn = await connect();
+    conn = await connect();
 
     const [result] = await conn.execute(
       `INSERT INTO Product (product_name, description, price, stock, category, image, note)
@@ -126,8 +127,6 @@ export async function POST(request) {
 
     const [rows] = await conn.execute("SELECT * FROM Product WHERE product_id = ?", [result.insertId]);
 
-    await conn.end();
-
     if (!rows[0]) {
       return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
     }
@@ -135,5 +134,7 @@ export async function POST(request) {
     return NextResponse.json(rows[0], { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }

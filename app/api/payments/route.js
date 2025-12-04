@@ -9,6 +9,7 @@ function maskCardNumber(numero) {
 }
 
 export async function GET(request) {
+  let conn = null;
   try {
     const { user } = await verifyAuth(request);
 
@@ -19,21 +20,23 @@ export async function GET(request) {
       );
     }
 
-    const conn = await connect();
+    conn = await connect();
     const [rows] = await conn.execute(
       "SELECT * FROM PaymentMethod WHERE user_id = ? ORDER BY parDefaut DESC, payment_id DESC",
       [user.user_id],
     );
-    await conn.end();
 
     return NextResponse.json(rows);
   } catch (error) {
     console.error("GET /api/payments error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
 export async function POST(request) {
+  let conn = null;
   try {
     const { user } = await verifyAuth(request);
 
@@ -69,45 +72,40 @@ export async function POST(request) {
 
     const numero_masque = maskCardNumber(numero);
 
-    const conn = await connect();
+    conn = await connect();
 
-    try {
-      if (parDefaut) {
-        await conn.execute(
-          "UPDATE PaymentMethod SET parDefaut = 0 WHERE user_id = ?",
-          [user.user_id],
-        );
-      }
-
-      const [result] = await conn.execute(
-        `INSERT INTO PaymentMethod
-          (user_id, titulaire, type, numero_masque, expiry, parDefaut)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [
-          user.user_id,
-          titulaire,
-          type,
-          numero_masque,
-          expiry,
-          parDefaut ? 1 : 0,
-        ],
+    if (parDefaut) {
+      await conn.execute(
+        "UPDATE PaymentMethod SET parDefaut = 0 WHERE user_id = ?",
+        [user.user_id],
       );
-
-      const [rows] = await conn.execute(
-        "SELECT * FROM PaymentMethod WHERE payment_id = ?",
-        [result.insertId],
-      );
-
-      await conn.end();
-
-      return NextResponse.json(rows[0], { status: 201 });
-    } catch (err) {
-      await conn.end();
-      throw err;
     }
+
+    const [result] = await conn.execute(
+      `INSERT INTO PaymentMethod
+        (user_id, titulaire, type, numero_masque, expiry, parDefaut)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        user.user_id,
+        titulaire,
+        type,
+        numero_masque,
+        expiry,
+        parDefaut ? 1 : 0,
+      ],
+    );
+
+    const [rows] = await conn.execute(
+      "SELECT * FROM PaymentMethod WHERE payment_id = ?",
+      [result.insertId],
+    );
+
+    return NextResponse.json(rows[0], { status: 201 });
   } catch (error) {
     console.error("POST /api/payments error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 

@@ -168,7 +168,7 @@ export default function AdminPage() {
               <thead>
                 <tr>
                   <th>Commande</th>
-                  <th>Client (ID)</th>
+                  <th>Client</th>
                   <th>Total</th>
                   <th>Date</th>
                   <th>Statut</th>
@@ -178,9 +178,17 @@ export default function AdminPage() {
                 {orders.slice(0, 5).map((o) => (
                   <tr key={o.order_id}>
                     <td>#{o.order_id}</td>
-                    <td>{o.user_id}</td>
+                    <td>
+                      {o.first_name || o.last_name
+                        ? `${o.first_name || ""} ${o.last_name || ""}`.trim()
+                        : `ID: ${o.user_id}`}
+                    </td>
                     <td>{Number(o.total_amount || 0).toFixed(2)} €</td>
-                    <td>{o.created_at}</td>
+                    <td>
+                      {o.created_at
+                        ? new Date(o.created_at).toLocaleDateString("fr-FR")
+                        : o.created_at}
+                    </td>
                     <td>
                       <span
                         className={`status ${

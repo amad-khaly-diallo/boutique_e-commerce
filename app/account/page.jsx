@@ -6,30 +6,135 @@ import Link from "next/link";
 
 export default function AccountPage() {
   const [form, setForm] = useState({
-    firstName: "Md",
-    lastName: "Rimel",
-    email: "rimelllll@gmail.com",
-    address: "Kingston, 5236, United State",
+    firstName: "",
+    lastName: "",
+    email: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
   const [luxeLoading, setluxeLoading] = useState(true);
-
   const [saving, setSaving] = useState(false);
+  const [user, setUser] = useState(null);
 
   function onChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
+  // Charger les données de l'utilisateur
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.user) {
+          setUser(data.user);
+          // Préremplir le formulaire avec les données de l'utilisateur
+          setForm({
+            firstName: data.user.first_name || "",
+            lastName: data.user.last_name || "",
+            email: data.user.email || "",
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+          });
+        } else {
+          // Rediriger vers login si non connecté
+          window.location.href = "/login";
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors du chargement des données utilisateur");
+      } finally {
+        setTimeout(() => {
+          setluxeLoading(false);
+        }, 1000);
+      }
+    };
+    loadUser();
+  }, []);
+
   async function onSave(e) {
     e.preventDefault();
+
+    // Validation
+    if (form.newPassword && form.newPassword !== form.confirmPassword) {
+      alert("Les nouveaux mots de passe ne correspondent pas.");
+      return;
+    }
+
+    if (form.newPassword && form.newPassword.length < 8) {
+      alert("Le nouveau mot de passe doit contenir au moins 8 caractères.");
+      return;
+    }
+
     setSaving(true);
     try {
-      // Simulation d'enregistrement
-      await new Promise((r) => setTimeout(r, 700));
-      alert("Modifications enregistrées");
+      if (!user || !user.user_id) {
+        alert("Erreur: utilisateur non identifié.");
+        setSaving(false);
+        return;
+      }
+
+      const payload = {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        email: form.email,
+      };
+
+      // Si un nouveau mot de passe est fourni, vérifier l'ancien d'abord
+      if (form.newPassword) {
+        if (!form.currentPassword) {
+          alert("Veuillez entrer votre mot de passe actuel pour le modifier.");
+          setSaving(false);
+          return;
+        }
+        // Vérifier le mot de passe actuel
+        const verifyRes = await fetch("/api/auth/verify-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            password: form.currentPassword,
+          }),
+        });
+
+        const verifyData = await verifyRes.json().catch(() => ({}));
+        if (!verifyRes.ok || !verifyData.valid) {
+          alert("Mot de passe actuel incorrect.");
+          setSaving(false);
+          return;
+        }
+
+        payload.password = form.newPassword;
+      }
+
+      // Mettre à jour le profil
+      const res = await fetch(`/api/users/${user.user_id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Erreur lors de l'enregistrement");
+        setSaving(false);
+        return;
+      }
+
+      // Mettre à jour les données utilisateur
+      setUser(data);
+      setForm((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      }));
+
+      alert("Modifications enregistrées avec succès !");
     } catch (err) {
       console.error(err);
       alert("Erreur lors de l'enregistrement");
@@ -38,11 +143,85 @@ export default function AccountPage() {
     }
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setluxeLoading(false);
-    }, 1000);
-  }, []);
+  async function handleLogout() {
+    if (!confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        alert("Déconnexion réussie");
+        window.location.href = "/";
+      } else {
+        alert(data.error || "Erreur lors de la déconnexion");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la déconnexion");
+    }
+  }
+
+  async function handleDeleteAccount() {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et supprimera toutes vos données.")) {
+      return;
+    }
+
+    const password = prompt("Veuillez entrer votre mot de passe pour confirmer la suppression :");
+    if (!password) {
+      return;
+    }
+
+    try {
+      // Vérifier le mot de passe
+      const verifyRes = await fetch("/api/auth/verify-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ password }),
+      });
+
+      const verifyData = await verifyRes.json().catch(() => ({}));
+      if (!verifyRes.ok || !verifyData.valid) {
+        alert("Mot de passe incorrect. Suppression annulée.");
+        return;
+      }
+
+      // Supprimer le compte
+      if (!user || !user.user_id) {
+        alert("Erreur: utilisateur non identifié.");
+        return;
+      }
+
+      const res = await fetch(`/api/users/${user.user_id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Erreur lors de la suppression du compte");
+        return;
+      }
+
+      // Déconnecter l'utilisateur
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      alert("Votre compte a été supprimé avec succès.");
+      window.location.href = "/";
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la suppression du compte");
+    }
+  }
 
   return (
     <main className="account-page">
@@ -97,14 +276,6 @@ export default function AccountPage() {
                 <input name="email" value={form.email} onChange={onChange} />
               </div>
 
-              <div className="field full-width">
-                <label>Adresse</label>
-                <input
-                  name="address"
-                  value={form.address}
-                  onChange={onChange}
-                />
-              </div>
             </div>
 
             <div className="password-section">
@@ -148,6 +319,48 @@ export default function AccountPage() {
               </button>
             </div>
           </form>
+
+          <div className="account-actions" style={{ marginTop: "2rem", paddingTop: "2rem", borderTop: "1px solid #e5e7eb" }}>
+            <h3 style={{ marginBottom: "1rem", color: "#374151" }}>Actions du compte</h3>
+
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className="btn-logout"
+                onClick={handleLogout}
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: "#6b7280",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "0.95rem",
+                  fontWeight: 500,
+                }}
+              >
+                Se déconnecter
+              </button>
+
+              <button
+                type="button"
+                className="btn-delete"
+                onClick={handleDeleteAccount}
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: "#dc2626",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "0.95rem",
+                  fontWeight: 500,
+                }}
+              >
+                Supprimer le compte
+              </button>
+            </div>
+          </div>
         </section>
       </div>
     </main>

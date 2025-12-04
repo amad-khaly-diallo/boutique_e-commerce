@@ -10,6 +10,7 @@ async function fetchOrderWithItems(conn, orderId) {
 }
 
 export async function GET(request) {
+  let conn = null;
   try {
     const { user } = await verifyAuth(request);
 
@@ -20,7 +21,7 @@ export async function GET(request) {
       );
     }
 
-    const conn = await connect();
+    conn = await connect();
 
     const [orders] = await conn.execute(
       "SELECT * FROM `Order` WHERE user_id = ? ORDER BY created_at DESC",
@@ -34,12 +35,12 @@ export async function GET(request) {
       if (full) detailed.push(full);
     }
 
-    await conn.end();
-
     return NextResponse.json(detailed);
   } catch (error) {
     console.error("GET /api/orders/me error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 

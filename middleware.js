@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET = new TextEncoder().encode("maPhraseQuiEstSenseEtreSecret");
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "maPhraseQuiEstSenseEtreSecret");
 
 export async function middleware(request) {
   const url = request.nextUrl.pathname;
@@ -16,9 +16,18 @@ export async function middleware(request) {
     // Vérification du token
     const { payload } = await jwtVerify(token, JWT_SECRET);
 
-    // Routes admin
+    // Routes admin - déconnecter si non-admin essaie d'accéder
     if (url.startsWith("/admin") && payload.role?.toLowerCase() !== "admin") {
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Supprimer le cookie token pour déconnecter l'utilisateur
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.set("token", "", {
+        httpOnly: true,
+        path: "/",
+        maxAge: 0,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      return response;
     }
 
     if (

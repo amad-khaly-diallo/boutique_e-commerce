@@ -9,20 +9,23 @@ async function fetchCartWithItems(conn, cartId) {
 }
 
 export async function GET(_request, { params }) {
+  let conn = null;
   try {
-    const conn = await connect();
+    conn = await connect();
     const cart = await fetchCartWithItems(conn, params.id);
-    await conn.end();
     if (!cart) {
       return NextResponse.json({ error: "Cart not found" }, { status: 404 });
     }
     return NextResponse.json(cart);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
 export async function PUT(request, { params }) {
+  let conn = null;
   try {
     const { user_id, items } = await request.json();
 
@@ -42,7 +45,7 @@ export async function PUT(request, { params }) {
       }
     }
 
-    const conn = await connect();
+    conn = await connect();
 
     try {
       await conn.beginTransaction();
@@ -50,7 +53,6 @@ export async function PUT(request, { params }) {
       const [existing] = await conn.execute("SELECT cart_id FROM Cart WHERE cart_id = ?", [params.id]);
       if (!existing.length) {
         await conn.rollback();
-        await conn.end();
         return NextResponse.json({ error: "Cart not found" }, { status: 404 });
       }
 
@@ -71,29 +73,31 @@ export async function PUT(request, { params }) {
 
       await conn.commit();
       const cart = await fetchCartWithItems(conn, params.id);
-      await conn.end();
       return NextResponse.json(cart);
     } catch (transactionError) {
       await conn.rollback();
-      await conn.end();
       throw transactionError;
     }
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
 export async function DELETE(_request, { params }) {
+  let conn = null;
   try {
-    const conn = await connect();
+    conn = await connect();
     const [result] = await conn.execute("DELETE FROM Cart WHERE cart_id = ?", [params.id]);
-    await conn.end();
     if (!result.affectedRows) {
       return NextResponse.json({ error: "Cart not found" }, { status: 404 });
     }
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  } finally {
+    if (conn) await conn.end();
   }
 }
 
