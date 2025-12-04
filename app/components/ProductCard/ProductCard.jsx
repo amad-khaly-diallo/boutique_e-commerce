@@ -133,7 +133,7 @@ const handleToggleFavorite = async (e) => {
   };
 
   if (!product) return null;
-  const rating = product.note || 0; // Utiliser note de la DB
+  const rating = product.note || 0;
   const reviews = rating; 
   const currentPrice = parseFloat(product.price || 0);
   const originalPrice = product.original_price ? parseFloat(product.original_price) : null;

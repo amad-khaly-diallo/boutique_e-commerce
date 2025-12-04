@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./page.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 export default function AccountPage() {
   const [form, setForm] = useState({
@@ -13,9 +14,10 @@ export default function AccountPage() {
     newPassword: "",
     confirmPassword: "",
   });
-  const [luxeLoading, setluxeLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState(null);
+  const showLoader = useLuxuryLoader(loading, 1000);
 
   function onChange(e) {
     const { name, value } = e.target;
@@ -47,9 +49,10 @@ export default function AccountPage() {
         console.error(err);
         alert("Erreur lors du chargement des données utilisateur");
       } finally {
+        // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
         setTimeout(() => {
-          setluxeLoading(false);
-        }, 1000);
+          setLoading(false);
+        }, 500); // Temps réel de chargement (peut être rapide)
       }
     };
     loadUser();
@@ -226,7 +229,7 @@ export default function AccountPage() {
   return (
     <main className="account-page">
       {" "}
-      {luxeLoading && <LuxuryLoader />}
+      {showLoader && <LuxuryLoader />}
       <div className="breadcrumb"><Link href="/">Accueil</Link> /  <Link href="/account">Mon compte</Link> </div>
       <div className="account-grid">
         <aside className="sidebar">

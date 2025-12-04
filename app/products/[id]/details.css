@@ -64,8 +64,36 @@
 
 .rating {
     display: flex;
-    flex-direction: column;
     gap: 15px;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stars-container {
+    display: flex;
+    gap: 2px;
+}
+
+.star-full,
+.star-half {
+    color: #fbbf24;
+    fill: #fbbf24;
+}
+
+.star-empty {
+    color: #d1d5db;
+}
+
+.rating-value {
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
 }
 
 .price {
@@ -77,6 +105,7 @@
 .description {
     margin: 25px 0;
 }
+
 /* --- Bouton Acheter + Ajouter au panier --- */
 .actions {
     display: flex;
@@ -100,7 +129,7 @@
     border-radius: 2px;
     border: 1px solid #ddd;
     cursor: pointer;
-    
+
 }
 
 .actions .favoris {
@@ -157,4 +186,3 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
 }
-

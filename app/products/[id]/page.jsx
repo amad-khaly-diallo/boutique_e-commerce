@@ -2,10 +2,11 @@
 import "./details.css";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { useParams } from "next/navigation";
 import { ProductCard } from "../../components/ProductCard/ProductCard";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 export default function ProductsDetail() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ export default function ProductsDetail() {
   const [sampleProducts, setSampleProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const showLoader = useLuxuryLoader(loading, 1000);
 
 
   const increase = () => {
@@ -90,9 +92,11 @@ export default function ProductsDetail() {
     };
     if (id) {
       fetchProduct();
-      setTimeout(() => {
+      // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
+      const timer = setTimeout(() => {
         setLoading(false);
-      }, 1000);
+      }, 500); // Temps réel de chargement (peut être rapide)
+      return () => clearTimeout(timer);
     }
   }, [id]);
 
@@ -118,9 +122,32 @@ export default function ProductsDetail() {
   if (error) return <p>{error}</p>;
   if (!product) return <p>Chargement du produit...</p>;
 
+  // Fonction pour afficher les étoiles comme dans ProductCard
+  const renderStars = () => {
+    const rating = Number(product.note) || 0;
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<Star key={i} className="star-full" fill="currentColor" size={18} />);
+    }
+
+    if (hasHalfStar) {
+      stars.push(<Star key="half" className="star-half" fill="currentColor" size={18} />);
+    }
+
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<Star key={`empty-${i}`} className="star-empty" size={18} />);
+    }
+
+    return stars;
+  };
+
   return (
     <div className="container">
-      {loading && <LuxuryLoader />}
+      {showLoader && <LuxuryLoader />}
       <div className="details-product">
         {/* Images à gauche */}
         <div className="product-images">
@@ -148,17 +175,17 @@ export default function ProductsDetail() {
         <div className="product-info">
           <h1>{product.product_name}</h1>
           <div className="rating">
-            {product.note ? (
-              <>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i}>{i < Math.floor(product.note) ? "⭐" : "☆"}</span>
-                ))} 
-                <span>{product.note.toFixed(1)}/5</span>
-              </>
+            {product.note != null ? (
+              <div className="rating-stars">
+                <div className="stars-container">
+                  {renderStars()}
+                </div>
+                <span className="rating-value">{(Number(product.note) || 0).toFixed(1)}/5</span>
+              </div>
             ) : (
               <span>Aucune note</span>
             )}
-            <p className="stock">
+            <p style={{color: "white", borderRadius: "5px", padding: "5px", backgroundColor: product.stock > 0 ? "green" : "red" }} className="stock">
               {product.stock > 0 ? "En stock" : "Rupture de stock"}
             </p>
           </div>

@@ -6,6 +6,7 @@ import { ProductCard } from './components/ProductCard/ProductCard'
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import LuxuryLoader from "./components/LuxuryLoader/LuxuryLoader";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 export default function Home() {
   const [vedettes, setVedettes] = useState([]);
@@ -13,6 +14,7 @@ export default function Home() {
   const [isLoadingVedettes, setIsLoadingVedettes] = useState(true);
   const [isLoadingNew, setIsLoadingNew] = useState(true);
   const [loading, setLoading] = useState(true);
+  const showLoader = useLuxuryLoader(loading, 1000);
 
 
   const fetchProducts = async () => {
@@ -46,8 +48,11 @@ export default function Home() {
   useEffect(() => {
     fetchProducts();
     fetchNewArrival();
-    setTimeout(()=>{setLoading(false)},2000);
-
+    // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500); // Temps réel de chargement (peut être rapide)
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -74,7 +79,7 @@ export default function Home() {
           </div>
         </div>
 
-        {loading && <LuxuryLoader />}
+        {showLoader && <LuxuryLoader />}
 
         {/* Banner */}
         <div className={styles.banner}>

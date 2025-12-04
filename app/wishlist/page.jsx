@@ -5,11 +5,13 @@ import Link from 'next/link';
 import Golden from '../components/GoldenBotton/GoldenBotton';
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { ProductCard } from "@/app/components/ProductCard/ProductCard";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 
 export default function Wishlist() {
-  const [luxeLoading, setluxeLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
+  const showLoader = useLuxuryLoader(loading, 1000);
 
   const fetchWishlist = async () => {
     try {
@@ -19,7 +21,8 @@ export default function Wishlist() {
     } catch (error) {
       console.error('Error fetching wishlist:', error.message);
     } finally {
-      setluxeLoading(false);
+      // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
+      setTimeout(() => setLoading(false), 500); // Temps réel de chargement (peut être rapide)
     }
   };
   // retire au favorits
@@ -34,7 +37,7 @@ export default function Wishlist() {
       });
       if (response.ok) {
         setWishlist((prevWishlist) =>
-          prevWishlist.filter((item) => item.id !== productId)
+          prevWishlist.filter((item) => item.product_id !== productId)
         );
         fetchWishlist();
       } else {
@@ -45,10 +48,6 @@ export default function Wishlist() {
     }
   };
 
-  // notification pour ajout ou retrait
- 
-
-
 
   useEffect(() => {
     fetchWishlist();
@@ -56,11 +55,11 @@ export default function Wishlist() {
 
   return (
     <main className="wishlist-container">
-      {luxeLoading && <LuxuryLoader />}
+      {showLoader && <LuxuryLoader />}
 
       <h1 className="wishlist-title">Votre Wishlist</h1>
 
-      {wishlist.length === 0 && !luxeLoading && (
+      {wishlist.length === 0 && !showLoader && (
         <section className="wishlist-empty">
           <h2>Votre liste de souhaits est vide</h2>
           <p>Explorez nos produits et ajoutez vos articles préférés pour les retrouver facilement plus tard.</p>
@@ -69,10 +68,10 @@ export default function Wishlist() {
         </section>
       )}
 
-     {wishlist.length > 0 && !luxeLoading && (
+     {wishlist.length > 0 && !showLoader && (
   <section className="wishlist-items">
     {wishlist.map((item) => (
-      <div className="wishlist-item" key={item.id}>
+      <div className="wishlist-item" key={item.product_id}>
         <ProductCard product={item} />
         <button
           className="remove-btn"

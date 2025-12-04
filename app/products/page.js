@@ -4,6 +4,7 @@ import { ProductCard } from "../components/ProductCard/ProductCard";
 import styles from "./page.module.css";
 import Golden from "../components/GoldenBotton/GoldenBotton";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 const CATEGORIES = [
   { value: "all", label: "Toutes les catégories" },
@@ -18,7 +19,7 @@ export default function Products() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [luxeLoading, setluxeLoading] = useState(true);
+  const showLoader = useLuxuryLoader(loading, 1000);
 
   const limit = 12;
   const totalPages = Math.ceil(total / limit);
@@ -51,10 +52,7 @@ export default function Products() {
     };
 
     fetchProducts();
-    setTimeout(() => {
-      setluxeLoading(false)
-    }, 1000);
-
+    // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
     return () => {
       isMounted = false;
     };
@@ -71,7 +69,7 @@ export default function Products() {
 
   return (
     <main className={styles.main}>
-      {luxeLoading && <LuxuryLoader />}
+      {showLoader && <LuxuryLoader />}
       <section className={styles.pageTitle}>
         <div className={styles.pageTitleContent}>
           <div className={styles.titleWrapper}>

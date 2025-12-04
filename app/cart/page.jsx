@@ -5,11 +5,13 @@ import { Trash } from "lucide-react";
 import "./cart.css";
 import Image from "next/image";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 export default function CartPage() {
-  const [luxeLoading, setLuxeLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
+  const showLoader = useLuxuryLoader(loading, 1000);
 
   const fetchProducts = async () => {
     try {
@@ -56,13 +58,14 @@ export default function CartPage() {
 
   useEffect(() => {
     fetchProducts();
-    const t = setTimeout(() => setLuxeLoading(false), 800);
+    // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
+    const t = setTimeout(() => setLoading(false), 500); // Temps réel de chargement (peut être rapide)
     return () => clearTimeout(t);
   }, []);
 
   return (
     <main className="cart-container">
-      {luxeLoading ? <LuxuryLoader /> : (
+      {showLoader ? <LuxuryLoader /> : (
         <>
           <h1 className="title">Votre panier</h1>
 

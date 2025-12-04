@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProductCard } from "@/app/components/ProductCard/ProductCard";
 import styles from "../page.module.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 
 export default function BijouxPage() {
@@ -14,7 +15,8 @@ export default function BijouxPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fade, setFade] = useState(false);
-  const [luxeLoading, setluxeLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const showLoader = useLuxuryLoader(loading, 1000);
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   const goToPage = (newPage) => {
@@ -55,14 +57,15 @@ export default function BijouxPage() {
     };
 
     fetchProducts();
+    // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
     setTimeout(() => {
-      setluxeLoading(false)
-    }, 1000);
+      setLoading(false);
+    }, 500); // Temps réel de chargement (peut être rapide)
   }, [page, limit]);
 
   return (
     <main className={styles.main}>
-      {luxeLoading && <LuxuryLoader />}
+      {showLoader && <LuxuryLoader />}
       <section className={styles.pageTitle}>
         <div className={styles.pageTitleContent}>
           <div className={styles.titleWrapper}>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import "./checkout.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
+import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 
 const STEPS = {
   CART: 1,
@@ -41,7 +42,8 @@ function emptyPayment() {
 }
 
 export default function Checkout() {
-  const [luxeLoading, setLuxeLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const showLoader = useLuxuryLoader(loading, 1000);
   const [currentStep, setCurrentStep] = useState(STEPS.CART);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -96,7 +98,8 @@ export default function Checkout() {
         console.error(err);
         setCartItems([]);
       } finally {
-        setTimeout(() => setLuxeLoading(false), 1000);
+        // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
+        setTimeout(() => setLoading(false), 500); // Temps réel de chargement (peut être rapide)
       }
     };
     loadCart();
@@ -980,7 +983,7 @@ export default function Checkout() {
 
   return (
     <div className="checkout-container">
-      {luxeLoading && <LuxuryLoader />}
+      {showLoader && <LuxuryLoader />}
       <div className="breadcrumb">
         <Link href="/">Accueil</Link> / <Link href="/cart">Panier</Link> / <strong>Commande</strong>
       </div>
