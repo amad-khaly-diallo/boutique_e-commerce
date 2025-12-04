@@ -16,16 +16,16 @@ export default function Footer() {
                     <div className="footer-section">
                         <h3>Support</h3>
                         <ul>
-                            <li><a href="#">111 Bijoy sarani, Dhaka, DH 1515, Bangladesh.</a></li>
-                            <li><a href="tel:+8801688888899">+330693191813</a></li>
-                            <li><a href="mailto:exclusive@gmail.com">ahmed.Support@gmail.com</a></li>
+                            <li><a href="#">11 rue des sale arabe </a></li>
+                            <li><a href="tel:+8801688888899">+33 06 mais couille noir sa mere</a></li>
+                            <li><a href="mailto:exclusive@gmail.com">nadir.souifi@gmail.com</a></li>
                         </ul>
                     </div>
                     <div className="footer-section">
-                        <h3>conte   </h3>
+                        <h3>compte  </h3>
                         <ul>
-                            <li><a href="/account">Mon conte </a></li>
-                            <li><a href="/login">connetion  / enregistrement </a></li>
+                            <li><a href="/account">Mon compte </a></li>
+                            <li><a href="/login">connexion / enregistrement </a></li>
                             <li><a href="/cart">Cart</a></li>
                             <li><a href="whislist">Liste de souhaits</a></li>
                             <li><a href="/checkout">Shop</a></li>
