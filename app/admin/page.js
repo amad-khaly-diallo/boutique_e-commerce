@@ -47,14 +47,11 @@ export default function AdminPage() {
     load();
   }, []);
 
-  const totalStock = products.reduce(
-    (s, p) => s + (Number(p.stock) || 0),
-    0,
-  );
+  const totalStock = products.reduce((s, p) => s + (Number(p.stock) || 0), 0);
   const pendingOrders = orders.filter((o) => o.status === "pending").length;
   const totalSales = orders.reduce(
     (s, o) => s + Number(o.total_amount || 0),
-    0,
+    0
   );
 
   function exportCSV(rows, columns, filename = "export.csv") {
@@ -63,7 +60,7 @@ export default function AdminPage() {
       .map((r) =>
         columns
           .map((c) => `"${(r[c] ?? "").toString().replace(/"/g, '""')}"`)
-          .join(","),
+          .join(",")
       )
       .join("\n");
     const csv = header + "\n" + body;
@@ -82,7 +79,7 @@ export default function AdminPage() {
     exportCSV(
       products,
       ["product_id", "product_name", "price", "stock", "category"],
-      "products.csv",
+      "products.csv"
     );
   }
 
@@ -90,7 +87,7 @@ export default function AdminPage() {
     exportCSV(
       orders,
       ["order_id", "user_id", "total_amount", "status", "created_at"],
-      "orders.csv",
+      "orders.csv"
     );
   }
 
@@ -117,15 +114,6 @@ export default function AdminPage() {
         <div className="topbar">
           <h1>Tableau de bord</h1>
           <div className="controls">
-            <input className="search-input" placeholder="Rechercher..." />
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn btn-plain" onClick={exportProducts}>
-                Exporter produits
-              </button>
-              <button className="btn btn-plain" onClick={exportOrders}>
-                Exporter commandes
-              </button>
-            </div>
             <Link href="/admin/orders" className="btn btn-primary">
               Gérer les commandes
             </Link>
@@ -148,9 +136,7 @@ export default function AdminPage() {
 
           <div className="card">
             <h3>Nouvelles commandes</h3>
-            <div className="value">
-              {loading ? "…" : pendingOrders}
-            </div>
+            <div className="value">{loading ? "…" : pendingOrders}</div>
             <div className="small">Commandes en statut &quot;pending&quot;</div>
           </div>
 
@@ -210,9 +196,7 @@ export default function AdminPage() {
               {products.slice(0, 5).map((p) => (
                 <div className="product-item" key={p.product_id}>
                   <div>
-                    <div style={{ fontWeight: 700 }}>
-                      {p.product_name}
-                    </div>
+                    <div style={{ fontWeight: 700 }}>{p.product_name}</div>
                     <div className="meta">
                       {Number(p.price || 0).toFixed(2)} € • Stock: {p.stock}
                     </div>
@@ -220,7 +204,11 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-            <Link href="/admin/products" className="btn btn-primary" style={{ marginTop: "1rem" }}>
+            <Link
+              href="/admin/products"
+              className="btn btn-primary"
+              style={{ marginTop: "1rem" }}
+            >
               Gérer les produits
             </Link>
           </aside>
