@@ -382,7 +382,7 @@
 .smallTileHalf img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 🔥 évite les déformations */
+  object-fit: cover; /*  évite les déformations */
 }
 
 .largeTile:hover, .smallTile:hover, .smallTileHalf:hover {
@@ -570,4 +570,43 @@
   .smallTileRow {
     flex-direction: row
   }
+}
+
+/* version mobile */
+@media (max-width:468px){
+  .hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .heroImage {
+    width: 100%;
+    height: 300px;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+  
+  .bannerContent {
+    overflow-x: auto;
+  }
+   .bannerContent {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .feature {
+    margin: 10px;
+    justify-content: flex-start;
+
+  }
+ 
 }

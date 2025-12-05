@@ -116,21 +116,16 @@ export default function AdminPage() {
       <main className="admin-main">
         <div className="topbar">
           <h1>Tableau de bord</h1>
+
           <div className="controls">
             <input className="search-input" placeholder="Rechercher..." />
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn btn-plain" onClick={exportProducts}>
-                Exporter produits
-              </button>
-              <button className="btn btn-plain" onClick={exportOrders}>
-                Exporter commandes
-              </button>
-            </div>
-            <Link href="/admin/orders" className="btn btn-primary">
+
+            <Link href="/admin/orders" className="btn btn-primary manage-orders">
               Gérer les commandes
             </Link>
           </div>
         </div>
+
 
         <div className="grid-3">
           <div className="card">
@@ -191,9 +186,8 @@ export default function AdminPage() {
                     </td>
                     <td>
                       <span
-                        className={`status ${
-                          o.status === "pending" ? "pending" : "shipped"
-                        }`}
+                        className={`status ${o.status === "pending" ? "pending" : "shipped"
+                          }`}
                       >
                         {o.status}
                       </span>
@@ -220,10 +214,10 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-            <Link href="/admin/products" className="btn btn-primary" style={{ marginTop: "1rem" }}>
-              Gérer les produits
-            </Link>
           </aside>
+          <Link href="/admin/products" className="btn-admin-manage" style={{ marginTop: "1rem" }}>
+            Gérer les produits
+          </Link>
         </div>
 
         <div style={{ marginTop: "1rem" }} className="panel" id="users">
