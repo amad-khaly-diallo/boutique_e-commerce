@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { connect } from "@/lib/db";
 import { verifyAuth } from "@/lib/auth";
+import {
+  validatePaymentData,
+  validateCardNumber,
+  validateCardHolder,
+  validateExpiryDate,
+  validateCardType,
+} from "@/lib/paymentValidation";
 
 function maskCardNumber(numero) {
   const s = String(numero).replace(/\s+/g, "");
@@ -56,21 +63,35 @@ export async function POST(request) {
       parDefaut = false,
     } = payload;
 
-    if (!titulaire || !numero || !expiry) {
+    // Validation complète des données avec les fonctions de sécurité
+    const validation = validatePaymentData({ titulaire, type, numero, expiry });
+    if (!validation.valid) {
+      const firstError = Object.values(validation.errors)[0];
       return NextResponse.json(
-        { error: "Titulaire, numéro et date d'expiration sont requis." },
+        { error: firstError || "Données de paiement invalides." },
         { status: 400 },
       );
     }
 
-    if (!["Visa", "MasterCard", "American Express"].includes(type)) {
+    // Nettoyer et valider chaque champ individuellement
+    const cardNumberValidation = validateCardNumber(numero, type);
+    const holderValidation = validateCardHolder(titulaire);
+    const expiryValidation = validateExpiryDate(expiry);
+    const typeValidation = validateCardType(type);
+
+    if (!cardNumberValidation.valid || !holderValidation.valid || !expiryValidation.valid || !typeValidation.valid) {
       return NextResponse.json(
-        { error: "Type de carte invalide." },
+        { error: "Données de paiement invalides après validation." },
         { status: 400 },
       );
     }
 
-    const numero_masque = maskCardNumber(numero);
+    // Utiliser les valeurs nettoyées
+    const cleanedNumero = cardNumberValidation.cleaned;
+    const cleanedTitulaire = holderValidation.cleaned;
+    const cleanedExpiry = expiryValidation.cleaned;
+
+    const numero_masque = maskCardNumber(cleanedNumero);
 
     conn = await connect();
 
@@ -87,10 +108,10 @@ export async function POST(request) {
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
         user.user_id,
-        titulaire,
+        cleanedTitulaire,
         type,
         numero_masque,
-        expiry,
+        cleanedExpiry,
         parDefaut ? 1 : 0,
       ],
     );

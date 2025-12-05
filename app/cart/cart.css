@@ -148,3 +148,26 @@
   background: #000000;
   color: #ffffff;
 }
+
+@media (max-width: 468px) {
+  .cart-header,
+  .cart-row {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .cart-header div:nth-child(4),
+  .cart-row div:nth-child(4),
+  .cart-header div:nth-child(5),
+  .cart-row div:nth-child(5) {
+    display: none;
+  }
+
+  .cart-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cart-total-box {
+    width: 100%;
+  }
+}

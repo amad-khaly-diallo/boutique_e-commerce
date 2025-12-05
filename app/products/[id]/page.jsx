@@ -19,7 +19,7 @@ export default function ProductsDetail() {
   const [loading, setLoading] = useState(true);
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
-
+  const [isAdding, setIsAdding] = useState(false)
 
   const increase = () => {
     if (product && quantity < product.stock) {
@@ -101,6 +101,43 @@ export default function ProductsDetail() {
       return () => clearTimeout(timer);
     }
   }, [id]);
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsAdding(true);
+
+    try {
+      const res = await fetch("/api/carts/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          productId: product.product_id,
+          quantity: quantity
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.status === 401) {
+        toast.warning("Vous devez être connecté pour ajouter au panier");
+        return;
+      }
+
+      if (!res.ok) {
+        toast.error(data.error || "Erreur lors de l'ajout au panier");
+        return;
+      }
+
+      toast.success("Produit ajouté au panier !");
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      toast.error("Impossible de contacter le serveur");
+    } finally {
+      setTimeout(() => setIsAdding(false), 1000);
+    }
+  };
+
 
   // Fetch produits similaires
   useEffect(() => {
@@ -187,7 +224,7 @@ export default function ProductsDetail() {
             ) : (
               <span>Aucune note</span>
             )}
-            <p style={{color: "white", borderRadius: "5px", padding: "5px", backgroundColor: product.stock > 0 ? "green" : "red" }} className="stock">
+            <p style={{ color: "white", borderRadius: "5px", padding: "5px", backgroundColor: product.stock > 0 ? "green" : "red" }} className="stock">
               {product.stock > 0 ? "En stock" : "Rupture de stock"}
             </p>
           </div>
@@ -205,7 +242,10 @@ export default function ProductsDetail() {
               </button>
             </div>
 
-            <button className="buy">Ajouter au Panier</button>
+            <button onClick={handleAddToCart} className="buy">
+              {isAdding ? "Ajout..." : "Ajouter au Panier"}
+            </button>
+
 
             {/* FAVORIS */}
             <button

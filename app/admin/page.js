@@ -113,8 +113,14 @@ export default function AdminPage() {
       <main className="admin-main">
         <div className="topbar">
           <h1>Tableau de bord</h1>
+
           <div className="controls">
-            <Link href="/admin/orders" className="btn btn-primary">
+            <input className="search-input" placeholder="Rechercher..." />
+
+            <Link
+              href="/admin/orders"
+              className="btn btn-primary manage-orders"
+            >
               Gérer les commandes
             </Link>
           </div>
@@ -204,14 +210,14 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-            <Link
-              href="/admin/products"
-              className="btn btn-primary"
-              style={{ marginTop: "1rem" }}
-            >
-              Gérer les produits
-            </Link>
           </aside>
+          <Link
+            href="/admin/products"
+            className="btn-admin-manage"
+            style={{ marginTop: "1rem" }}
+          >
+            Gérer les produits
+          </Link>
         </div>
 
         <div style={{ marginTop: "1rem" }} className="panel" id="users">

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connect } from "@/lib/db";
 import { verifyAuth } from "@/lib/auth";
+import { validateAddressData, cleanAddressData } from "@/lib/addressValidation";
 
 export async function GET(request) {
   let conn = null;
@@ -55,12 +56,30 @@ export async function POST(request) {
       parDefaut = false,
     } = payload;
 
-    if (!prenom || !nom || !adresse) {
+    // Validation complète des données avec les fonctions de sécurité
+    const addressData = {
+      prenom,
+      nom,
+      societe,
+      adresse,
+      apt,
+      ville,
+      codePostal,
+      pays,
+      telephone,
+    };
+
+    const validation = validateAddressData(addressData);
+    if (!validation.valid) {
+      const firstError = Object.values(validation.errors)[0];
       return NextResponse.json(
-        { error: "Prénom, nom et adresse sont requis." },
+        { error: firstError || "Données d'adresse invalides." },
         { status: 400 },
       );
     }
+
+    // Nettoyer les données
+    const cleanedData = cleanAddressData(addressData);
 
     conn = await connect();
 
@@ -77,15 +96,15 @@ export async function POST(request) {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         user.user_id,
-        prenom,
-        nom,
-        societe,
-        adresse,
-        apt,
-        ville,
-        codePostal,
-        pays,
-        telephone,
+        cleanedData.cleaned.prenom,
+        cleanedData.cleaned.nom,
+        cleanedData.cleaned.societe,
+        cleanedData.cleaned.adresse,
+        cleanedData.cleaned.apt,
+        cleanedData.cleaned.ville,
+        cleanedData.cleaned.codePostal,
+        cleanedData.cleaned.pays,
+        cleanedData.cleaned.telephone,
         parDefaut ? 1 : 0,
       ],
     );
