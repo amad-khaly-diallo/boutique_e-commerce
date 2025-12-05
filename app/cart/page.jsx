@@ -27,7 +27,7 @@ export default function CartPage() {
     }
   };
 
-  // 👇 Recalcule le subtotal uniquement quand cartItems change
+  //  Recalcule le subtotal uniquement quand cartItems change
   useEffect(() => {
     const newSubtotal = cartItems.reduce(
       (acc, item) => acc + item.price * item.quantity,

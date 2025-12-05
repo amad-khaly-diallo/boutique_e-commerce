@@ -4,7 +4,7 @@
     --bg: #f6f7f9;
     --panel: #ffffff;
     --muted: #6b7280;
-    --accent: #db4444;
+    --accent: #c9a646;
     --success: #16a34a;
     --shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
 }
@@ -21,6 +21,83 @@ body {
     display: flex;
     min-height: 100vh;
     background: var(--bg);
+}
+
+
+h2, h3 {
+  margin: 0 0 12px 0;
+}
+
+
+.panel {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+
+form input,
+form textarea,
+form select {
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+form button.btn {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-plain {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #111827;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+img {
+  border-radius: 4px;
+}
+
+
+
+/* AJOUT POUR RESPONSIVE SCROLL */
+.admin-main {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-x: auto;
+    /* autorise scroll horizontal */
+    width: 100%;
 }
 
 .admin-sidebar {
@@ -53,11 +130,6 @@ body {
     color: var(--accent);
     font-weight: 700;
     background: rgba(219, 68, 68, 0.05)
-}
-
-.admin-main {
-    flex: 1;
-    padding: 1.5rem
 }
 
 .topbar {
@@ -122,7 +194,7 @@ body {
     padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    border: 1px solid #eef2f5
+    border: 1px solid #eef2f5;
 }
 
 .table {
@@ -142,6 +214,26 @@ body {
     color: var(--muted);
     font-weight: 600
 }
+
+.btn-admin-manage {
+  background: linear-gradient(135deg, #c9a646, #f0d48c);
+  color: #222;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  transition: 0.2s ease;
+  width: 160px;
+}
+
+.btn-admin-manage:hover {
+  filter: brightness(1.1);
+}
+
+
 
 .status {
     padding: 0.25rem 0.6rem;
@@ -197,7 +289,7 @@ body {
     padding: 0.55rem 0.9rem;
     border-radius: 6px;
     border: none;
-    cursor: pointer
+    cursor: pointer;
 }
 
 .btn-primary {
@@ -215,16 +307,54 @@ body {
     color: var(--muted)
 }
 
+/* version tablette */
 @media (max-width: 960px) {
+
+    /* grid en 1 colonne */
     .grid-3 {
-        grid-template-columns: 1fr
+        grid-template-columns: 1fr;
     }
 
+    /* layout vertical */
     .layout-columns {
-        grid-template-columns: 1fr
+        grid-template-columns: 1fr;
     }
 
+    /* sidebar cachée */
     .admin-sidebar {
-        display: none
+        display: none;
+    }
+
+    /* espace entre les blocs */
+    .panel,
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+
+
+/* version mobile */
+@media (max-width: 468px) {
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    /* évite que les contenus débordent */
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .product-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+    .panel{
+        overflow-y: scroll;
     }
 }
