@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import "./addresses.css";
 import Link from "next/link";
+import { validateAddressData, cleanAddressData } from "@/lib/addressValidation";
 
 function emptyAddress() {
   return {
@@ -72,9 +73,36 @@ export default function AddressesPage() {
 
   function onChange(e) {
     const { name, value, type, checked } = e.target;
+    
+    if (type === "checkbox") {
+      setForm((f) => ({
+        ...f,
+        [name]: checked ? 1 : 0,
+      }));
+      return;
+    }
+
+    // Limiter la longueur selon le champ
+    let processedValue = value;
+    const maxLengths = {
+      prenom: 50,
+      nom: 50,
+      societe: 100,
+      adresse: 200,
+      apt: 50,
+      ville: 100,
+      codePostal: 20,
+      pays: 100,
+      telephone: 20,
+    };
+
+    if (maxLengths[name] && value.length > maxLengths[name]) {
+      return; // Ignorer si trop long
+    }
+
     setForm((f) => ({
       ...f,
-      [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
+      [name]: processedValue,
     }));
   }
 
@@ -94,15 +122,21 @@ export default function AddressesPage() {
   async function saveAddress(e) {
     e.preventDefault();
     const data = { ...form };
-    if (!data.prenom || !data.nom || !data.adresse) {
-      alert("Prénom, nom et adresse sont requis.");
+
+    // Validation complète avec les fonctions de sécurité
+    const validation = validateAddressData(data);
+    if (!validation.valid) {
+      const firstError = Object.values(validation.errors)[0];
+      alert(firstError || "Veuillez corriger les erreurs dans le formulaire.");
       return;
     }
 
     setSaving(true);
     try {
+      // Nettoyer et préparer les données avec les valeurs validées
+      const cleanedData = cleanAddressData(data);
       const payload = {
-        ...data,
+        ...cleanedData.cleaned,
         parDefaut: data.parDefaut ? 1 : 0,
       };
 
@@ -273,12 +307,16 @@ export default function AddressesPage() {
                 value={form.prenom}
                 onChange={onChange}
                 placeholder="Prénom"
+                maxLength={50}
+                required
               />
               <input
                 name="nom"
                 value={form.nom}
                 onChange={onChange}
                 placeholder="Nom"
+                maxLength={50}
+                required
               />
             </div>
             <input
@@ -286,18 +324,22 @@ export default function AddressesPage() {
               value={form.societe}
               onChange={onChange}
               placeholder="Société (optionnel)"
+              maxLength={100}
             />
             <input
               name="adresse"
               value={form.adresse}
               onChange={onChange}
               placeholder="Adresse (rue, numéro)"
+              maxLength={200}
+              required
             />
             <input
               name="apt"
               value={form.apt}
               onChange={onChange}
               placeholder="Appartement, étage (optionnel)"
+              maxLength={50}
             />
             <div className="row">
               <input
@@ -305,12 +347,14 @@ export default function AddressesPage() {
                 value={form.ville}
                 onChange={onChange}
                 placeholder="Ville"
+                maxLength={100}
               />
               <input
                 name="codePostal"
                 value={form.codePostal}
                 onChange={onChange}
                 placeholder="Code postal"
+                maxLength={20}
               />
             </div>
             <div className="row">
@@ -319,12 +363,14 @@ export default function AddressesPage() {
                 value={form.pays}
                 onChange={onChange}
                 placeholder="Pays"
+                maxLength={100}
               />
               <input
                 name="telephone"
                 value={form.telephone}
                 onChange={onChange}
                 placeholder="Téléphone"
+                maxLength={20}
               />
             </div>
             <label className="checkbox">

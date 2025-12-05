@@ -5,6 +5,12 @@ import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import {
+  validateUserProfile,
+  validateName,
+  validateEmail,
+  validatePassword,
+} from "@/lib/userValidation";
 
 export default function AccountPage() {
   const [form, setForm] = useState({
@@ -23,7 +29,28 @@ export default function AccountPage() {
 
   function onChange(e) {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    // Limiter la longueur selon le champ
+    let processedValue = value;
+    if (name === "firstName" || name === "lastName") {
+      if (value.length <= 50) {
+        processedValue = value;
+      } else {
+        return; // Ignorer si trop long
+      }
+    } else if (name === "email") {
+      if (value.length <= 100) {
+        processedValue = value.toLowerCase();
+      } else {
+        return;
+      }
+    } else if (name === "currentPassword" || name === "newPassword" || name === "confirmPassword") {
+      if (value.length <= 128) {
+        processedValue = value;
+      } else {
+        return;
+      }
+    }
+    setForm((prev) => ({ ...prev, [name]: processedValue }));
   }
 
   // Charger les données de l'utilisateur
@@ -63,15 +90,32 @@ export default function AccountPage() {
   async function onSave(e) {
     e.preventDefault();
 
-    // Validation
-    if (form.newPassword && form.newPassword !== form.confirmPassword) {
-      toast.warning("Les nouveaux mots de passe ne correspondent pas.");
+    // Validation complète avec les fonctions de sécurité
+    const userData = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+    };
+
+    const validation = validateUserProfile(userData, false);
+    if (!validation.valid) {
+      const firstError = Object.values(validation.errors)[0];
+      toast.warning(firstError || "Veuillez corriger les erreurs dans le formulaire.");
       return;
     }
 
-    if (form.newPassword && form.newPassword.length < 8) {
-      toast.warning("Le nouveau mot de passe doit contenir au moins 8 caractères.");
-      return;
+    // Validation du mot de passe si fourni
+    if (form.newPassword) {
+      if (form.newPassword !== form.confirmPassword) {
+        toast.warning("Les nouveaux mots de passe ne correspondent pas.");
+        return;
+      }
+
+      const passwordValidation = validatePassword(form.newPassword, true);
+      if (!passwordValidation.valid) {
+        toast.warning(passwordValidation.error || "Le mot de passe n'est pas valide.");
+        return;
+      }
     }
 
     setSaving(true);
@@ -82,10 +126,15 @@ export default function AccountPage() {
         return;
       }
 
+      // Utiliser les valeurs nettoyées de la validation
+      const firstNameValidation = validateName(form.firstName, "Le prénom");
+      const lastNameValidation = validateName(form.lastName, "Le nom");
+      const emailValidation = validateEmail(form.email);
+
       const payload = {
-        first_name: form.firstName,
-        last_name: form.lastName,
-        email: form.email,
+        first_name: firstNameValidation.cleaned,
+        last_name: lastNameValidation.cleaned,
+        email: emailValidation.cleaned,
       };
 
       // Si un nouveau mot de passe est fourni, vérifier l'ancien d'abord
@@ -268,6 +317,8 @@ export default function AccountPage() {
                   name="firstName"
                   value={form.firstName}
                   onChange={onChange}
+                  maxLength={50}
+                  required
                 />
               </div>
 
@@ -277,12 +328,21 @@ export default function AccountPage() {
                   name="lastName"
                   value={form.lastName}
                   onChange={onChange}
+                  maxLength={50}
+                  required
                 />
               </div>
 
               <div className="field full-width">
                 <label>Email</label>
-                <input name="email" value={form.email} onChange={onChange} />
+                <input
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={onChange}
+                  maxLength={100}
+                  required
+                />
               </div>
 
             </div>
@@ -299,6 +359,7 @@ export default function AccountPage() {
                     name="currentPassword"
                     value={form.currentPassword}
                     onChange={onChange}
+                    maxLength={128}
                   />
                 </div>
                 <div className="field">
@@ -308,6 +369,8 @@ export default function AccountPage() {
                     name="newPassword"
                     value={form.newPassword}
                     onChange={onChange}
+                    maxLength={128}
+                    minLength={8}
                   />
                 </div>
                 <div className="field">
@@ -317,6 +380,8 @@ export default function AccountPage() {
                     name="confirmPassword"
                     value={form.confirmPassword}
                     onChange={onChange}
+                    maxLength={128}
+                    minLength={8}
                   />
                 </div>
               </div>

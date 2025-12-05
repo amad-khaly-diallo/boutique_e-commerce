@@ -2,6 +2,15 @@
 import { useEffect, useState } from "react";
 import "./payments.css";
 import Link from "next/link";
+import {
+  validatePaymentData,
+  validateCardNumber,
+  validateCardHolder,
+  validateExpiryDate,
+  validateCVV,
+  formatCardNumber,
+  formatExpiryDate,
+} from "@/lib/paymentValidation";
 
 function emptyCard() {
   return {
@@ -73,24 +82,36 @@ export default function PaymentsPage() {
   async function saveCard(e) {
     e.preventDefault();
     const data = { ...form };
-    if (!data.titulaire || !data.numero || !data.expiry) return alert("Veuillez remplir les champs requis.");
 
-    // CVV validation: Amex typically 4 digits, others 3 digits
-    const cvvClean = String(data.cvv || "").trim();
-    const requires4 = data.type === "American Express";
-    if (cvvClean.length === 0) {
-      return alert("Le CVV est requis pour valider la carte (il ne sera pas enregistré).");
+    // Validation complète avec les fonctions de sécurité
+    const validation = validatePaymentData(data);
+    if (!validation.valid) {
+      const firstError = Object.values(validation.errors)[0];
+      alert(firstError || "Veuillez corriger les erreurs dans le formulaire.");
+      return;
     }
-    if (requires4) {
-      if (!/^\d{4}$/.test(cvvClean)) return alert("Le CVV pour American Express doit contenir 4 chiffres.");
-    } else {
-      if (!/^\d{3}$/.test(cvvClean)) return alert("Le CVV doit contenir 3 chiffres.");
+
+    // Validation CVV (requis mais ne sera pas enregistré)
+    const cvvValidation = validateCVV(data.cvv, data.type);
+    if (!cvvValidation.valid) {
+      alert(cvvValidation.error || "Le CVV est requis pour valider la carte (il ne sera pas enregistré).");
+      return;
     }
 
     if (data.parDefaut) setCards((prev) => prev.map((c) => ({ ...c, parDefaut: false })));
 
+    // Nettoyer et préparer les données
+    const cardNumberValidation = validateCardNumber(data.numero, data.type);
+    const holderValidation = validateCardHolder(data.titulaire);
+    const expiryValidation = validateExpiryDate(data.expiry);
+
     // Do NOT persist CVV. Remove it before envoyer vers l'API.
     const { cvv, ...payload } = data;
+    
+    // Utiliser les valeurs nettoyées
+    payload.numero = cardNumberValidation.cleaned;
+    payload.titulaire = holderValidation.cleaned;
+    payload.expiry = expiryValidation.cleaned;
 
     try {
       let res;
@@ -223,19 +244,72 @@ export default function PaymentsPage() {
             </select>
 
             <label>Titulaire</label>
-            <input name="titulaire" value={form.titulaire} onChange={onChange} placeholder="Nom sur la carte" />
+            <input
+              name="titulaire"
+              value={form.titulaire}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Limiter la longueur et nettoyer les caractères dangereux
+                if (value.length <= 50) {
+                  onChange(e);
+                }
+              }}
+              maxLength={50}
+              placeholder="Nom sur la carte"
+            />
 
             <label>Numéro de carte</label>
-            <input name="numero" value={form.numero} onChange={onChange} placeholder="1234 5678 9012 3456" />
+            <input
+              name="numero"
+              value={form.numero}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Nettoyer et formater le numéro de carte
+                const formatted = formatCardNumber(value);
+                // Limiter à 19 caractères (16 chiffres + 3 espaces)
+                if (formatted.replace(/\s/g, "").length <= 16) {
+                  setForm((f) => ({ ...f, numero: formatted }));
+                }
+              }}
+              maxLength={19}
+              placeholder="1234 5678 9012 3456"
+            />
 
             <div className="row">
               <div>
                 <label>Expiration (MM/AA)</label>
-                <input name="expiry" value={form.expiry} onChange={onChange} placeholder="MM/AA" />
+                <input
+                  name="expiry"
+                  value={form.expiry}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Formater automatiquement la date
+                    const formatted = formatExpiryDate(value);
+                    if (formatted.length <= 5) {
+                      setForm((f) => ({ ...f, expiry: formatted }));
+                    }
+                  }}
+                  maxLength={5}
+                  placeholder="MM/AA"
+                />
               </div>
               <div>
                 <label>CVV</label>
-                <input name="cvv" value={form.cvv} onChange={onChange} placeholder={form.type === 'American Express' ? '4 chiffres' : '3 chiffres'} />
+                <input
+                  name="cvv"
+                  type="password"
+                  value={form.cvv}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    // Limiter selon le type de carte
+                    const maxLength = form.type === "American Express" ? 4 : 3;
+                    if (value.length <= maxLength) {
+                      setForm((f) => ({ ...f, cvv: value }));
+                    }
+                  }}
+                  maxLength={4}
+                  placeholder={form.type === "American Express" ? "4 chiffres" : "3 chiffres"}
+                />
               </div>
             </div>
             <div>

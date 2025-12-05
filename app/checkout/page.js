@@ -7,6 +7,15 @@ import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import {
+  validatePaymentData,
+  validateCardNumber,
+  validateCardHolder,
+  validateExpiryDate,
+  validateCVV,
+  formatCardNumber,
+  formatExpiryDate,
+} from "@/lib/paymentValidation";
 
 const STEPS = {
   CART: 1,
@@ -238,19 +247,14 @@ export default function Checkout() {
   function validatePayment() {
     if (showNewPaymentForm) {
       const pay = newPayment;
-      if (!pay.titulaire || !pay.numero || !pay.expiry || !pay.cvv) {
-        toast.warning("Veuillez remplir tous les champs requis pour la méthode de paiement.");
-        return false;
-      }
-      // Validation CVV
-      const cvvClean = String(pay.cvv || "").trim();
-      const requires4 = pay.type === "American Express";
-      if (requires4 && !/^\d{4}$/.test(cvvClean)) {
-        toast.warning("Le CVV pour American Express doit contenir 4 chiffres.");
-        return false;
-      }
-      if (!requires4 && !/^\d{3}$/.test(cvvClean)) {
-        toast.warning("Le CVV doit contenir 3 chiffres.");
+      
+      // Validation complète avec les fonctions de sécurité
+      const validation = validatePaymentData(pay);
+      
+      if (!validation.valid) {
+        // Afficher la première erreur trouvée
+        const firstError = Object.values(validation.errors)[0];
+        toast.warning(firstError || "Veuillez remplir tous les champs requis pour la méthode de paiement.");
         return false;
       }
     } else if (!selectedPayment) {
@@ -327,7 +331,27 @@ export default function Checkout() {
   // Sauvegarder nouvelle méthode de paiement
   async function savePaymentMethod() {
     try {
+      // Valider les données avant l'envoi
+      const validation = validatePaymentData(newPayment);
+      if (!validation.valid) {
+        const firstError = Object.values(validation.errors)[0];
+        toast.warning(firstError || "Veuillez corriger les erreurs dans le formulaire.");
+        return false;
+      }
+
+      // Nettoyer et préparer les données
+      const cardNumberValidation = validateCardNumber(newPayment.numero, newPayment.type);
+      const holderValidation = validateCardHolder(newPayment.titulaire);
+      const expiryValidation = validateExpiryDate(newPayment.expiry);
+
+      // Ne pas envoyer le CVV (sécurité)
       const { cvv, ...payload } = newPayment;
+      
+      // Utiliser les valeurs nettoyées
+      payload.numero = cardNumberValidation.cleaned;
+      payload.titulaire = holderValidation.cleaned;
+      payload.expiry = expiryValidation.cleaned;
+
       const res = await fetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -869,35 +893,59 @@ export default function Checkout() {
             <input
               placeholder="Titulaire *"
               value={newPayment.titulaire}
-              onChange={(e) =>
-                setNewPayment({ ...newPayment, titulaire: e.target.value })
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                // Limiter la longueur et nettoyer les caractères dangereux
+                if (value.length <= 50) {
+                  setNewPayment({ ...newPayment, titulaire: value });
+                }
+              }}
+              maxLength={50}
               required
             />
             <input
               placeholder="Numéro de carte *"
               value={newPayment.numero}
-              onChange={(e) =>
-                setNewPayment({ ...newPayment, numero: e.target.value })
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                // Nettoyer et formater le numéro de carte
+                const formatted = formatCardNumber(value);
+                // Limiter à 19 caractères (16 chiffres + 3 espaces)
+                if (formatted.replace(/\s/g, "").length <= 16) {
+                  setNewPayment({ ...newPayment, numero: formatted });
+                }
+              }}
+              maxLength={19}
               required
             />
             <div className="row">
               <input
                 placeholder="Expiration (MM/AA) *"
                 value={newPayment.expiry}
-                onChange={(e) =>
-                  setNewPayment({ ...newPayment, expiry: e.target.value })
-                }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Formater automatiquement la date
+                  const formatted = formatExpiryDate(value);
+                  if (formatted.length <= 5) {
+                    setNewPayment({ ...newPayment, expiry: formatted });
+                  }
+                }}
+                maxLength={5}
                 required
               />
             <input
                 placeholder="CVV *"
                 type="password"
                 value={newPayment.cvv}
-                onChange={(e) =>
-                  setNewPayment({ ...newPayment, cvv: e.target.value })
-                }
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+                  // Limiter selon le type de carte
+                  const maxLength = newPayment.type === "American Express" ? 4 : 3;
+                  if (value.length <= maxLength) {
+                    setNewPayment({ ...newPayment, cvv: value });
+                  }
+                }}
+                maxLength={4}
                 required
               />
             </div>
