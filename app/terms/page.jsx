@@ -1,22 +1,30 @@
-import { Metadata } from 'next';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import './terms.css';
 
-export const metadata = {
-  title: 'Conditions d\'Utilisation',
-  description: 'Conditions d\'utilisation d\'EliteShop - Lisez nos conditions générales d\'utilisation avant d\'utiliser notre site.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
-
 export default function TermsPage() {
+  const [formattedDate, setFormattedDate] = useState('');
+
+  useEffect(() => {
+    // Formater la date uniquement côté client pour éviter les problèmes d'hydration
+    setFormattedDate(
+      new Date().toLocaleDateString('fr-FR', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    );
+  }, []);
+
   return (
     <main className="legal-page">
       <div className="legal-container">
         <h1>Conditions d'Utilisation</h1>
-        <p className="last-updated">Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        {formattedDate && (
+          <p className="last-updated">Dernière mise à jour : {formattedDate}</p>
+        )}
 
         <section>
           <h2>1. Acceptation des conditions</h2>

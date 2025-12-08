@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import "./wishlist.css";
 import Link from 'next/link';
 import Golden from '../components/GoldenBotton/GoldenBotton';
@@ -10,6 +11,7 @@ import { useToastContext } from "@/app/contexts/ToastContext";
 
 
 export default function Wishlist() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
   const showLoader = useLuxuryLoader(loading, 1000);
@@ -66,7 +68,7 @@ export default function Wishlist() {
         <section className="wishlist-empty">
           <h2>Votre liste de souhaits est vide</h2>
           <p>Explorez nos produits et ajoutez vos articles préférés pour les retrouver facilement plus tard.</p>
-          <Golden className="btn-return" onClick={() => (window.location.href = "/")}>
+          <Golden className="btn-return" onClick={() => router.push("/")}>
             Retourner à la boutique</Golden>
         </section>
       )}

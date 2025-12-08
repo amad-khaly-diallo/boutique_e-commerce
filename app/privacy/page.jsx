@@ -1,22 +1,30 @@
-import { Metadata } from 'next';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import './privacy.css';
 
-export const metadata = {
-  title: 'Politique de Confidentialité',
-  description: 'Politique de confidentialité d\'EliteShop - Découvrez comment nous collectons, utilisons et protégeons vos données personnelles.',
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
-
 export default function PrivacyPage() {
+  const [formattedDate, setFormattedDate] = useState('');
+
+  useEffect(() => {
+    // Formater la date uniquement côté client pour éviter les problèmes d'hydration
+    setFormattedDate(
+      new Date().toLocaleDateString('fr-FR', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    );
+  }, []);
+
   return (
     <main className="legal-page">
       <div className="legal-container">
         <h1>Politique de Confidentialité</h1>
-        <p className="last-updated">Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        {formattedDate && (
+          <p className="last-updated">Dernière mise à jour : {formattedDate}</p>
+        )}
 
         <section>
           <h2>1. Introduction</h2>

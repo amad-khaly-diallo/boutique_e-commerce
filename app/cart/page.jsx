@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Golden from "../components/GoldenBotton/GoldenBotton";
 import { Trash } from "lucide-react";
 import "./cart.css";
@@ -9,6 +10,7 @@ import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
 
 export default function CartPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -128,7 +130,7 @@ export default function CartPage() {
           </div>
 
           <div className="cart-buttons">
-            <Golden className="btn-return" onClick={() => (window.location.href = "/")}>
+            <Golden className="btn-return" onClick={() => router.push("/")}>
               Retour à la boutique
             </Golden>
           </div>
@@ -159,7 +161,7 @@ export default function CartPage() {
                     toast.warning("Votre panier est vide. Veuillez ajouter des produits avant de continuer.");
                     return;
                   }
-                  window.location.href = "/checkout";
+                  router.push("/checkout");
                 }}
               >
                 Proceed to checkout

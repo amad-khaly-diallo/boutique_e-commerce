@@ -130,7 +130,7 @@ export default function AdminPage() {
         <div className="grid-3">
           <div className="card">
             <h3>Ventes totales</h3>
-            <div className="value">
+            <div className="value" suppressHydrationWarning>
               {totalSales.toLocaleString("fr-FR", {
                 style: "currency",
                 currency: "EUR",
@@ -179,7 +179,7 @@ export default function AdminPage() {
                         : `ID: ${o.user_id}`}
                     </td>
                     <td>{Number(o.total_amount || 0).toFixed(2)} €</td>
-                    <td>
+                    <td suppressHydrationWarning>
                       {o.created_at
                         ? new Date(o.created_at).toLocaleDateString("fr-FR")
                         : o.created_at}

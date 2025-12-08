@@ -212,7 +212,7 @@ export default function UsersPage() {
                           {u.role}
                         </span>
                       </td>
-                      <td>
+                      <td suppressHydrationWarning>
                         {u.created_at
                           ? new Date(u.created_at).toLocaleDateString("fr-FR")
                           : "-"}

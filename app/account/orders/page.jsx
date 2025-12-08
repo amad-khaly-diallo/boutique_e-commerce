@@ -3,20 +3,23 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import "./orders.css";
 
-function formatDate(ts) {
-  const d = new Date(ts);
-  return d.toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
   const [error, setError] = useState(null);
+  const [formattedDates, setFormattedDates] = useState({});
+
+  // Formater les dates uniquement côté client
+  function formatDate(ts) {
+    if (!ts) return "-";
+    const d = new Date(ts);
+    return d.toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -45,6 +48,14 @@ export default function OrdersPage() {
 
         if (Array.isArray(data)) {
           setOrders(data);
+          // Formater toutes les dates après le chargement
+          const dates = {};
+          data.forEach((order) => {
+            if (order.created_at) {
+              dates[order.order_id] = formatDate(order.created_at);
+            }
+          });
+          setFormattedDates(dates);
         } else {
           setOrders([]);
         }
@@ -99,8 +110,8 @@ export default function OrdersPage() {
               <div className="order-row">
                 <div className="order-meta">
                   <div className="oid">#{o.order_id}</div>
-                  <div className="date">
-                    {o.created_at ? formatDate(o.created_at) : "-"}
+                  <div className="date" suppressHydrationWarning>
+                    {formattedDates[o.order_id] || (o.created_at ? formatDate(o.created_at) : "-")}
                   </div>
                 </div>
                 <div className="order-right">

@@ -175,7 +175,9 @@ export default function OrdersPage() {
                     </td>
                     <td>{o.email || "-"}</td>
                     <td>{Number(o.total_amount || 0).toFixed(2)} €</td>
-                    <td>{new Date(o.created_at).toLocaleDateString("fr-FR")}</td>
+                    <td suppressHydrationWarning>
+                      {o.created_at ? new Date(o.created_at).toLocaleDateString("fr-FR") : "-"}
+                    </td>
                     <td>
                       <select
                         value={o.status || "pending"}

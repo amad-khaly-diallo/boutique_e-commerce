@@ -50,22 +50,26 @@ export default function Header() {
             }
         };
 
-        const loadCartCount = async () => {
-            try {
-                const res = await fetch("/api/carts", { credentials: "include" });
-                const data = await res.json().catch(() => ({}));
-                if (res.ok && Array.isArray(data.cart)) {
-                    setCartCount(data.cart.length);
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        };
 
         loadUser();
-        loadCartCount();
     }, [mounted]);
 
+
+    const loadCartCount = async () => {
+        try {
+            const res = await fetch("/api/carts", { credentials: "include" });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && Array.isArray(data.cart)) {
+                setCartCount(data.cart.length);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
+    loadCartCount();
+    
     useEffect(() => {
         if (!search || search.length < 2) {
             setSuggestions([]);

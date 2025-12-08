@@ -3,11 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, Eye, Star, ShoppingCart } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './productCard.module.css';
 import Golden from '../GoldenBotton/GoldenBotton';
 import { useToastContext } from '@/app/contexts/ToastContext';
 
 export function ProductCard({ product }) {
+  const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const toast = useToastContext();
@@ -209,7 +211,7 @@ const handleToggleFavorite = async (e) => {
             onClick={handleToggleFavorite}
             aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
           >
-            <Heart className={styles.actionIcon} key={product.product_id} fill={isFavorite ? 'currentColor' : 'none'} size={18} />
+            <Heart className={styles.actionIcon} fill={isFavorite ? 'currentColor' : 'none'} size={18} />
           </button>
           <button
             type="button"
@@ -217,7 +219,7 @@ const handleToggleFavorite = async (e) => {
             onClick={handleQuickView}
             aria-label="Vue rapide"
           >
-            <Eye onClick={()=>{window.location.href = `/products/${product.product_id}`}} className={styles.actionIcon} size={18} />
+            <Eye onClick={() => router.push(`/products/${product.product_id}`)} className={styles.actionIcon} size={18} />
           </button>
         </div>
       </div>
