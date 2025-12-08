@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import LuxuryLoader from "./components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import SchemaInjector from "./components/Schema/SchemaInjector";
 
 export default function Home() {
   const [vedettes, setVedettes] = useState([]);
@@ -55,8 +56,44 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Schéma Schema.org pour la page d'accueil
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const homepageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "EliteShop - Boutique de Luxe",
+    "description": "Découvrez notre collection exclusive de montres de luxe, sacs haut de gamme et bijoux précieux.",
+    "url": baseUrl,
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": [
+        ...(vedettes.slice(0, 5).map((product, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "Product",
+            "name": product.product_name,
+            "url": `${baseUrl}/products/${product.product_id}`,
+            "image": product.image 
+              ? (product.image.startsWith('http') ? product.image : `${baseUrl}${product.image}`)
+              : `${baseUrl}/images/lux.png`,
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "EUR",
+              "price": parseFloat(product.price) || 0,
+              "availability": product.stock > 0 
+                ? "https://schema.org/InStock" 
+                : "https://schema.org/OutOfStock"
+            }
+          }
+        })))
+      ]
+    }
+  };
+
   return (
     <div className={styles.page}>
+      <SchemaInjector schemas={[homepageSchema]} />
       <main className={styles.main}>
         {/* Hero */}
         <div className={styles.hero}>

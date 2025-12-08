@@ -7,12 +7,14 @@ import { useRouter } from 'next/navigation';
 import styles from './productCard.module.css';
 import Golden from '../GoldenBotton/GoldenBotton';
 import { useToastContext } from '@/app/contexts/ToastContext';
+import { useCartContext } from '@/app/contexts/CartContext';
 
 export function ProductCard({ product }) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const toast = useToastContext();
+  const { refreshCartCount } = useCartContext();
   const [notification, setNotification] = useState(null); // { message, type }
 
 useEffect(() => {
@@ -67,6 +69,7 @@ useEffect(() => {
       }
 
       toast.success("Produit ajouté au panier avec succès");
+      refreshCartCount();
 
     } catch (error) {
       console.error("Erreur réseau :", error);

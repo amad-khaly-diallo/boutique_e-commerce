@@ -7,6 +7,7 @@ import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import { useCartContext } from "@/app/contexts/CartContext";
 import { useRouter } from "next/navigation";
 import {
   validatePaymentData,
@@ -57,6 +58,7 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
+  const { resetCartCount } = useCartContext();
   const [currentStep, setCurrentStep] = useState(STEPS.CART);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -501,6 +503,7 @@ export default function Checkout() {
         console.error("Erreur lors de la suppression du panier:", err);
       }
 
+      resetCartCount();
       toast.success("Commande enregistrée avec succès !");
       setTimeout(() => {
         router.push("/account/orders");

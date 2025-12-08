@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import Golden from "../components/GoldenBotton/GoldenBotton";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import SchemaInjector from "@/app/components/Schema/SchemaInjector";
 
 const CATEGORIES = [
   { value: "all", label: "Toutes les catégories" },
@@ -67,8 +68,62 @@ export default function Products() {
     return 0;
   });
 
+  // Schéma Schema.org pour la page de collection
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Tous les Produits",
+    "description": "Découvrez notre sélection exclusive de produits de luxe, alliant élégance, innovation et style pour chaque moment de votre vie.",
+    "url": `${baseUrl}/products`,
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": total,
+      "itemListElement": sortedProducts.slice(0, 10).map((product, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "Product",
+          "name": product.product_name,
+          "url": `${baseUrl}/products/${product.product_id}`,
+          "image": product.image 
+            ? (product.image.startsWith('http') ? product.image : `${baseUrl}${product.image}`)
+            : `${baseUrl}/images/lux.png`,
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "EUR",
+            "price": parseFloat(product.price) || 0,
+            "availability": product.stock > 0 
+              ? "https://schema.org/InStock" 
+              : "https://schema.org/OutOfStock"
+          }
+        }
+      }))
+    }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Produits",
+        "item": `${baseUrl}/products`
+      }
+    ]
+  };
+
   return (
     <main className={styles.main}>
+      <SchemaInjector schemas={[collectionSchema, breadcrumbSchema]} />
       {showLoader && <LuxuryLoader />}
       <section className={styles.pageTitle}>
         <div className={styles.pageTitleContent}>

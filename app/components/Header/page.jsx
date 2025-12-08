@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShoppingCart, User, Search, Menu, Heart, X, ChevronDown } from 'lucide-react';
 import { useMemo, useState, useEffect } from 'react';
+import { useCartContext } from '@/app/contexts/CartContext';
 import styles from './header.module.css';
 
 const NAV_LINKS = [
@@ -19,7 +20,7 @@ const CATEGORY_LINKS = [
 
 export default function Header() {
     const pathname = usePathname();
-    const [cartCount, setCartCount] = useState(0);
+    const { cartCount } = useCartContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [mounted, setMounted] = useState(false);
@@ -55,21 +56,7 @@ export default function Header() {
     }, [mounted]);
 
 
-    const loadCartCount = async () => {
-        try {
-            const res = await fetch("/api/carts", { credentials: "include" });
-            const data = await res.json().catch(() => ({}));
-            if (res.ok && Array.isArray(data.cart)) {
-                setCartCount(data.cart.length);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
-
-    loadCartCount();
-    
     useEffect(() => {
         if (!search || search.length < 2) {
             setSuggestions([]);

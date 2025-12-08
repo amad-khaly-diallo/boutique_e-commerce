@@ -8,6 +8,7 @@ import Image from "next/image";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import { useCartContext } from "@/app/contexts/CartContext";
 
 export default function CartPage() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function CartPage() {
   const [subtotal, setSubtotal] = useState(0);
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
+  const { refreshCartCount } = useCartContext();
 
   const fetchProducts = async () => {
     try {
@@ -55,6 +57,7 @@ export default function CartPage() {
       // Supprime localement après confirmation côté serveur
       setCartItems((prev) => prev.filter((it) => it.cart_item_id !== cartItemId));
       toast.success("Article supprimé du panier");
+      refreshCartCount();
     } catch (err) {
       console.error(err);
       toast.error("Impossible de supprimer l'article, réessayez.");

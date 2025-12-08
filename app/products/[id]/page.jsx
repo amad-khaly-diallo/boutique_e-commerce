@@ -8,6 +8,8 @@ import { ProductCard } from "../../components/ProductCard/ProductCard";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import { useCartContext } from "@/app/contexts/CartContext";
+import SchemaInjector from "@/app/components/Schema/SchemaInjector";
 
 export default function ProductsDetail() {
   const { id } = useParams();
@@ -19,6 +21,7 @@ export default function ProductsDetail() {
   const [loading, setLoading] = useState(true);
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
+  const { refreshCartCount } = useCartContext();
   const [isAdding, setIsAdding] = useState(false)
 
   const increase = () => {
@@ -130,6 +133,7 @@ export default function ProductsDetail() {
       }
 
       toast.success("Produit ajouté au panier !");
+      refreshCartCount();
     } catch (error) {
       console.error("Erreur réseau :", error);
       toast.error("Impossible de contacter le serveur");
@@ -184,8 +188,78 @@ export default function ProductsDetail() {
     return stars;
   };
 
+  // Préparer les schémas Schema.org
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const productUrl = `${baseUrl}/products/${product.product_id}`;
+  const imageUrl = product.image 
+    ? (product.image.startsWith('http') ? product.image : `${baseUrl}${product.image}`)
+    : `${baseUrl}/images/lux.png`;
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.product_name,
+    "description": product.description || product.product_name,
+    "image": imageUrl,
+    "sku": `PROD-${product.product_id}`,
+    "brand": {
+      "@type": "Brand",
+      "name": "EliteShop"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": productUrl,
+      "priceCurrency": "EUR",
+      "price": parseFloat(product.price) || 0,
+      "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": product.stock > 0 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EliteShop"
+      }
+    },
+    ...(product.note ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": parseFloat(product.note) || 0,
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": 1
+      }
+    } : {})
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Produits",
+        "item": `${baseUrl}/products`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": product.product_name,
+        "item": productUrl
+      }
+    ]
+  };
+
   return (
     <div className="container">
+      <SchemaInjector schemas={[productSchema, breadcrumbSchema]} />
       {showLoader && <LuxuryLoader />}
       <div className="details-product">
         {/* Images à gauche */}

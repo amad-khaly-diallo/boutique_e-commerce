@@ -3,6 +3,8 @@ import "./globals.css";
 import Header  from "./components/Header/page";
 import Footer  from "./components/Footer/page";
 import { ToastProvider } from "./contexts/ToastContext";
+import { CartProvider } from "./contexts/CartContext";
+import SchemaInjector from "./components/Schema/SchemaInjector";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,13 +77,67 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  
+  // Schéma Organization
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "EliteShop",
+    "url": baseUrl,
+    "logo": `${baseUrl}/images/lux.png`,
+    "description": "Boutique de luxe spécialisée dans les montres, sacs et bijoux haut de gamme",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+33-01-23-45-67-89",
+      "contactType": "Service client",
+      "email": "contact@eliteshop.com",
+      "areaServed": "FR",
+      "availableLanguage": ["French"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 rue de la paix",
+      "addressCountry": "FR",
+      "addressLocality": "France"
+    },
+    "sameAs": []
+  };
+
+  // Schéma WebSite
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "EliteShop",
+    "url": baseUrl,
+    "description": "Boutique de luxe spécialisée dans les montres, sacs et bijoux haut de gamme",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${baseUrl}/products?search={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "EliteShop",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/images/lux.png`
+      }
+    }
+  };
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+        <SchemaInjector schemas={[organizationSchema, websiteSchema]} />
         <ToastProvider>
-          <Header />
-          {children}
-          <Footer />
+          <CartProvider>
+            <Header />
+            {children}
+            <Footer />
+          </CartProvider>
         </ToastProvider>
       </body>
     </html>

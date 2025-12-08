@@ -5,6 +5,7 @@ import Golden from "@/app/components/GoldenBotton/GoldenBotton";
 import styles from "../page.module.css";
 import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
+import SchemaInjector from "@/app/components/Schema/SchemaInjector";
 
 export default function BijouxPage() {
   const [products, setProducts] = useState([]);
@@ -63,8 +64,62 @@ export default function BijouxPage() {
     }, 500); // Temps réel de chargement (peut être rapide)
   }, [page, limit]);
 
+  // Schémas Schema.org
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Bijoux d'Exception",
+    "description": "Sélection précieuse de bijoux emblématiques : Cartier, Bulgari et autres maisons d'exception.",
+    "url": `${baseUrl}/categories/bijoux`,
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": total,
+      "itemListElement": products.slice(0, 10).map((product, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "Product",
+          "name": product.product_name,
+          "url": `${baseUrl}/products/${product.product_id}`,
+          "image": product.image 
+            ? (product.image.startsWith('http') ? product.image : `${baseUrl}${product.image}`)
+            : `${baseUrl}/images/lux.png`,
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "EUR",
+            "price": parseFloat(product.price) || 0,
+            "availability": product.stock > 0 
+              ? "https://schema.org/InStock" 
+              : "https://schema.org/OutOfStock"
+          }
+        }
+      }))
+    }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Bijoux",
+        "item": `${baseUrl}/categories/bijoux`
+      }
+    ]
+  };
+
   return (
     <main className={styles.main}>
+      <SchemaInjector schemas={[collectionSchema, breadcrumbSchema]} />
       {showLoader && <LuxuryLoader />}
       <section className={styles.pageTitle}>
         <div className={styles.pageTitleContent}>
