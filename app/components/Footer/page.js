@@ -16,9 +16,9 @@ export default function Footer() {
                     <div className="footer-section">
                         <h3>Support</h3>
                         <ul>
-                            <li><a href="#">11 rue des sale arabe </a></li>
+                            <li><a href="#">123 rue de la paix </a></li>
                             <li><a href="tel:+8801688888899">+33 06 mais couille noir sa mere</a></li>
-                            <li><a href="mailto:exclusive@gmail.com">nadir.souifi@gmail.com</a></li>
+                            <li><a href="mailto:contact@eliteshop.com">contact@eliteshop.com</a></li>
                         </ul>
                     </div>
                     <div className="footer-section">
@@ -27,22 +27,21 @@ export default function Footer() {
                             <li><a href="/account">Mon compte </a></li>
                             <li><a href="/login">connexion / enregistrement </a></li>
                             <li><a href="/cart">Cart</a></li>
-                            <li><a href="whislist">Liste de souhaits</a></li>
+                            <li><Link href="/wishlist">Liste de souhaits</Link></li>
                             <li><a href="/checkout">Shop</a></li>
                         </ul>
                     </div>
                     <div className="footer-section">
                         <h3>Lien rapide</h3>
                         <ul>
-                            <li><a href="#">politique de confidentialité</a></li>
-                            <li><a href="#">Conditions d'utilisation</a></li>
-                            <li><a href="#">FAQ</a></li>
-                            <li><a href="/contact">Contact</a></li>
+                            <li><Link href="/privacy">Politique de confidentialité</Link></li>
+                            <li><Link href="/terms">Conditions d'utilisation</Link></li>
+                            <li><Link href="/contact">Contact</Link></li>
                         </ul>
                     </div>
                 </div>
                 <div className="footer-bottom">
-                    <p>© Copyright Exclusive 2024. Tous droits réservés</p>
+                    <p> &copy; Copyright EliteShop 2025. Tous droits réservés</p>
                 </div>
             </footer></>
     );

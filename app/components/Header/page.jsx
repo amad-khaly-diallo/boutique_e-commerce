@@ -28,7 +28,7 @@ export default function Header() {
     const [search, setSearch] = useState("");
     const [suggestions, setSuggestions] = useState([]);
 
-    // Charger les informations de l'utilisateur
+    // Charger les informations de l'utilisateur et le panier
     useEffect(() => {
         const loadUser = async () => {
             try {
@@ -41,7 +41,21 @@ export default function Header() {
                 console.error(err);
             }
         };
+
+        const loadCartCount = async () => {
+            try {
+                const res = await fetch("/api/carts", { credentials: "include" });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && Array.isArray(data.cart)) {
+                    setCartCount(data.cart.length);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
         loadUser();
+        loadCartCount();
     }, []);
 
     useEffect(() => {

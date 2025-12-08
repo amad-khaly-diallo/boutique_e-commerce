@@ -7,6 +7,7 @@ import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import { useRouter } from "next/navigation";
 import {
   validatePaymentData,
   validateCardNumber,
@@ -52,6 +53,7 @@ function emptyPayment() {
 }
 
 export default function Checkout() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
@@ -92,7 +94,7 @@ export default function Checkout() {
           if (data.cart.length === 0) {
             toast.warning("Votre panier est vide. Redirection vers la boutique...");
             setTimeout(() => {
-              window.location.href = "/";
+              router.push("/");
             }, 2000);
             return;
           }
@@ -106,7 +108,7 @@ export default function Checkout() {
           setCartItems([]);
           toast.warning("Votre panier est vide. Redirection vers la boutique...");
           setTimeout(() => {
-            window.location.href = "/";
+            router.push("/");
           }, 2000);
         }
       } catch (err) {
@@ -132,14 +134,14 @@ export default function Checkout() {
           // Utilisateur non connecté, rediriger vers login
           toast.warning("Vous devez être connecté pour passer commande.");
           setTimeout(() => {
-            window.location.href = "/login";
+            router.push("/login");
           }, 2000);
         }
       } catch (err) {
         console.error(err);
         toast.error("Erreur de connexion. Redirection vers la page de connexion...");
         setTimeout(() => {
-          window.location.href = "/login";
+          router.push("/login");
         }, 2000);
       }
     };
@@ -203,7 +205,7 @@ export default function Checkout() {
     if (!user) {
       toast.warning("Vous devez être connecté pour passer commande.");
       setTimeout(() => {
-        window.location.href = "/login";
+        router.push("/login");
       }, 2000);
       return false;
     }
@@ -501,7 +503,7 @@ export default function Checkout() {
 
       toast.success("Commande enregistrée avec succès !");
       setTimeout(() => {
-        window.location.href = "/account/orders";
+        router.push("/account/orders");
       }, 2000);
     } catch (err) {
       console.error(err);

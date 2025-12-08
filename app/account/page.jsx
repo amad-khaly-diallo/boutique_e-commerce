@@ -5,6 +5,7 @@ import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import { useRouter } from "next/navigation";
 import {
   validateUserProfile,
   validateName,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/userValidation";
 
 export default function AccountPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -72,7 +74,7 @@ export default function AccountPage() {
           });
         } else {
           // Rediriger vers login si non connecté
-          window.location.href = "/login";
+          router.push("/login");
         }
       } catch (err) {
         console.error(err);
@@ -212,7 +214,7 @@ export default function AccountPage() {
       if (res.ok) {
         toast.success("Déconnexion réussie");
         setTimeout(() => {
-          window.location.href = "/";
+          router.push("/");
         }, 1000);
       } else {
         toast.error(data.error || "Erreur lors de la déconnexion");
@@ -273,7 +275,7 @@ export default function AccountPage() {
 
       toast.success("Votre compte a été supprimé avec succès.");
       setTimeout(() => {
-        window.location.href = "/";
+        router.push("/");
       }, 1500);
     } catch (err) {
       console.error(err);
