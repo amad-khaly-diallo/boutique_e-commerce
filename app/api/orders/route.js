@@ -76,6 +76,40 @@ export async function POST(request) {
     try {
       await conn.beginTransaction();
 
+      // Vérifier le stock disponible pour tous les produits avant de créer la commande
+      for (const item of items) {
+        const { product_id, quantity } = item;
+        
+        // Récupérer le stock actuel du produit
+        const [productRows] = await conn.execute(
+          "SELECT stock, product_name FROM Product WHERE product_id = ?",
+          [product_id]
+        );
+
+        if (!productRows.length) {
+          await conn.rollback();
+          return NextResponse.json(
+            { error: `Produit avec l'ID ${product_id} introuvable` },
+            { status: 404 }
+          );
+        }
+
+        const currentStock = productRows[0].stock;
+        const productName = productRows[0].product_name;
+
+        // Vérifier si le stock est suffisant
+        if (currentStock < quantity) {
+          await conn.rollback();
+          return NextResponse.json(
+            { 
+              error: `Stock insuffisant pour "${productName}". Stock disponible: ${currentStock}, Quantité demandée: ${quantity}` 
+            },
+            { status: 400 }
+          );
+        }
+      }
+
+      // Créer la commande
       const [result] = await conn.execute(
         "INSERT INTO `Order` (user_id, address, total_amount, status) VALUES (?, ?, ?, ?)",
         [user_id, address, total_amount, status],
@@ -83,11 +117,20 @@ export async function POST(request) {
 
       const orderId = result.insertId;
 
+      // Insérer les items de la commande et réduire le stock
       for (const item of items) {
         const { product_id, quantity, price_unit } = item;
+        
+        // Insérer l'item dans la commande
         await conn.execute(
           "INSERT INTO Order_item (order_id, product_id, quantity, price_unit) VALUES (?, ?, ?, ?)",
           [orderId, product_id, quantity, price_unit],
+        );
+
+        // Réduire le stock du produit
+        await conn.execute(
+          "UPDATE Product SET stock = stock - ? WHERE product_id = ?",
+          [quantity, product_id]
         );
       }
 
