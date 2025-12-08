@@ -22,14 +22,22 @@ export default function Header() {
     const [cartCount, setCartCount] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [mounted, setMounted] = useState(false);
     const isCategorySection = pathname?.startsWith('/categories');
 
     //pour la bar de recherche
     const [search, setSearch] = useState("");
     const [suggestions, setSuggestions] = useState([]);
 
+    // Éviter les problèmes d'hydration
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     // Charger les informations de l'utilisateur et le panier
     useEffect(() => {
+        if (!mounted) return;
+
         const loadUser = async () => {
             try {
                 const res = await fetch("/api/auth/me", { credentials: "include" });
@@ -56,7 +64,7 @@ export default function Header() {
 
         loadUser();
         loadCartCount();
-    }, []);
+    }, [mounted]);
 
     useEffect(() => {
         if (!search || search.length < 2) {

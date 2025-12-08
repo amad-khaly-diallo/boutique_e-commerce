@@ -31,26 +31,28 @@ export async function middleware(request) {
     }
 
     if (
-      (url.startsWith("/cart") ||
-        url.startsWith("/dashboard") ||
-        url.startsWith("/profile")) &&
-      !payload.user_id
+      (url.startsWith("/cart") || url.startsWith("/wishlist") ||
+        url.startsWith("/dashboard") || url.startsWith("/profile") || url.startsWith("/checkout")) && !payload.user_id
     ) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
     return NextResponse.next();
   } catch (err) {
+    console.error("Erreur middleware:", err);
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
 
-// ⚡ Seulement appliquer le middleware sur ces routes
+// Seulement appliquer le middleware sur ces routes
 export const config = {
   matcher: [
     "/dashboard/:path*",
+    "/account/:path*",
     "/profile/:path*",
-    "/admin/:path*",
     "/cart/:path*",
+    "/wishlist/:path*",
+    "/checkout/:path*", 
+    "/admin/:path*",
   ],
 };

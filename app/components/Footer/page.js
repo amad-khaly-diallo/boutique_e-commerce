@@ -3,7 +3,6 @@ import './footer.css';
 
 export default function Footer() {
     return (
-        <>
             <footer className="auth-footer">
                 <div className="footer-content">
                     <div className="footer-section">
@@ -16,9 +15,9 @@ export default function Footer() {
                     <div className="footer-section">
                         <h3>Support</h3>
                         <ul>
-                            <li><a href="#">123 rue de la paix </a></li>
-                            <li><a href="tel:+8801688888899">+33 06 mais couille noir sa mere</a></li>
-                            <li><a href="mailto:contact@eliteshop.com">contact@eliteshop.com</a></li>
+                            <li><a target="_blank" href="https://www.google.com/maps">123 rue de la paix </a></li>
+                            <li><a target="_blank" href="tel:+330123456789">+33 01 23 45 67 89</a></li>
+                            <li><a target="_blank" href="mailto:contact@eliteshop.com">contact@eliteshop.com</a></li>
                         </ul>
                     </div>
                     <div className="footer-section">
@@ -43,7 +42,7 @@ export default function Footer() {
                 <div className="footer-bottom">
                     <p> &copy; Copyright EliteShop 2025. Tous droits réservés</p>
                 </div>
-            </footer></>
+            </footer>
     );
 }
 

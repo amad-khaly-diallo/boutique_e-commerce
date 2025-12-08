@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../auth.css'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -18,7 +18,13 @@ export default function RegisterPage() {
     const [form, setForm] = useState(INITIAL_FORM)
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
+    const [mounted, setMounted] = useState(false)
     const router = useRouter()
+
+    // Éviter les problèmes d'hydration en ne rendant que côté client
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     // Validation côté client
     const validate = () => {
@@ -91,11 +97,33 @@ export default function RegisterPage() {
         }
     }
 
+    // Éviter le rendu initial côté serveur pour prévenir les problèmes d'hydration
+    if (!mounted) {
+        return (
+            <div className="auth-container">
+                <div className="auth-main">
+                    <div className="auth-form-container">
+                        <div className="form-wrapper">
+                            <h1>Créer un compte</h1>
+                            <p>Chargement...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="auth-container">
             <div className="auth-main">
                 <div className="auth-image">
-                    <Image src="/images/lux.png" alt="Auth" width={500} height={500} />
+                    <Image 
+                        src="/images/lux.png" 
+                        alt="Auth" 
+                        width={500} 
+                        height={500}
+                        priority
+                    />
                 </div>
 
                 <div className="auth-form-container">

@@ -217,7 +217,7 @@ const handleToggleFavorite = async (e) => {
             onClick={handleQuickView}
             aria-label="Vue rapide"
           >
-            <Eye className={styles.actionIcon} size={18} />
+            <Eye onClick={()=>{window.location.href = `/products/${product.product_id}`}} className={styles.actionIcon} size={18} />
           </button>
         </div>
       </div>

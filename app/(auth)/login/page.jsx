@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../auth.css'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,7 +10,13 @@ export default function LoginPage() {
     const [form, setForm] = useState({ email: '', password: '' })
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
+    const [mounted, setMounted] = useState(false)
     const router = useRouter()
+
+    // Éviter les problèmes d'hydration en ne rendant que côté client
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     // Validation côté client
     const validate = () => {
@@ -62,12 +68,33 @@ export default function LoginPage() {
         }
     }
 
+    // Éviter le rendu initial côté serveur pour prévenir les problèmes d'hydration
+    if (!mounted) {
+        return (
+            <div className="auth-container">
+                <div className="auth-main">
+                    <div className="auth-form-container">
+                        <div className="form-wrapper">
+                            <h1>Connexion à Exclusive</h1>
+                            <p>Chargement...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="auth-container">
             <div className="auth-main">
-
                 <div className="auth-image">
-                    <Image src="/images/lux.png" alt="Auth" width={500} height={500} />
+                    <Image 
+                        src="/images/lux.png" 
+                        alt="Auth" 
+                        width={500} 
+                        height={500}
+                        priority
+                    />
                 </div>
 
                 <div className="auth-form-container">
@@ -85,6 +112,7 @@ export default function LoginPage() {
                                     value={form.email}
                                     onChange={e => handleChange('email', e.target.value)}
                                     className={errors.email ? 'error' : ''}
+                                    autoComplete="email"
                                 />
                                 {errors.email && <span className="error-text">{errors.email}</span>}
                             </div>
@@ -96,6 +124,7 @@ export default function LoginPage() {
                                     value={form.password}
                                     onChange={e => handleChange('password', e.target.value)}
                                     className={errors.password ? 'error' : ''}
+                                    autoComplete="current-password"
                                 />
                                 {errors.password && <span className="error-text">{errors.password}</span>}
                             </div>
@@ -112,7 +141,6 @@ export default function LoginPage() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     )
