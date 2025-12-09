@@ -44,7 +44,7 @@ export const metadata = {
     description: "Découvrez notre collection exclusive de montres de luxe, sacs haut de gamme et bijoux précieux.",
     images: [
       {
-        url: "/images/lux.png",
+        url: "/favicon.png",
         width: 1200,
         height: 630,
         alt: "EliteShop - Boutique de Luxe",
@@ -55,7 +55,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "EliteShop - Boutique de Luxe",
     description: "Découvrez notre collection exclusive de montres de luxe, sacs haut de gamme et bijoux précieux.",
-    images: ["/images/lux.png"],
+    images: ["/favicon.png"],
   },
   robots: {
     index: true,
@@ -73,6 +73,13 @@ export const metadata = {
     // google: "votre-code-google",
     // yandex: "votre-code-yandex",
     // bing: "votre-code-bing",
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
 };
 
