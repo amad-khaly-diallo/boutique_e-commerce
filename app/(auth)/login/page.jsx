@@ -5,6 +5,7 @@ import '../auth.css'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useUserContext } from '@/app/contexts/UserContext'
 
 export default function LoginPage() {
     const [form, setForm] = useState({ email: '', password: '' })
@@ -12,6 +13,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false)
     const [mounted, setMounted] = useState(false)
     const router = useRouter()
+    const { refreshUser, setUserData } = useUserContext()
 
     // Éviter les problèmes d'hydration en ne rendant que côté client
     useEffect(() => {
@@ -59,6 +61,13 @@ export default function LoginPage() {
                 setErrors({ form: data.message || data.error || 'Une erreur est survenue.' })
             } else {
                 setForm({ email: '', password: '' })
+                // Mettre à jour le contexte utilisateur avec les données reçues
+                if (data.user) {
+                    setUserData(data.user);
+                } else {
+                    // Sinon, recharger depuis l'API
+                    await refreshUser();
+                }
                 router.push('/')
             }
         } catch {

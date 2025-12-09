@@ -5,6 +5,7 @@ import LuxuryLoader from "@/app/components/LuxuryLoader/LuxuryLoader";
 import Link from "next/link";
 import { useLuxuryLoader } from "@/lib/useLuxuryLoader";
 import { useToastContext } from "@/app/contexts/ToastContext";
+import { useUserContext } from "@/app/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import {
   validateUserProfile,
@@ -25,7 +26,7 @@ export default function AccountPage() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, refreshUser } = useUserContext();
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
 
@@ -57,37 +58,25 @@ export default function AccountPage() {
 
   // Charger les données de l'utilisateur
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me", { credentials: "include" });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok && data.user) {
-          setUser(data.user);
-          // Préremplir le formulaire avec les données de l'utilisateur
-          setForm({
-            firstName: data.user.first_name || "",
-            lastName: data.user.last_name || "",
-            email: data.user.email || "",
-            currentPassword: "",
-            newPassword: "",
-            confirmPassword: "",
-          });
-        } else {
-          // Rediriger vers login si non connecté
-          router.push("/login");
-        }
-      } catch (err) {
-        console.error(err);
-        toast.error("Erreur lors du chargement des données utilisateur");
-      } finally {
-        // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
-        setTimeout(() => {
-          setLoading(false);
-        }, 500); // Temps réel de chargement (peut être rapide)
-      }
-    };
-    loadUser();
-  }, []);
+    if (user) {
+      // Préremplir le formulaire avec les données de l'utilisateur
+      setForm({
+        firstName: user.first_name || "",
+        lastName: user.last_name || "",
+        email: user.email || "",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
+      setTimeout(() => {
+        setLoading(false);
+      }, 500); // Temps réel de chargement (peut être rapide)
+    } else if (user === null && !loading) {
+      // Rediriger vers login si non connecté (seulement si on a fini de charger)
+      router.push("/login");
+    }
+  }, [user, router, loading]);
 
   async function onSave(e) {
     e.preventDefault();
@@ -204,24 +193,14 @@ export default function AccountPage() {
       return;
     }
 
-    try {
-      const res = await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      const data = await res.json().catch(() => ({}));
-      if (res.ok) {
-        toast.success("Déconnexion réussie");
-        setTimeout(() => {
-          router.push("/");
-        }, 1000);
-      } else {
-        toast.error(data.error || "Erreur lors de la déconnexion");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Erreur lors de la déconnexion");
+    const result = await logout();
+    if (result.success) {
+      toast.success("Déconnexion réussie");
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    } else {
+      toast.error(result.error || "Erreur lors de la déconnexion");
     }
   }
 

@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Golden from "../components/GoldenBotton/GoldenBotton";
 import { Trash } from "lucide-react";
@@ -18,18 +18,21 @@ export default function CartPage() {
   const showLoader = useLuxuryLoader(loading, 1000);
   const toast = useToastContext();
   const { refreshCartCount } = useCartContext();
+  const updateTimeoutRef = useRef({});
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
-      const res = await fetch("/api/carts", { cache: "no-store" });
+      const res = await fetch("/api/carts", { cache: "no-store", credentials: "include" });
       if (!res.ok) throw new Error("Erreur lors du chargement du panier");
 
       const data = await res.json();
       setCartItems(data.cart || []);
+      // Mettre à jour le compteur du panier dans le header
+      refreshCartCount();
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [refreshCartCount]);
 
   //  Recalcule le subtotal uniquement quand cartItems change
   useEffect(() => {
@@ -68,8 +71,26 @@ export default function CartPage() {
     fetchProducts();
     // Le loader sera visible au minimum 1000ms grâce à useLuxuryLoader
     const t = setTimeout(() => setLoading(false), 500); // Temps réel de chargement (peut être rapide)
-    return () => clearTimeout(t);
+    
+    // Nettoyer les timeouts au démontage
+    return () => {
+      clearTimeout(t);
+      Object.values(updateTimeoutRef.current).forEach(timeout => {
+        if (timeout) clearTimeout(timeout);
+      });
+    };
   }, []);
+
+  // Recharger le panier quand on revient sur la page
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchProducts();
+      refreshCartCount();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [refreshCartCount, fetchProducts]);
 
   return (
     <main className="cart-container">
@@ -105,8 +126,11 @@ export default function CartPage() {
                   min={1}
                   className="qty-select"
                   value={item.quantity}
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const newQty = Number(e.target.value);
+                    if (newQty < 1) return;
+                    
+                    // Mise à jour optimiste de l'UI
                     setCartItems((prev) =>
                       prev.map((p) =>
                         p.cart_item_id === item.cart_item_id
@@ -114,6 +138,40 @@ export default function CartPage() {
                           : p
                       )
                     );
+
+                    // Annuler le timeout précédent pour cet item
+                    if (updateTimeoutRef.current[item.cart_item_id]) {
+                      clearTimeout(updateTimeoutRef.current[item.cart_item_id]);
+                    }
+
+                    // Débounce : attendre 500ms avant d'appeler l'API
+                    updateTimeoutRef.current[item.cart_item_id] = setTimeout(async () => {
+                      try {
+                        const res = await fetch("/api/carts/update", {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          credentials: "include",
+                          body: JSON.stringify({
+                            cartItemId: item.cart_item_id,
+                            quantity: newQty,
+                          }),
+                        });
+
+                        const data = await res.json();
+                        if (!res.ok || !data.success) {
+                          throw new Error(data.error || "Erreur lors de la mise à jour");
+                        }
+
+                        // Recharger le panier pour s'assurer de la cohérence
+                        await fetchProducts();
+                        refreshCartCount();
+                      } catch (err) {
+                        console.error(err);
+                        toast.error("Erreur lors de la mise à jour de la quantité");
+                        // Recharger le panier pour restaurer l'état correct
+                        await fetchProducts();
+                      }
+                    }, 500);
                   }}
                 />
 

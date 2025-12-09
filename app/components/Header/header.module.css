@@ -417,6 +417,160 @@
   color: #64748b;
 }
 
+/* Menu utilisateur */
+.userMenuWrapper {
+  position: relative;
+}
+
+.userButton {
+  position: relative;
+}
+
+.userMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  z-index: 100;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.userMenuHeader {
+  padding: 16px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.userMenuItems {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.userMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.userMenuItem:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: #d4af37;
+}
+
+.userMenuItem svg {
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.userMenuItem:hover svg {
+  color: #d4af37;
+}
+
+.logoutButton {
+  color: #dc2626;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  margin-top: 4px;
+  padding-top: 16px;
+}
+
+.logoutButton:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.logoutButton svg {
+  color: #dc2626;
+}
+
+/* Menu mobile utilisateur */
+.mobileUserInfo {
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.mobileUserName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.mobileUserEmail {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.mobileLogout {
+  color: #dc2626;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  margin-top: 8px;
+  padding-top: 16px;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  text-align: left;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.mobileLogout:hover {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+}
+
 @media (min-width: 768px) {
   .searchWrapper {
     display: flex;

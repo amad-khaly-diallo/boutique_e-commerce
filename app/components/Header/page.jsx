@@ -1,9 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ShoppingCart, User, Search, Menu, Heart, X, ChevronDown } from 'lucide-react';
-import { useMemo, useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ShoppingCart, User, Search, Menu, Heart, X, ChevronDown, LogOut, Package, Settings } from 'lucide-react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useCartContext } from '@/app/contexts/CartContext';
+import { useUserContext } from '@/app/contexts/UserContext';
+import { useToastContext } from '@/app/contexts/ToastContext';
 import styles from './header.module.css';
 
 const NAV_LINKS = [
@@ -20,10 +22,14 @@ const CATEGORY_LINKS = [
 
 export default function Header() {
     const pathname = usePathname();
+    const router = useRouter();
     const { cartCount } = useCartContext();
+    const { user, logout: logoutUser } = useUserContext();
+    const toast = useToastContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [user, setUser] = useState(null);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const userMenuRef = useRef(null);
     const isCategorySection = pathname?.startsWith('/categories');
 
     //pour la bar de recherche
@@ -35,25 +41,34 @@ export default function Header() {
         setMounted(true);
     }, []);
 
-    // Charger les informations de l'utilisateur et le panier
+    // Fermer le menu utilisateur si on clique en dehors
     useEffect(() => {
-        if (!mounted) return;
-
-        const loadUser = async () => {
-            try {
-                const res = await fetch("/api/auth/me", { credentials: "include" });
-                const data = await res.json().catch(() => ({}));
-                if (res.ok && data.user) {
-                    setUser(data.user);
-                }
-            } catch (err) {
-                console.error(err);
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setIsUserMenuOpen(false);
             }
         };
 
+        if (isUserMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
 
-        loadUser();
-    }, [mounted]);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isUserMenuOpen]);
+
+    // Fonction de déconnexion
+    const handleLogout = async () => {
+        const result = await logoutUser();
+        if (result.success) {
+            setIsUserMenuOpen(false);
+            toast.success("Déconnexion réussie");
+            router.push("/");
+        } else {
+            toast.error(result.error || "Erreur lors de la déconnexion");
+        }
+    };
 
 
 
@@ -85,11 +100,19 @@ export default function Header() {
 
 
     const desktopLinks = useMemo(() => {
-        const links = [...NAV_LINKS];
+        // Filtrer les liens : ne pas afficher "Connectez-vous" si l'utilisateur est connecté
+        const links = NAV_LINKS.filter(link => {
+            if (link.href === '/login' && user) {
+                return false; // Cacher "Connectez-vous" si connecté
+            }
+            return true;
+        });
+        
         // Ajouter le lien Admin seulement si l'utilisateur est admin
         if (user && user.role === 'admin') {
             links.push({ href: '/admin', label: 'Admin' });
         }
+        
         return links.map((link) => (
             <Link
                 key={link.href}
@@ -190,9 +213,70 @@ export default function Header() {
                             {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
                         </Link>
 
-                        <Link href="/account" className={styles.iconButton} aria-label="Voir le compte">
-                            <User />
-                        </Link>
+                        {user ? (
+                            <div className={styles.userMenuWrapper} ref={userMenuRef}>
+                                <button
+                                    type="button"
+                                    className={`${styles.iconButton} ${styles.userButton}`}
+                                    aria-label="Menu utilisateur"
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                >
+                                    <User />
+                                </button>
+                                {isUserMenuOpen && (
+                                    <div className={styles.userMenu}>
+                                        <div className={styles.userMenuHeader}>
+                                            <div className={styles.userInfo}>
+                                                <p className={styles.userName}>
+                                                    {user.first_name} {user.last_name}
+                                                </p>
+                                                <p className={styles.userEmail}>{user.email}</p>
+                                            </div>
+                                        </div>
+                                        <div className={styles.userMenuItems}>
+                                            <Link
+                                                href="/account"
+                                                className={styles.userMenuItem}
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                            >
+                                                <Settings size={18} />
+                                                <span>Mon compte</span>
+                                            </Link>
+                                            <Link
+                                                href="/account/orders"
+                                                className={styles.userMenuItem}
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                            >
+                                                <Package size={18} />
+                                                <span>Mes commandes</span>
+                                            </Link>
+                                            {user.role === 'admin' && (
+                                                <Link
+                                                    href="/admin"
+                                                    className={styles.userMenuItem}
+                                                    onClick={() => setIsUserMenuOpen(false)}
+                                                >
+                                                    <Settings size={18} />
+                                                    <span>Administration</span>
+                                                </Link>
+                                            )}
+                                            <button
+                                                type="button"
+                                                className={`${styles.userMenuItem} ${styles.logoutButton}`}
+                                                onClick={handleLogout}
+                                            >
+                                                <LogOut size={18} />
+                                                <span>Déconnexion</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link href="/account" className={styles.iconButton} aria-label="Voir le compte">
+                                <User />
+                            </Link>
+                        )}
 
                         <button
                             type="button"
@@ -223,17 +307,60 @@ export default function Header() {
                         </div>
 
                         <div className={styles.mobileMenu}>
-                            {NAV_LINKS.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={`${styles.mobileLink} ${pathname === link.href ? styles.mobileLinkActive : ''
-                                        }`}
-                                    onClick={() => setIsMenuOpen(false)}
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
+                            {user ? (
+                                <>
+                                    <div className={styles.mobileUserInfo}>
+                                        <p className={styles.mobileUserName}>
+                                            {user.first_name} {user.last_name}
+                                        </p>
+                                        <p className={styles.mobileUserEmail}>{user.email}</p>
+                                    </div>
+                                    <Link
+                                        href="/account"
+                                        className={`${styles.mobileLink} ${pathname === '/account' ? styles.mobileLinkActive : ''}`}
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        Mon compte
+                                    </Link>
+                                    <Link
+                                        href="/account/orders"
+                                        className={`${styles.mobileLink} ${pathname === '/account/orders' ? styles.mobileLinkActive : ''}`}
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        Mes commandes
+                                    </Link>
+                                    {user.role === 'admin' && (
+                                        <Link
+                                            href="/admin"
+                                            className={styles.mobileLink}
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            Administration
+                                        </Link>
+                                    )}
+                                    <button
+                                        type="button"
+                                        className={`${styles.mobileLink} ${styles.mobileLogout}`}
+                                        onClick={() => {
+                                            setIsMenuOpen(false);
+                                            handleLogout();
+                                        }}
+                                    >
+                                        Déconnexion
+                                    </button>
+                                </>
+                            ) : (
+                                NAV_LINKS.map((link) => (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        className={`${styles.mobileLink} ${pathname === link.href ? styles.mobileLinkActive : ''}`}
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))
+                            )}
 
                             <div className={styles.mobileSection}>
                                 <p className={styles.mobileSectionLabel}>Catégories</p>

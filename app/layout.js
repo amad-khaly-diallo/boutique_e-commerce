@@ -4,6 +4,7 @@ import Header  from "./components/Header/page";
 import Footer  from "./components/Footer/page";
 import { ToastProvider } from "./contexts/ToastContext";
 import { CartProvider } from "./contexts/CartContext";
+import { UserProvider } from "./contexts/UserContext";
 import SchemaInjector from "./components/Schema/SchemaInjector";
 
 const geistSans = Geist({
@@ -140,11 +141,13 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
         <SchemaInjector schemas={[organizationSchema, websiteSchema]} />
         <ToastProvider>
-          <CartProvider>
-            <Header />
-            {children}
-            <Footer />
-          </CartProvider>
+          <UserProvider>
+            <CartProvider>
+              <Header />
+              {children}
+              <Footer />
+            </CartProvider>
+          </UserProvider>
         </ToastProvider>
       </body>
     </html>

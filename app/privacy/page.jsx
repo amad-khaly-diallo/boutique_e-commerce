@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         <section>
           <h2>1. Introduction</h2>
           <p>
-            EliteShop ("nous", "notre", "nos") s'engage à protéger la confidentialité de vos informations personnelles. 
+            EliteShop s'engage à protéger la confidentialité de vos informations personnelles. 
             Cette politique de confidentialité explique comment nous collectons, utilisons, partageons et protégeons 
             vos données lorsque vous utilisez notre site web et nos services.
           </p>
