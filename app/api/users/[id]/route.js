@@ -146,8 +146,8 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const user = await findUser(conn, id);
-    return NextResponse.json(user);
+    const userFound = await findUser(conn, id);
+    return NextResponse.json(userFound);
   } catch (error) {
     const status = error.code === "ER_DUP_ENTRY" ? 409 : 500;
     const message = status === 409 ? "Email already exists" : error.message;
