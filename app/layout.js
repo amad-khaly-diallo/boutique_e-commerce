@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
 import Header  from "./components/Header/page";
 import Footer  from "./components/Footer/page";
@@ -7,15 +7,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { UserProvider } from "./contexts/UserContext";
 import SchemaInjector from "./components/Schema/SchemaInjector";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: {
@@ -138,7 +130,7 @@ export default function RootLayout({ children }) {
   };
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body  suppressHydrationWarning>
         <SchemaInjector schemas={[organizationSchema, websiteSchema]} />
         <ToastProvider>
           <UserProvider>
